@@ -34,6 +34,7 @@ export const CartReducer =  (state = initialState, action) => {
             return {
                 ...state, 
                 cart: action.payload.products,
+                cartId: action.payload.cartId
             }
         }
 

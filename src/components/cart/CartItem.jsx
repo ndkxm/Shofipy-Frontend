@@ -3,7 +3,7 @@ import { FiTrash2 } from "react-icons/fi"
 import { SetQuantity } from "./SetQuantity"
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { decreaseProductInCart, increaseProductInCart, removeProductFromCart } from "../../store/actions";
+import { decreaseProductInCart, fetchUserCart, increaseProductInCart, removeProductFromCart } from "../../store/actions";
 import { ConfirmModal } from "../shared/ConfirmModal";
 
 export const CartItem = ({ product }) => {
@@ -23,6 +23,7 @@ export const CartItem = ({ product }) => {
 
     const handleRemove = (product) => {
         dispatch(removeProductFromCart(product, cartId))
+        dispatch(fetchUserCart());
         setOpen(false);
     };
 

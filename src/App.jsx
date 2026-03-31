@@ -6,7 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ScrollToTop } from './components/utils/ScrollToTop'
 import { Contact } from './components/contact/Contact'
 import { ToastContainer } from 'react-toastify'
-import React from 'react'
+import React, { useEffect } from 'react'
 import { Cart } from './components/cart/Cart'
 import { ScrollToTopButton } from './components/utils/ScrollToTopButton'
 import { Login } from './components/auth/Login'
@@ -14,7 +14,18 @@ import { Register } from './components/auth/Register'
 import PrivateRoute from './components/shared/PrivateRoute'
 import { CheckOut } from './components/checkout/Checkout'
 import { ProductDetail } from './components/products/ProductDetails'
+import { useDispatch, useSelector } from 'react-redux'
+import { fetchUserCart } from './store/actions/index'
+
 function App() {
+  const dispatch = useDispatch();
+  const { user } = useSelector((state) => state.auth);
+
+  useEffect(() => {
+    if (user) {
+      dispatch(fetchUserCart());
+    }
+  }, [user, dispatch]);
 
   return (
     <React.Fragment>

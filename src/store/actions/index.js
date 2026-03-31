@@ -48,15 +48,32 @@ export const fetchCategories = () => async (dispatch) => {
     }
 };
 
+export const fetchUserCart = () => async (dispatch) => {
+    try {
+        const { data } = await api.get("/carts/users/cart");
+        dispatch({
+            type: "ADD_CART_AUTHENTICATED",
+            payload: data,
+        });
+    } catch (error) {
+        console.log("Failed to fetch user cart:", error);
+    }
+};
+
 export const addProductToCart = (data, quantity) => async (dispatch, getState) => {
     const { products } = getState().products;
     const { user } = getState().auth;
     const getProduct = products.find(
         (item) => item.productId === data.productId
     )
-    const isAvailable = (getProduct.quantity >= quantity);
-    if (isAvailable) {
-        if (!user) {
+    if (!user) {
+        const { cart } = getState().carts;
+
+        const existingProduct = cart.find(
+            (item) => item.productId === data.productId
+        )
+
+        if (!existingProduct) {
             dispatch({
                 type: "ADD_CART_UNAUTHENTICATED",
                 payload: {
@@ -78,33 +95,25 @@ export const addProductToCart = (data, quantity) => async (dispatch, getState) =
             localStorage.setItem("cartItems", JSON.stringify(getState().carts.cart));
         }
         else {
+            toast.error("Product already exist in cart", {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
+        }
+    }
+    else {
+        try {
+            await api.post(`/cart/products/${data.productId}/quantity/1`);
+            // Fetch cart AFTER adding the product
             const res = await api.get("/carts/users/cart");
             const usersCartFromDatabase = res.data;
-            if (!usersCartFromDatabase) {
-                await api.post(`/cart/products/${getProduct.productId}/quantity/1`);
-                dispatch({
-                    type: "ADD_CART_AUTHENTICATED",
-                    payload: usersCartFromDatabase
-                });
-                toast.success(`Added ${getProduct.productName} to cart successfully!`, {
-                    position: "bottom-right",
-                    autoClose: 5000,
-                    hideProgressBar: false,
-                    closeOnClick: false,
-                    pauseOnHover: true,
-                    draggable: true,
-                    progress: undefined,
-                    theme: "light",
-                    transition: Bounce,
-                });
-            }
-            const existingProduct = usersCartFromDatabase.products.find(
-                (item) => item.productId === getProduct.productId
-            );
-
-            if (!existingProduct) {
-                await api.post(`/cart/products/${getProduct.productId}/quantity/1`);
-            }
             dispatch({
                 type: "ADD_CART_AUTHENTICATED",
                 payload: usersCartFromDatabase
@@ -120,27 +129,32 @@ export const addProductToCart = (data, quantity) => async (dispatch, getState) =
                 theme: "light",
                 transition: Bounce,
             });
+        } catch (error) {
+            const data = error.response?.data
+            let errorMessage;
+            if (data?.message) {
+                errorMessage = data.message;
+            } else {
+                errorMessage = data;
+            }
+            toast.error(errorMessage, {
+                position: "bottom-right",
+                autoClose: 5000,
+                hideProgressBar: false,
+                closeOnClick: false,
+                pauseOnHover: true,
+                draggable: true,
+                progress: undefined,
+                theme: "light",
+                transition: Bounce,
+            });
         }
-    }
-    else {
-        toast.error(`Out of stocks!`, {
-            position: "bottom-right",
-            autoClose: 5000,
-            hideProgressBar: false,
-            closeOnClick: false,
-            pauseOnHover: true,
-            draggable: true,
-            progress: undefined,
-            theme: "light",
-            transition: Bounce,
-        });
     }
 };
 
 export const increaseProductInCart = (data, currentQuantity, setCurrentQuantity) => (dispatch, getState) => {
 
     try {
-        const { user } = useSelector((state) => state.auth);
         const newQuantity = currentQuantity + 1;
         setCurrentQuantity(newQuantity);
 
@@ -182,7 +196,7 @@ export const decreaseProductInCart = (data, currentQuantity, setCurrentQuantity)
     }
 }
 
-export const removeProductFromCart = (data, cartId) => async (dispatch, getState) => {
+export const removeProductFromCart = (data, cartId) => async (dispatch) => {
     await api.delete(`/carts/${cartId}/products/${data.productId}`)
     dispatch({ type: "REMOVE_CART", payload: data });
     toast.success(`${data.productName} removed from cart!`, {
@@ -198,13 +212,25 @@ export const removeProductFromCart = (data, cartId) => async (dispatch, getState
     });
 }
 
-export const authenticatedSignInUser = (sendData, reset, navigate) => async (dispatch) => {
+export const authenticatedSignInUser = (sendData, reset, navigate) => async (dispatch, getState) => {
     try {
+        const guestCarts = getState().carts;
+        if (guestCarts.cart) {
+            try {
+                await api.post(`/carts/${guestCarts.cartId}/merge`, guestCarts.cart);
+            } catch (error) {
+                console.log(error);
+            }
+        }
+
         const { data } = await api.post("/auth/login", sendData);
         dispatch({
             type: "LOGIN_USER",
             payload: data,
         });
+
+        dispatch(fetchUserCart());
+
         localStorage.setItem("auth", JSON.stringify(data));
         reset();
         navigate("/")
@@ -267,14 +293,15 @@ export const registerNewUser = (sendData, reset, navigate) => async (dispatch) =
     }
 }
 
-export const logOutUser = (navigate) => (dispatch) => {
-    dispatch({
-        type: "LOG_OUT",
-    });
+export const logOutUser = (navigate) => async (dispatch) => {
+    try {
+        await api.post("/auth/signout"); // clears the HttpOnly JWT cookie server-side
+    } catch (e) {
+        console.log("Signout request failed:", e);
+    }
+    dispatch({ type: "LOG_OUT" });
     localStorage.removeItem("auth");
-    dispatch({
-        type: "REMOVE_ALL_CART"
-    })
+    dispatch({ type: "REMOVE_ALL_CART" });
     localStorage.removeItem("cartItems");
     navigate("/");
 }
