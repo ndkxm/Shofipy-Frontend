@@ -16,7 +16,7 @@ export const useProductFilter = () => {
         const sortOrder = searchParams.get("sortOrder") || "asc";
         const keyword = searchParams.get("keyword") || null;
 
-        params.set("sortBy", "price");
+        params.set("sortBy", "productId"); // Use productId for consistent sorting
         params.set("sortOrder", sortOrder);
         if (categoryParams) {
             params.set("category", categoryParams);

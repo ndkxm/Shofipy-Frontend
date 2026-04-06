@@ -1,9 +1,22 @@
-import { useState } from "react"
+import { useState } from "react";
 import { FaShoppingCart } from "react-icons/fa";
 import ProductViewModal from "./ProductViewModal";
 import { TruncateText } from "../utils/TruncateText";
 import { useDispatch } from "react-redux";
 import { addProductToCart } from "../../store/actions";
+import { motion } from "framer-motion";
+import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
+
+// ── Icons ──────────────────────────────────────────────────────────────────────
+
+const CartIcon = () => (
+    <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <circle cx="9" cy="21" r="1" /><circle cx="20" cy="21" r="1" />
+        <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6" />
+    </svg>
+);
+
+// ── Component ──────────────────────────────────────────────────────────────────
 
 const ProductCard = ({
     productId,
@@ -13,154 +26,152 @@ const ProductCard = ({
     quantity,
     price,
     discount,
-    specialPrice
+    specialPrice,
 }) => {
-    const [openProductViewModal, setOpenProductViewModal] = useState(false);
-    const btnLoader = false;
-    const [selectedViewProduct, setSelectedViewProduct] = useState("");
+    const [imgError, setImgError] = useState(false);
     const isAvailable = quantity && Number(quantity) > 0;
     const dispatch = useDispatch();
+    const [searchParams] = useSearchParams();
+    const params = new URLSearchParams(searchParams);
+    const pathname = useLocation().pathname;
+    const navigate = useNavigate();
 
-    const handleProductView = (product) => {
-        setSelectedViewProduct(product);
-        setOpenProductViewModal(true);
+    const productData = { productId, productName, image, description, quantity, price, discount, specialPrice };
+
+    const handleProductView = () => {
+        navigate(`/products/product/${productData.productId}`);
     };
 
-    const handleAddProductToCart = (cartItems) => {
-        dispatch(addProductToCart(cartItems, 1));
-    }
+    const handleAddProductToCart = (e) => {
+        e.stopPropagation();
+        dispatch(addProductToCart(productData, 1));
+    };
+
+    const discountPct = discount ? Number(discount * 100).toFixed(0) : null;
 
     return (
-        <div className="group rounded-2xl border border-gray-200 
-bg-white/80 backdrop-blur-md
-shadow-sm hover:shadow-2xl 
-transition-all duration-300 hover:-translate-y-1
-overflow-hidden cursor-pointer">
-
-            {/* Image */}
-            <div
-                onClick={() => {
-                    handleProductView({
-                        productId,
-                        productName,
-                        image,
-                        description,
-                        quantity,
-                        price,
-                        discount,
-                        specialPrice
-                    })
+        <>
+            <motion.div
+                whileHover={{ y: -4 }}
+                transition={{ duration: 0.22, ease: [0.22, 1, 0.36, 1] }}
+                className="group rounded-2xl border border-slate-200 bg-white overflow-hidden cursor-pointer flex flex-col"
+                style={{
+                    fontFamily: "'Reddit Sans', sans-serif",
+                    boxShadow: "0 1px 4px rgba(0,0,0,0.06)",
+                    transition: "box-shadow 0.2s ease",
                 }}
-                className="relative overflow-hidden aspect-[4/3]"
+                onMouseEnter={(e) => e.currentTarget.style.boxShadow = "0 8px 28px rgba(0,0,0,0.1)"}
+                onMouseLeave={(e) => e.currentTarget.style.boxShadow = "0 1px 4px rgba(0,0,0,0.06)"}
             >
-
-                {/* Discount badge */}
-                {specialPrice && (
-                    <span className="absolute top-3 left-3 z-10 bg-rose-500 text-white text-xs font-bold px-2 py-1 rounded-md shadow">
-                        -{Number(discount * 100).toFixed(2)}%
-                    </span>
-                )}
-
-                <img
-                    src={image}
-                    alt={productName}
-                    className="w-full h-full object-cover 
-            transition-transform duration-500 
-            group-hover:scale-110"
-                />
-
-                {/* Gradient overlay */}
-                <div className="absolute inset-0 bg-gradient-to-t from-black/10 to-transparent opacity-0 group-hover:opacity-100 transition" />
-
-            </div>
-
-            {/* Content */}
-            <div className="p-5">
-
-                {/* Title */}
-                <h2
-                    className="text-lg font-semibold text-gray-900 
-            group-hover:text-blue-600 transition"
-                    onClick={() => {
-                        handleProductView({
-                            productId,
-                            productName,
-                            image,
-                            description,
-                            quantity,
-                            price,
-                            discount,
-                            specialPrice
-                        })
-                    }}
+                {/* Image */}
+                <div
+                    className="relative overflow-hidden aspect-[4/3] bg-slate-50"
+                    onClick={handleProductView}
                 >
-                    {TruncateText(productName, 35)}
-                </h2>
-
-                {/* Description */}
-                <p className="text-sm text-gray-500 mt-2 min-h-[48px]">
-                    {TruncateText(description, 60)}
-                </p>
-
-                {/* Price + button */}
-                <div className="flex items-center justify-between mt-4">
-
-                    {specialPrice ? (
-                        <div className="flex flex-col">
-
-                            <div className="flex items-center gap-2">
-                                <span className="text-gray-400 line-through text-sm">
-                                    ${Number(price).toFixed(2)}
-                                </span>
-
-                                <span className="text-rose-500 text-sm font-semibold">
-                                    -{Number(discount * 100).toFixed(2)}%
-                                </span>
-                            </div>
-
-                            <span className="text-xl font-bold text-rose-600">
-                                ${Number(specialPrice).toFixed(2)}
-                            </span>
-
+                    {/* Discount badge */}
+                    {discountPct && (
+                        <div className="absolute top-3 left-3 z-10 bg-rose-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg"
+                            style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
+                            -{discountPct}%
                         </div>
-                    ) : (
-                        <span className="text-xl font-bold text-gray-900">
-                            ${Number(price).toFixed(2)}
-                        </span>
                     )}
 
-                    {/* Button */}
-                    <button
-                        className={`flex items-center gap-2 
-                px-4 py-2 rounded-full text-sm font-medium
-                transition-all duration-200
-                ${isAvailable
-                                ? "bg-blue-600 hover:bg-blue-700 text-white shadow-md hover:shadow-lg"
-                                : "bg-gray-300 text-gray-500 cursor-not-allowed"
-                            }`}
-                        disabled={!isAvailable || btnLoader}
-                        onClick={() => {
-                            handleAddProductToCart({
-                                productId,
-                                productName,
-                                image,
-                                description,
-                                quantity,
-                                price,
-                                discount,
-                                specialPrice
-                            })
-                        }}
-                    >
-                        <FaShoppingCart />
-                        {isAvailable ? "Add" : "Sold"}
-                    </button>
+                    {/* Out of stock badge */}
+                    {!isAvailable && (
+                        <div className="absolute inset-0 z-10 bg-white/60 backdrop-blur-[2px] flex items-center justify-center">
+                            <span className="text-xs font-bold text-slate-500 bg-white border border-slate-200 px-3 py-1.5 rounded-xl"
+                                style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
+                                Out of stock
+                            </span>
+                        </div>
+                    )}
 
+                    <img
+                        src={imgError ? "/placeholder.png" : image}
+                        alt={productName}
+                        onError={() => setImgError(true)}
+                        className="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105"
+                    />
                 </div>
 
-            </div>
+                {/* Content */}
+                <div className="p-4 flex flex-col flex-1">
 
-        </div>
-    )
-}
-export default ProductCard
+                    {/* Title */}
+                    <h2
+                        className="text-sm font-bold text-slate-800 group-hover:text-blue-600 transition-colors duration-150 leading-snug mb-1.5"
+                        style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+                    >
+                        {TruncateText(productName, 40)}
+                    </h2>
+
+                    {/* Description */}
+                    <p className="text-xs text-slate-400 leading-relaxed flex-1"
+                        style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
+                        {TruncateText(description, 65)}
+                    </p>
+
+                    {/* Price + button */}
+                    <div className="flex items-end justify-between mt-4 gap-2">
+
+                        {/* Price */}
+                        <div>
+                            {specialPrice ? (
+                                <>
+                                    <div className="flex items-center gap-1.5 mb-0.5">
+                                        <span className="text-xs text-slate-400 line-through"
+                                            style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
+                                            ${Number(price).toFixed(2)}
+                                        </span>
+                                        <span className="text-xs font-semibold text-rose-500 bg-rose-50 px-1.5 py-0.5 rounded-md"
+                                            style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
+                                            -{discountPct}%
+                                        </span>
+                                    </div>
+                                    <span className="text-lg font-extrabold text-slate-900"
+                                        style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
+                                        ${Number(specialPrice).toFixed(2)}
+                                    </span>
+                                </>
+                            ) : (
+                                <span className="text-lg font-extrabold text-slate-900"
+                                    style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
+                                    ${Number(price).toFixed(2)}
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Add to cart */}
+                        <motion.button
+                            whileTap={{ scale: 0.94 }}
+                            disabled={!isAvailable}
+                            onClick={handleAddProductToCart}
+                            className={`flex items-center gap-1.5 px-3.5 py-2 rounded-xl text-xs font-bold flex-shrink-0 transition-all duration-150
+                                ${isAvailable
+                                    ? "bg-blue-600 hover:bg-blue-700 text-white"
+                                    : "bg-slate-100 text-slate-400 cursor-not-allowed"
+                                }`}
+                            style={{
+                                fontFamily: "'Reddit Sans', sans-serif",
+                                boxShadow: isAvailable ? "0 2px 8px rgba(59,130,246,0.3)" : "none",
+                            }}
+                        >
+                            <CartIcon />
+                            {isAvailable ? "Add" : "Sold"}
+                        </motion.button>
+                    </div>
+                </div>
+            </motion.div>
+
+            {/* {openProductViewModal && (
+                <ProductViewModal
+                    open={openProductViewModal}
+                    onClose={() => setOpenProductViewModal(false)}
+                    product={selectedViewProduct}
+                />
+            )} */}
+        </>
+    );
+};
+
+export default ProductCard;

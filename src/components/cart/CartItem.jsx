@@ -1,100 +1,126 @@
-import { TruncateText } from "../utils/TruncateText"
-import { FiTrash2 } from "react-icons/fi"
-import { SetQuantity } from "./SetQuantity"
 import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { decreaseProductInCart, fetchUserCart, increaseProductInCart, removeProductFromCart } from "../../store/actions";
+import { motion } from "framer-motion";
+import { TruncateText } from "../utils/TruncateText";
+import { SetQuantity } from "./SetQuantity";
 import { ConfirmModal } from "../shared/ConfirmModal";
+import {
+    decreaseProductInCart,
+    fetchUserCart,
+    increaseProductInCart,
+    removeProductFromCart,
+} from "../../store/actions";
+
+const TrashIcon = () => (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <polyline points="3 6 5 6 21 6" />
+        <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6" />
+        <path d="M10 11v6M14 11v6" />
+        <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2" />
+    </svg>
+);
 
 export const CartItem = ({ product }) => {
     const [currentQuantity, setCurrentQuantity] = useState(product.quantity);
     const [open, setOpen] = useState(false);
+    const [imgError, setImgError] = useState(false);
     const { cartId } = useSelector((state) => state.carts);
-    
     const dispatch = useDispatch();
 
-    const handleQtyIncrease = (product) => {
-        dispatch(increaseProductInCart(product, currentQuantity, setCurrentQuantity))
-    }
+    const handleQtyIncrease = () => dispatch(increaseProductInCart(product, currentQuantity, setCurrentQuantity));
+    const handleQtyDecrease = () => dispatch(decreaseProductInCart(product, currentQuantity, setCurrentQuantity));
 
-    const handleQtyDecrease = (product) => {
-        dispatch(decreaseProductInCart(product, currentQuantity, setCurrentQuantity))
-    }
-
-    const handleRemove = (product) => {
-        dispatch(removeProductFromCart(product, cartId))
+    const handleRemove = () => {
+        dispatch(removeProductFromCart(product, cartId));
         dispatch(fetchUserCart());
         setOpen(false);
     };
 
+    const lineTotal = ((product.specialPrice || product.price) * currentQuantity).toFixed(2);
+
     return (
-        <div className="w-full lg:max-w-[600px]  max-w-xl mx-auto mt-10 flex gap-4 p-4 border rounded-xl shadow-sm hover:shadow-md transition">
-
-            {/* IMAGE */}
-            <div className="lg:w-38 lg:h-35 w-25 h-22 flex-shrink-0 overflow-hidden rounded-lg">
-                <img
-                    src={product.image}
-                    alt={product.productName}
-                    className="w-full h-full object-cover hover:scale-105 transition-transform"
-                />
-            </div>
-
-            {/* INFO */}
-            <div className="flex flex-col flex-1 justify-between">
-
-                {/* NAME */}
-                <div>
-                    <h2 className="font-semibold text-lg cursor-pointer hover:text-blue-600">
-                        {TruncateText(product.productName, 50)}
-                    </h2>
-
-                    <p className="text-gray-500 text-sm mt-1">
-                        {TruncateText(product.description, 80)}
-                    </p>
+        <>
+            <motion.div
+                layout
+                initial={{ opacity: 0, y: 12 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, x: -20 }}
+                transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
+                className="flex gap-4 p-4 bg-white border border-slate-200 rounded-2xl transition-shadow duration-200 hover:shadow-md"
+                style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+            >
+                {/* Image */}
+                <div className="w-24 h-24 lg:w-28 lg:h-28 flex-shrink-0 rounded-xl overflow-hidden bg-slate-50 border border-slate-100">
+                    <img
+                        src={imgError ? "/placeholder.png" : product.image}
+                        alt={product.productName}
+                        onError={() => setImgError(true)}
+                        className="w-full h-full object-cover transition-transform duration-400 hover:scale-105"
+                    />
                 </div>
 
-                {/* PRICE + QUANTITY */}
-                <div className="flex items-center justify-between mt-3 gap-2">
-
-                    {/* PRICE */}
+                {/* Info */}
+                <div className="flex flex-col flex-1 justify-between min-w-0">
                     <div>
-                        {product.specialPrice ? (
-                            <div>
-                                <span className="text-gray-400 line-through mr-2 text-sm">
-                                    ${product.price.toFixed(2)}
-                                </span>
-
-                                <span className="text-rose-600 font-bold text-lg">
-                                    ${product.specialPrice.toFixed(2)}
-                                </span>
-                            </div>
-                        ) : (
-                            <span className="font-bold text-lg">
-                                ${product.price.toFixed(2)}
-                            </span>
-                        )}
+                        <h2 className="text-sm font-bold text-slate-800 hover:text-blue-600 cursor-pointer leading-snug transition-colors duration-150">
+                            {TruncateText(product.productName, 55)}
+                        </h2>
+                        <p className="text-xs text-slate-400 mt-1 leading-relaxed">
+                            {TruncateText(product.description, 80)}
+                        </p>
                     </div>
 
-                    {/* QUANTITY */}
-                    <SetQuantity
-                        quantity={currentQuantity}
-                        handleQtyDecrease={() => handleQtyDecrease(product)}
-                        handleQtyIncrease={() => handleQtyIncrease(product)}
-                    />
-                    {/* REMOVE */}
-                    <button className="text-gray-400 hover:text-red-500" onClick={() => setOpen(true)}>
-                        <FiTrash2 size={20} />
-                    </button>
+                    {/* Bottom row */}
+                    <div className="flex items-center justify-between gap-3 mt-3 flex-wrap">
 
+                        {/* Price */}
+                        <div>
+                            {product.specialPrice ? (
+                                <div className="flex flex-col">
+                                    <span className="text-xs text-slate-400 line-through">
+                                        ${product.price.toFixed(2)}
+                                    </span>
+                                    <span className="text-base font-extrabold text-slate-900">
+                                        ${product.specialPrice.toFixed(2)}
+                                    </span>
+                                </div>
+                            ) : (
+                                <span className="text-base font-extrabold text-slate-900">
+                                    ${product.price.toFixed(2)}
+                                </span>
+                            )}
+                        </div>
+
+                        {/* Qty + line total + remove */}
+                        <div className="flex items-center gap-3">
+                            <SetQuantity
+                                quantity={currentQuantity}
+                                handleQtyDecrease={handleQtyDecrease}
+                                handleQtyIncrease={handleQtyIncrease}
+                            />
+
+                            <span className="text-sm font-bold text-slate-700 hidden sm:block">
+                                = ${lineTotal}
+                            </span>
+
+                            <motion.button
+                                whileTap={{ scale: 0.9 }}
+                                onClick={() => setOpen(true)}
+                                className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-150"
+                            >
+                                <TrashIcon />
+                            </motion.button>
+                        </div>
+                    </div>
                 </div>
-            </div>
+            </motion.div>
 
             <ConfirmModal
                 isOpen={open}
-                message={`Are you sure you want to remove "${product.productName}" from cart?`}
-                onConfirm={() => handleRemove(product)}
+                message={`Remove "${TruncateText(product.productName, 30)}" from cart?`}
+                onConfirm={handleRemove}
                 onCancel={() => setOpen(false)}
             />
-        </div>
-    )
-}
+        </>
+    );
+};

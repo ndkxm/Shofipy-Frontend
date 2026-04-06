@@ -48,16 +48,20 @@ export const fetchCategories = () => async (dispatch) => {
     }
 };
 
-export const fetchUserCart = () => async (dispatch) => {
-    try {
-        const { data } = await api.get("/carts/users/cart");
-        dispatch({
-            type: "ADD_CART_AUTHENTICATED",
-            payload: data,
-        });
-    } catch (error) {
-        console.log("Failed to fetch user cart:", error);
+export const fetchUserCart = () => async (dispatch, getState) => {
+    const { user } = getState().auth;
+    if (user) {
+        try {
+            const { data } = await api.get("/carts/users/cart");
+            dispatch({
+                type: "ADD_CART_AUTHENTICATED",
+                payload: data,
+            });
+        } catch (error) {
+            console.log("Failed to fetch user cart:", error);
+        }
     }
+
 };
 
 export const addProductToCart = (data, quantity) => async (dispatch, getState) => {
@@ -110,8 +114,7 @@ export const addProductToCart = (data, quantity) => async (dispatch, getState) =
     }
     else {
         try {
-            await api.post(`/cart/products/${data.productId}/quantity/1`);
-            // Fetch cart AFTER adding the product
+            await api.post(`/cart/products/${data.productId}/quantity/${quantity}`);
             const res = await api.get("/carts/users/cart");
             const usersCartFromDatabase = res.data;
             dispatch({
@@ -152,20 +155,32 @@ export const addProductToCart = (data, quantity) => async (dispatch, getState) =
     }
 };
 
-export const increaseProductInCart = (data, currentQuantity, setCurrentQuantity) => (dispatch, getState) => {
+export const increaseProductInCart = (data, currentQuantity, setCurrentQuantity) => async (dispatch, getState) => {
 
+    const { user } = getState().auth;
+    const oldQuantity = currentQuantity;
     try {
-        const newQuantity = currentQuantity + 1;
-        setCurrentQuantity(newQuantity);
+        if (!user) {
+            const newQuantity = currentQuantity + 1;
+            setCurrentQuantity(newQuantity);
 
-        dispatch({
-            type: "ADD_CART",
-            payload: {
-                ...data,
-                quantity: newQuantity,
-            }
-        });
+            dispatch({
+                type: "ADD_CART_UNAUTHENTICATED",
+                payload: {
+                    ...data,
+                    quantity: newQuantity,
+                }
+            });
+        }
+        else {
+            const newQuantity = currentQuantity + 1;
+            setCurrentQuantity(newQuantity);
+            await api.put(`/carts/products/${data.productId}/quantity/add`);
+            dispatch(fetchUserCart());
+        }
+
     } catch (error) {
+        setCurrentQuantity(oldQuantity);
         toast.error(error?.message || `Out of stocks!`, {
             position: "bottom-right",
             autoClose: 5000,
@@ -181,23 +196,49 @@ export const increaseProductInCart = (data, currentQuantity, setCurrentQuantity)
 
 }
 
-export const decreaseProductInCart = (data, currentQuantity, setCurrentQuantity) => (dispatch, getState) => {
-    if (currentQuantity > 1) {
-        const newQuantity = currentQuantity - 1;
-        setCurrentQuantity(newQuantity);
-        dispatch({
-            type: "ADD_CART",
-            payload: {
-                ...data,
-                quantity: newQuantity,
-            }
+export const decreaseProductInCart = (data, currentQuantity, setCurrentQuantity) => async (dispatch, getState) => {
+    const { user } = getState().auth;
+    const oldQuantity = currentQuantity;
+    try {
+        if (!user) {
+            const newQuantity = currentQuantity - 1;
+            setCurrentQuantity(newQuantity);
+            dispatch({
+                type: "ADD_CART",
+                payload: {
+                    ...data,
+                    quantity: newQuantity,
+                }
+            });
+            localStorage.setItem("cartItems", JSON.stringify(getState().carts.cart));
+        }
+        else {
+            const newQuantity = currentQuantity - 1;
+            setCurrentQuantity(newQuantity);
+            await api.put(`/carts/products/${data.productId}/quantity/delete`);
+            dispatch(fetchUserCart());
+        }
+    } catch (error) {
+        setCurrentQuantity(oldQuantity);
+        toast.error(error?.message, {
+            position: "bottom-right",
+            autoClose: 5000,
+            hideProgressBar: false,
+            closeOnClick: false,
+            pauseOnHover: true,
+            draggable: true,
+            progress: undefined,
+            theme: "light",
+            transition: Bounce,
         });
-        localStorage.setItem("cartItems", JSON.stringify(getState().carts.cart));
     }
 }
 
-export const removeProductFromCart = (data, cartId) => async (dispatch) => {
-    await api.delete(`/carts/${cartId}/products/${data.productId}`)
+export const removeProductFromCart = (data, cartId) => async (dispatch, getState) => {
+    const { user } = getState().auth;
+    if (user) {
+        await api.delete(`/carts/${cartId}/products/${data.productId}`)
+    }
     dispatch({ type: "REMOVE_CART", payload: data });
     toast.success(`${data.productName} removed from cart!`, {
         position: "bottom-right",
@@ -214,20 +255,21 @@ export const removeProductFromCart = (data, cartId) => async (dispatch) => {
 
 export const authenticatedSignInUser = (sendData, reset, navigate) => async (dispatch, getState) => {
     try {
-        const guestCarts = getState().carts;
-        if (guestCarts.cart) {
-            try {
-                await api.post(`/carts/${guestCarts.cartId}/merge`, guestCarts.cart);
-            } catch (error) {
-                console.log(error);
-            }
-        }
 
         const { data } = await api.post("/auth/login", sendData);
         dispatch({
             type: "LOGIN_USER",
             payload: data,
         });
+
+        const guestCarts = getState().carts;
+        if (guestCarts.cart) {
+            try {
+                await api.post(`/carts/merge`, guestCarts.cart);
+            } catch (error) {
+                console.log(error);
+            }
+        }
 
         dispatch(fetchUserCart());
 
@@ -343,7 +385,7 @@ export const fetchAddresses = () => async (dispatch) => {
         const { data } = await api.get(`/addresses`);
         dispatch({
             type: "FETCH_ADDRESSES",
-            payload: data,
+            payload: data || [],
         });
         dispatch({ type: "FETCH_ADDRESSES_SUCCESS" });
     } catch (error) {
@@ -396,7 +438,11 @@ export const updateAddress = (sendData, address) => async (dispatch) => {
 export const deleteAddress = (address) => async (dispatch) => {
     try {
         await api.delete(`/addresses/${address.addressId}`);
-        dispatch(fetchAddresses());
+        dispatch({
+            type: "DELETE_ADDRESS",
+            payload: address,
+        });
+        await dispatch(fetchAddresses());
         toast.success(`Delete address successfully`, {
             position: "top-center",
             autoClose: 2000,
@@ -408,7 +454,6 @@ export const deleteAddress = (address) => async (dispatch) => {
             theme: "light",
             transition: Bounce,
         });
-
     } catch (error) {
         toast.error(error?.response?.data?.message || "Internal Server Error", {
             position: "top-center",
@@ -427,6 +472,6 @@ export const deleteAddress = (address) => async (dispatch) => {
 export const saveSelectedPaymentMethod = (method) => (dispatch) => {
     dispatch({
         type: "SAVE_SELECTED_PAYMENT_METHOD",
-        payload: method,
+        payload: method.label,
     })
 }

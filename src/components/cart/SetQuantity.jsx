@@ -1,17 +1,30 @@
+import { motion } from "framer-motion";
+
 export const SetQuantity = ({ quantity, handleQtyIncrease, handleQtyDecrease }) => {
     return (
-        <div>
-            <div className="flex items-center border rounded-lg overflow-hidden">
-                <button
-                    className="px-2 py-1 hover:bg-gray-100"
-                    onClick={handleQtyDecrease}
-                >-</button>
-                <span className="px-4">{quantity}</span>
-                <button 
-                className="px-3 py-1 hover:bg-gray-100"
-                    onClick={handleQtyIncrease}
-                >+</button>
-            </div>
+        <div
+            className="flex items-center rounded-xl border border-slate-200 bg-slate-50 overflow-hidden"
+            style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+        >
+            <motion.button
+                whileTap={{ scale: 0.88 }}
+                onClick={handleQtyDecrease}
+                className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors duration-150 text-base font-bold flex-shrink-0"
+            >
+                −
+            </motion.button>
+
+            <span className="w-9 text-center text-sm font-bold text-slate-800 select-none">
+                {quantity}
+            </span>
+
+            <motion.button
+                whileTap={{ scale: 0.88 }}
+                onClick={handleQtyIncrease}
+                className="w-8 h-8 flex items-center justify-center text-slate-500 hover:bg-slate-200 hover:text-slate-800 transition-colors duration-150 text-base font-bold flex-shrink-0"
+            >
+                +
+            </motion.button>
         </div>
-    )
-}
+    );
+};

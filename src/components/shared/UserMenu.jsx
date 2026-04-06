@@ -1,123 +1,129 @@
-import * as React from "react";
-import {
-    Avatar,
-    Menu,
-    MenuItem,
-    Divider,
-    Typography,
-    Box,
-    ListItemIcon
-} from "@mui/material";
-
-import PersonIcon from "@mui/icons-material/Person";
-import ShoppingBagIcon from "@mui/icons-material/ShoppingBag";
-import LogoutIcon from "@mui/icons-material/Logout";
-
+import { useRef, useState, useEffect } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logOutUser } from "../../store/actions";
+import { motion, AnimatePresence } from "framer-motion";
+
+// ── Icons ──────────────────────────────────────────────────────────────────────
+
+const PersonIcon = () => (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" /><circle cx="12" cy="7" r="4" />
+    </svg>
+);
+
+const BagIcon = () => (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" /><line x1="3" y1="6" x2="21" y2="6" /><path d="M16 10a4 4 0 0 1-8 0" />
+    </svg>
+);
+
+const LogoutIcon = () => (
+    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+        <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline points="16 17 21 12 16 7" /><line x1="21" y1="12" x2="9" y2="12" />
+    </svg>
+);
+
+// ── Menu item ──────────────────────────────────────────────────────────────────
+
+const DropdownItem = ({ icon, label, onClick, to, danger }) => {
+    const inner = (
+        <button
+            onClick={onClick}
+            className={`w-full flex items-center gap-3 px-4 py-2.5 text-sm font-medium rounded-xl transition-colors duration-150 text-left
+                ${danger
+                    ? "text-red-500 hover:bg-red-50"
+                    : "text-slate-600 hover:bg-slate-50 hover:text-slate-900"
+                }`}
+            style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+        >
+            <span className={danger ? "text-red-400" : "text-slate-400"}>{icon}</span>
+            {label}
+        </button>
+    );
+
+    return to ? <Link to={to} onClick={onClick}>{inner}</Link> : inner;
+};
+
+// ── Main ───────────────────────────────────────────────────────────────────────
 
 export const UserMenu = ({ user }) => {
-
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    const [open, setOpen] = useState(false);
+    const ref = useRef(null);
 
-    const [anchorEl, setAnchorEl] = React.useState(null);
-
-    const open = Boolean(anchorEl);
-
-    const handleClick = (event) => {
-        setAnchorEl(event.currentTarget);
-    };
-
-    const handleClose = () => {
-        setAnchorEl(null);
-    };
+    const handleClose = () => setOpen(false);
 
     const logOutHandler = () => {
+        handleClose();
         dispatch(logOutUser(navigate));
     };
 
+    useEffect(() => {
+        const handler = (e) => { if (ref.current && !ref.current.contains(e.target)) setOpen(false); };
+        document.addEventListener("mousedown", handler);
+        return () => document.removeEventListener("mousedown", handler);
+    }, []);
+
     return (
-        <div>
-            <Avatar
-                onClick={handleClick}
-                sx={{
-                    cursor: "pointer",
-                    bgcolor: "#3b82f6",
-                    width: 36,
-                    height: 36,
-                    fontWeight: 600
+        <div ref={ref} className="relative">
+
+            {/* Avatar trigger */}
+            <motion.button
+                onClick={() => setOpen((p) => !p)}
+                whileTap={{ scale: 0.93 }}
+                className="w-9 h-9 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold flex items-center justify-center cursor-pointer transition-colors duration-150"
+                style={{
+                    fontFamily: "'Reddit Sans', sans-serif",
+                    boxShadow: open ? "0 0 0 3px #bfdbfe" : "none",
+                    transition: "box-shadow 0.15s ease",
                 }}
             >
                 {user.username[0].toUpperCase()}
-            </Avatar>
+            </motion.button>
 
-            <Menu
-                
-                anchorEl={anchorEl}
-                open={open}
-                onClose={handleClose}
-                anchorOrigin={{
-                    vertical: "bottom",
-                    horizontal: "right",
-                }}
-                transformOrigin={{
-                    vertical: "top",
-                    horizontal: "right",
-                }}
-                PaperProps={{
-                    elevation: 3,
-                    sx: {
-                        mt: 1,
-                        minWidth: 200,
-                        borderRadius: 2,
-                        boxShadow: "0px 10px 25px rgba(0,0,0,0.15)",
-                        fontFamily: "var(--font-sans)"
-                    },
-                }}
-            >
+            {/* Dropdown */}
+            <AnimatePresence>
+                {open && (
+                    <motion.div
+                        initial={{ opacity: 0, y: -8, scale: 0.96 }}
+                        animate={{ opacity: 1, y: 0, scale: 1 }}
+                        exit={{ opacity: 0, y: -8, scale: 0.96 }}
+                        transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
+                        className="absolute z-1000   right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-slate-200 overflow-hidden"
+                        style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}
+                    >
+                        {/* User info */}
+                        <div className="px-4 py-3.5 border-b border-slate-100">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-8 rounded-lg bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0"
+                                    style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
+                                    {user.username[0].toUpperCase()}
+                                </div>
+                                <div>
+                                    <p className="text-sm font-bold text-slate-800 leading-tight" style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
+                                        {user.username}
+                                    </p>
+                                    <p className="text-xs text-slate-400" style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
+                                        Signed in
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
 
-                {/* User Info */}
-                <Box px={2} py={1.5}>
-                    <Typography sx={{ fontFamily: "var(--font-sans)" }} fontWeight={600}>
-                        {user.username}
-                    </Typography>
+                        {/* Menu items */}
+                        <div className="p-2">
+                            <DropdownItem icon={<PersonIcon />} label="Profile" to="/profile" onClick={handleClose} />
+                            <DropdownItem icon={<BagIcon />} label="Orders" onClick={handleClose} />
+                        </div>
 
-                    <Typography sx={{ fontFamily: "var(--font-sans)" }} variant="body2" color="text.secondary">
-                        Signed in
-                    </Typography>
-                </Box>
-
-                <Divider />
-
-                {/* Profile */}
-                <MenuItem sx={{ fontFamily: "var(--font-sans)" }} component={Link} to="/profile" onClick={handleClose}>
-                    <ListItemIcon>
-                        <PersonIcon fontSize="small" />
-                    </ListItemIcon>
-                    Profile
-                </MenuItem>
-
-                {/* Orders */}
-                <MenuItem sx={{ fontFamily: "var(--font-sans)" }} onClick={handleClose}>
-                    <ListItemIcon>
-                        <ShoppingBagIcon fontSize="small" />
-                    </ListItemIcon>
-                    Orders
-                </MenuItem>
-
-                <Divider />
-
-                {/* Logout */}
-                <MenuItem sx={{ fontFamily: "var(--font-sans)" }} onClick={logOutHandler}>
-                    <ListItemIcon>
-                        <LogoutIcon fontSize="small" />
-                    </ListItemIcon>
-                    Logout
-                </MenuItem>
-
-            </Menu>
+                        <div className="border-t border-slate-100 p-2">
+                            <DropdownItem icon={<LogoutIcon />} label="Logout" onClick={logOutHandler} danger />
+                        </div>
+                    </motion.div>
+                )}
+            </AnimatePresence>
         </div>
     );
 };
