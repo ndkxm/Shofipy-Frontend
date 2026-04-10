@@ -2,7 +2,7 @@ import { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { fetchProducts } from "../../store/actions";
 import { FaExclamationTriangle } from "react-icons/fa";
-import ProductCard from "../shared/ProductCard";
+import { ProductCard } from "../shared/ProductCard";
 import { Link } from "react-router-dom";
 import { Header } from "../shared/Header";
 import { HeroBanner } from "../home/HeroBanner";

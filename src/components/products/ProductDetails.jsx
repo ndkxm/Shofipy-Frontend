@@ -6,11 +6,37 @@ import { Header } from "../shared/Header";
 import { addProductToCart } from "../../store/actions";
 import api from "../../api/api";
 
+// ── Helper ─────────────────────────────────────────────────────────────────────
+
+const parseImages = (image) => {
+    if (!image) return [];
+    if (Array.isArray(image)) return image;
+
+    // Xử lý Python-style list: ['url1', 'url2']
+    try {
+        // Thay nháy đơn -> nháy đôi để thành JSON hợp lệ
+        const jsonStr = image
+            .trim()
+            .replace(/'/g, '"');
+        const parsed = JSON.parse(jsonStr);
+        return Array.isArray(parsed) ? parsed : [parsed];
+    } catch {
+        // Fallback: extract URLs bằng regex
+        const matches = image.match(/https?:\/\/[^\s'"]+/g);
+        return matches ?? [];
+    }
+};
+
 // ── Icons ──────────────────────────────────────────────────────────────────────
 
 const ArrowLeft = () => (
     <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
         <line x1="19" y1="12" x2="5" y2="12" /><polyline points="12 19 5 12 12 5" />
+    </svg>
+);
+const ArrowRight = () => (
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+        <line x1="5" y1="12" x2="19" y2="12" /><polyline points="12 5 19 12 12 19" />
     </svg>
 );
 const MinusIcon = () => (
@@ -74,7 +100,7 @@ const Skeleton = ({ className }) => (
     <div className={`animate-pulse bg-blue-100 rounded-xl ${className}`} />
 );
 
-// ── Main Component ─────────────────────────────────────────────────────────────
+// ── Animation helpers ──────────────────────────────────────────────────────────
 
 const ease = [0.22, 1, 0.36, 1];
 const fadeUp = (i = 0) => ({
@@ -82,6 +108,8 @@ const fadeUp = (i = 0) => ({
     animate: { opacity: 1, y: 0 },
     transition: { duration: 0.4, delay: 0.05 + i * 0.08, ease },
 });
+
+// ── Main Component ─────────────────────────────────────────────────────────────
 
 export const ProductDetail = ({ onBack }) => {
     const dispatch = useDispatch();
@@ -91,21 +119,25 @@ export const ProductDetail = ({ onBack }) => {
     const [loading, setLoading] = useState(true);
     const [qty, setQty] = useState(1);
     const [added, setAdded] = useState(false);
-    const [imgLoaded, setImgLoaded] = useState(false);
+
+    // Slideshow state
+    const [activeImg, setActiveImg] = useState(0);
+    const [slideDir, setSlideDir] = useState(1); // 1 = forward, -1 = backward
 
     useEffect(() => {
-        const fetch = async () => {
+        const fetchProduct = async () => {
             try {
                 setLoading(true);
                 const res = await api.get(`/public/products/${id}`);
                 setProduct(res.data);
+                setActiveImg(0); // reset slide khi load product mới
             } catch (err) {
                 console.error(err);
             } finally {
                 setLoading(false);
             }
         };
-        if (id) fetch();
+        if (id) fetchProduct();
     }, [id]);
 
     const name = product?.productName ?? "";
@@ -113,8 +145,27 @@ export const ProductDetail = ({ onBack }) => {
     const price = product?.price ?? 0;
     const specialPrice = product?.specialPrice ?? price;
     const discount = product?.discount ?? 0;
-    const image = product?.image;
     const saved = price - specialPrice;
+
+    // Parse images từ field image (string JSON hoặc array)
+    const images = parseImages(product?.image);
+
+    const goTo = (index) => {
+        setSlideDir(index > activeImg ? 1 : -1);
+        setActiveImg(index);
+    };
+
+    const goPrev = () => {
+        const newIndex = (activeImg - 1 + images.length) % images.length;
+        setSlideDir(-1);
+        setActiveImg(newIndex);
+    };
+
+    const goNext = () => {
+        const newIndex = (activeImg + 1) % images.length;
+        setSlideDir(1);
+        setActiveImg(newIndex);
+    };
 
     const handleAdd = () => {
         if (!product) return;
@@ -134,8 +185,10 @@ export const ProductDetail = ({ onBack }) => {
             <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:ital,wght@0,200..900;1,200..900&display=swap');
                 .rs, .rs * { font-family: 'Reddit Sans', sans-serif !important; }
-                .img-zoom { transition: transform 0.55s cubic-bezier(0.22,1,0.36,1); }
-                .img-zoom:hover { transform: scale(1.06); }
+                .thumb-btn { transition: all 0.18s ease; }
+                .thumb-btn:hover { transform: scale(1.08); }
+                .slide-arrow { transition: all 0.18s ease; }
+                .slide-arrow:hover { background: white !important; transform: translateY(-50%) scale(1.1); }
             `}</style>
 
             <Header />
@@ -159,35 +212,42 @@ export const ProductDetail = ({ onBack }) => {
                         className="bg-white rounded-3xl overflow-hidden shadow-2xl shadow-blue-100 border border-blue-100"
                         {...fadeUp(0)}
                     >
-                        {/* ── Image hero ── */}
+                        {/* ── Image hero / Slideshow ── */}
                         <div className="relative w-full bg-blue-50 overflow-hidden" style={{ height: 320 }}>
 
-                            {/* Decorative blobs behind image */}
+                            {/* Decorative blobs */}
                             <div className="absolute -top-12 -right-12 w-52 h-52 rounded-full bg-blue-100 opacity-60 blur-3xl pointer-events-none" />
                             <div className="absolute -bottom-8 -left-8 w-40 h-40 rounded-full bg-indigo-100 opacity-50 blur-2xl pointer-events-none" />
 
-                            {/* Image */}
+                            {/* Main image / skeleton */}
                             {loading ? (
-                                <div className="w-full h-full flex items-center justify-center">
-                                    <div className="w-full h-full animate-pulse bg-blue-100" />
-                                </div>
-                            ) : image ? (
-                                <motion.img
-                                    src={image}
-                                    alt={name}
-                                    className="img-zoom w-full h-full object-contain p-6"
-                                    initial={{ opacity: 0, scale: 1.04 }}
-                                    animate={{ opacity: imgLoaded ? 1 : 0, scale: imgLoaded ? 1 : 1.04 }}
-                                    transition={{ duration: 0.5, ease }}
-                                    onLoad={() => setImgLoaded(true)}
-                                />
+                                <div className="w-full h-full animate-pulse bg-blue-100" />
+                            ) : images.length > 0 ? (
+                                <AnimatePresence mode="wait" custom={slideDir}>
+                                    <motion.img
+                                        key={activeImg}
+                                        src={images[activeImg]}
+                                        alt={`${name} ${activeImg + 1}`}
+                                        className="w-full h-full object-contain p-6"
+                                        custom={slideDir}
+                                        variants={{
+                                            enter: (dir) => ({ opacity: 0, x: dir * 40 }),
+                                            center: { opacity: 1, x: 0 },
+                                            exit: (dir) => ({ opacity: 0, x: dir * -40 }),
+                                        }}
+                                        initial="enter"
+                                        animate="center"
+                                        exit="exit"
+                                        transition={{ duration: 0.32, ease }}
+                                    />
+                                </AnimatePresence>
                             ) : (
                                 <div className="w-full h-full flex items-center justify-center">
                                     <ImagePlaceholder />
                                 </div>
                             )}
 
-                            {/* Discount badge — floats over image */}
+                            {/* Discount badge */}
                             <AnimatePresence>
                                 {discount > 0 && !loading && (
                                     <motion.span
@@ -196,11 +256,74 @@ export const ProductDetail = ({ onBack }) => {
                                         animate={{ opacity: 1, scale: 1, y: 0 }}
                                         transition={{ duration: 0.35, delay: 0.2, ease }}
                                     >
-                                        <TagIcon /> {discount}% OFF
+                                        <TagIcon /> {discount * 100}% OFF
                                     </motion.span>
                                 )}
                             </AnimatePresence>
+
+                            {/* Prev / Next arrows — chỉ hiện khi có > 1 ảnh */}
+                            {images.length > 1 && (
+                                <>
+                                    <button
+                                        onClick={goPrev}
+                                        className="slide-arrow absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/75 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md border-0 cursor-pointer text-blue-700"
+                                        style={{ transform: "translateY(-50%)" }}
+                                    >
+                                        <ArrowLeft />
+                                    </button>
+                                    <button
+                                        onClick={goNext}
+                                        className="slide-arrow absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/75 backdrop-blur-sm rounded-full flex items-center justify-center shadow-md border-0 cursor-pointer text-blue-700"
+                                        style={{ transform: "translateY(-50%)" }}
+                                    >
+                                        <ArrowRight />
+                                    </button>
+                                </>
+                            )}
+
+                            {/* Dot indicators */}
+                            {images.length > 1 && (
+                                <div className="absolute bottom-3 left-1/2 flex gap-1.5" style={{ transform: "translateX(-50%)" }}>
+                                    {images.map((_, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => goTo(i)}
+                                            className="rounded-full border-0 cursor-pointer transition-all duration-200"
+                                            style={{
+                                                width: i === activeImg ? 20 : 8,
+                                                height: 8,
+                                                background: i === activeImg ? "#2563eb" : "#bfdbfe",
+                                            }}
+                                        />
+                                    ))}
+                                </div>
+                            )}
                         </div>
+
+                        {/* Thumbnail strip — hiện khi có ≥ 2 ảnh */}
+                        {!loading && images.length > 1 && (
+                            <div className="flex gap-2 px-6 pt-4 pb-1 overflow-x-auto scrollbar-hide">
+                                {images.map((src, i) => (
+                                    <button
+                                        key={i}
+                                        onClick={() => goTo(i)}
+                                        className="thumb-btn flex-shrink-0 rounded-xl overflow-hidden border-2 bg-blue-50 cursor-pointer p-0"
+                                        style={{
+                                            width: 56,
+                                            height: 56,
+                                            borderColor: i === activeImg ? "#2563eb" : "#e0e7ff",
+                                            opacity: i === activeImg ? 1 : 0.65,
+                                        }}
+                                    >
+                                        <img
+                                            src={src}
+                                            alt={`thumb-${i}`}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    </button>
+                                ))}
+                            </div>
+                        )}
 
                         {/* ── Content ── */}
                         <div className="p-8">

@@ -1,5 +1,5 @@
 import { FaExclamationTriangle } from "react-icons/fa";
-import ProductCard from "../shared/ProductCard";
+import { ProductCard } from "../shared/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
 import { fetchCategories, fetchProducts } from "../../store/actions";

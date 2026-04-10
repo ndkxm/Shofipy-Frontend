@@ -16,6 +16,7 @@ import { CheckOut } from './components/checkout/Checkout'
 import { ProductDetail } from './components/products/ProductDetails'
 import { useDispatch, useSelector } from 'react-redux'
 import { fetchUserCart } from './store/actions/index'
+import { UploadCategoriesFromSheet } from './components/import/uploadCategories'
 
 function App() {
   const dispatch = useDispatch();
@@ -40,6 +41,7 @@ function App() {
           <Route path='/signin' element={<Login />} />
           <Route path='/register' element={<Register />} />
           <Route path='/products/product/:id' element={<ProductDetail />} />
+          <Route path='/upload/categories' element={<UploadCategoriesFromSheet />} />
           <Route path='/' element={<PrivateRoute />}>
             <Route path='/checkout' element={<CheckOut />} />
           </Route>
