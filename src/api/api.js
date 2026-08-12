@@ -40,15 +40,22 @@ api.interceptors.response.use(
                 const newAccessToken =
                     store.getState().auth.accessToken;
 
+                // Nếu sau khi refresh vẫn không có token → thực sự hết hạn
+                if (!newAccessToken) {
+                    store.dispatch(logOutUser());
+                    return Promise.reject(error);
+                }
+
                 originalRequest.headers.Authorization =
                     `Bearer ${newAccessToken}`;
 
                 return api(originalRequest);
 
             } catch (e) {
-
-                store.dispatch(logOutUser());
-
+                // Chỉ logout khi có lỗi từ server (không phải network error)
+                if (e?.response?.status) {
+                    store.dispatch(logOutUser());
+                }
                 return Promise.reject(e);
             }
         }

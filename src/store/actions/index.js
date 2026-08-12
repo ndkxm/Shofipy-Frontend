@@ -252,7 +252,13 @@ export const renewAccessToken = () => async (dispatch) => {
             payload: data.accessToken,
         })
     } catch (error) {
-        dispatch(logOutUser());
+        // Chỉ logout khi server trả về 401/403 (token thực sự invalid/expired)
+        // Không logout khi network error hoặc server đang cold start (Render free tier)
+        const status = error?.response?.status;
+        if (status === 401 || status === 403) {
+            dispatch(logOutUser());
+        }
+        // Nếu không có response (network error, timeout) → giữ nguyên session
     }
 }
 
