@@ -35,7 +35,11 @@ const SHOP_LINKS = [
     { label: "Contact", to: "/contact" },
 ];
  
-const CUSTOMER_LINKS = ["FAQ", "Shipping", "Returns", "Privacy Policy"];
+const CUSTOMER_LINKS = [
+    { label: "FAQ", to: "/faq" },
+    { label: "Returns", to: "/returns" },
+    { label: "Privacy Policy", to: "/policy" },
+];
  
 const SOCIALS = [
     { icon: <FacebookIcon />, hoverColor: "#3b82f6", label: "Facebook" },
@@ -59,7 +63,7 @@ export const Footer = () => (
                     <span className="text-lg font-extrabold text-white tracking-tight">Shofipy</span>
                 </Link>
                 <p className="text-sm text-slate-500 leading-relaxed">
-                    Where quality meets convenience. Discover amazing products with great deals and fast delivery.
+                    Your Ultimate Gaming Destination. Discover amazing games, build your library, and join the community.
                 </p>
             </div>
  
@@ -85,10 +89,13 @@ export const Footer = () => (
                 <p className="text-xs font-bold text-slate-500 uppercase tracking-widest mb-5">Customer</p>
                 <ul className="space-y-3">
                     {CUSTOMER_LINKS.map((l) => (
-                        <li key={l}>
-                            <span className="text-sm text-slate-400 hover:text-white cursor-pointer transition-colors duration-150">
-                                {l}
-                            </span>
+                        <li key={l.label}>
+                            <Link
+                                to={l.to}
+                                className="text-sm text-slate-400 hover:text-white transition-colors duration-150"
+                            >
+                                {l.label}
+                            </Link>
                         </li>
                     ))}
                 </ul>

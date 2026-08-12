@@ -8,7 +8,7 @@ import { motion, AnimatePresence } from "framer-motion";
 
 const NAV_LINKS = [
     { label: "Home", to: "/" },
-    { label: "Products", to: "/products" },
+    { label: "Games", to: "/products" },
     { label: "Contact", to: "/contact" },
     { label: "About us", to: "/about" },
 ];
@@ -23,10 +23,10 @@ const BagIcon = () => (
 
 export const Header = () => {
     const [navBarOpen, setNavBarOpen] = useState(false);
-    
+
     const { cart } = useSelector((state) => state.carts);
     const { user } = useSelector((state) => state.auth);
-    
+
     const { pathname } = useLocation();
     const dispatch = useDispatch();
     const navigate = useNavigate();
@@ -162,14 +162,23 @@ export const Header = () => {
                                     </Link>
                                 ))}
 
-                                {/* KHU VỰC ĐÃ SỬA: Bung phẳng thông tin User */}
                                 <div className="pt-3 border-t border-slate-100">
                                     {user?.username ? (
                                         <div className="flex flex-col gap-1 pb-2">
                                             {/* User Info */}
                                             <div className="flex items-center gap-3 py-2 px-4 mb-2">
-                                                <div className="w-9 h-9 rounded-xl bg-blue-600 text-white text-sm font-bold flex items-center justify-center flex-shrink-0">
-                                                    {user.username[0].toUpperCase()}
+                                                <div className="w-9 h-9 rounded-full overflow-hidden flex-shrink-0">
+                                                    {user.avatar ? (
+                                                        <img
+                                                            src={user.avatar}
+                                                            alt={user.username}
+                                                            className="w-full h-full object-cover"
+                                                        />
+                                                    ) : (
+                                                        <div className="w-full h-full bg-blue-600 text-white text-sm font-bold flex items-center justify-center">
+                                                            {user.username[0].toUpperCase()}
+                                                        </div>
+                                                    )}
                                                 </div>
                                                 <div>
                                                     <p className="text-sm font-bold text-slate-800 leading-tight">
@@ -184,13 +193,21 @@ export const Header = () => {
                                                 className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
                                                 Profile
                                             </Link>
-                                            <Link to="/orders" onClick={() => setNavBarOpen(false)}
+
+                                            {user.role === "ROLE_ADMIN" && (
+                                                <Link to="/admin" onClick={() => setNavBarOpen(false)}
+                                                    className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
+                                                    Dashboard
+                                                </Link>
+                                            )}
+
+                                            <Link to="/my-orders" onClick={() => setNavBarOpen(false)}
                                                 className="block px-4 py-2.5 rounded-xl text-sm font-semibold text-slate-600 hover:bg-slate-50 hover:text-slate-900 transition-colors">
                                                 Orders
                                             </Link>
-                                            
+
                                             {/* Logout Button */}
-                                            <button 
+                                            <button
                                                 onClick={handleMobileLogout}
                                                 className="block w-full text-left px-4 py-2.5 mt-1 rounded-xl text-sm font-semibold text-red-500 hover:bg-red-50 hover:text-red-600 transition-colors"
                                             >
