@@ -1,11 +1,9 @@
 import axios from "axios";
-import { useState } from "react";
 import store from "../store/store";
 import { logOutUser, renewAccessToken } from "../store/actions";
 
 const api = axios.create({
     baseURL: `${import.meta.env.VITE_BACK_END_URL}/api`,
-    withCredentials: true,
 })
 
 api.interceptors.request.use((config) => {

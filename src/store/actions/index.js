@@ -194,6 +194,11 @@ export const authenticatedSignInUser = (sendData, reset, navigate) => async (dis
             payload: data,
         });
 
+        // Lưu refresh token vào localStorage (cross-origin safe)
+        if (data.refreshToken) {
+            localStorage.setItem("refreshToken", data.refreshToken);
+        }
+
         const guestCarts = getState().carts;
         if (guestCarts.cart && guestCarts.cart.length > 0) {
             try {
@@ -243,13 +248,24 @@ export const authenticatedSignInUser = (sendData, reset, navigate) => async (dis
     }
 }
 
-export const renewAccessToken = () => async (dispatch) => {
+export const renewAccessToken = () => async (dispatch, getState) => {
     try {
-        const { data } = await api.post("/auth/refresh");
+        const refreshToken = getState().auth?.refreshToken
+            || localStorage.getItem("refreshToken");
+
+        if (!refreshToken) {
+            // Không có refresh token → chưa đăng nhập hoặc đã logout
+            return;
+        }
+
+        const { data } = await api.post("/auth/refresh", { refreshToken });
+
+        // Lưu rotating refresh token mới
+        localStorage.setItem("refreshToken", data.refreshToken);
 
         dispatch({
             type: "UPDATE_ACCESS_TOKEN",
-            payload: data.accessToken,
+            payload: { accessToken: data.accessToken, refreshToken: data.refreshToken },
         })
     } catch (error) {
         // Chỉ logout khi server trả về 401/403 (token thực sự invalid/expired)
@@ -308,14 +324,17 @@ export const registerNewUser = (sendData, reset, navigate) => async (dispatch) =
     }
 }
 
-export const logOutUser = (navigate) => async (dispatch) => {
+export const logOutUser = (navigate) => async (dispatch, getState) => {
     try {
-        await api.post("/auth/signout"); // clears the HttpOnly JWT cookie server-side
+        const refreshToken = getState().auth?.refreshToken
+            || localStorage.getItem("refreshToken");
+        await api.post("/auth/signout", refreshToken ? { refreshToken } : {});
     } catch (e) {
         console.log("Signout request failed:", e);
     }
     dispatch({ type: "LOG_OUT" });
     localStorage.removeItem("auth");
+    localStorage.removeItem("refreshToken");
     dispatch({ type: "REMOVE_ALL_CART" });
     localStorage.removeItem("cartItems");
     if (typeof navigate === "function") {

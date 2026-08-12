@@ -1,7 +1,7 @@
-
 const initialState = {
     user: null,
     accessToken: null,
+    refreshToken: null,
 }
 export const AuthReducer = (state = initialState, action) => {
     switch (action.type) {
@@ -9,7 +9,8 @@ export const AuthReducer = (state = initialState, action) => {
             return {
                 ...state,
                 user: action.payload.userInfoResponse,
-                accessToken: action.payload.accessToken
+                accessToken: action.payload.accessToken,
+                refreshToken: action.payload.refreshToken,
             }
 
         case "AUTH_INFO":
@@ -24,13 +25,15 @@ export const AuthReducer = (state = initialState, action) => {
         case "UPDATE_ACCESS_TOKEN":
             return {
                 ...state,
-                accessToken: action.payload,
+                accessToken: action.payload.accessToken,
+                refreshToken: action.payload.refreshToken,
             }
 
         case "LOG_OUT":
             return {
                 user: null,
-                accessToken: null
+                accessToken: null,
+                refreshToken: null,
             }
         default:
             return state;
