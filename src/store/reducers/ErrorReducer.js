@@ -3,8 +3,6 @@ const initialState = {
     fetchingProductsErrorMessage: null,
     isFetchingCategories: false,
     fetchingCategoriesErrorMessage: null,
-    isFetchingAddresses: false,
-    fetchingAddressesErrorMessage: null,
 }
 
 export const ErrorProducer = (state = initialState, action) => {
@@ -44,24 +42,6 @@ export const ErrorProducer = (state = initialState, action) => {
                 ...state,
                 isFetchingCategories: false,
                 fetchingCategoriesErrorMessage: action.payload,
-            };
-        case "IS_FETCHING_ADDRESSES":
-            return {
-                ...state,
-                isFetchingAddresses: true,
-                fetchingAddressesErrorMessage: null,
-            };
-        case "FETCH_ADDRESSES_SUCCESS":
-            return {
-                ...state,
-                isFetchingAddresses: false,
-                fetchingAddressesErrorMessage: null,
-            };
-        case "FETCH_ADDRESSES_ERROR":
-            return {
-                ...state,
-                isFetchingAddresses: false,
-                fetchingAddressesErrorMessage: action.payload,
             };
         default:
             return state;

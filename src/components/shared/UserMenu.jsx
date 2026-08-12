@@ -3,6 +3,9 @@ import { Link, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import { logOutUser } from "../../store/actions";
 import { motion, AnimatePresence } from "framer-motion";
+import {
+    LayoutDashboard
+} from "lucide-react";
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
 
@@ -50,10 +53,12 @@ const DropdownItem = ({ icon, label, onClick, to, danger }) => {
 export const UserMenu = ({ user }) => {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+    
     const [open, setOpen] = useState(false);
     const ref = useRef(null);
 
     const handleClose = () => setOpen(false);
+
 
     const logOutHandler = () => {
         handleClose();
@@ -73,14 +78,23 @@ export const UserMenu = ({ user }) => {
             <motion.button
                 onClick={() => setOpen((p) => !p)}
                 whileTap={{ scale: 0.93 }}
-                className="w-9 h-9 rounded-xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold flex items-center justify-center cursor-pointer transition-colors duration-150"
+                className="w-9 h-9 rounded-full overflow-hidden cursor-pointer transition-colors duration-150"
                 style={{
-                    fontFamily: "'Reddit Sans', sans-serif",
                     boxShadow: open ? "0 0 0 3px #bfdbfe" : "none",
                     transition: "box-shadow 0.15s ease",
                 }}
             >
-                {user.username[0].toUpperCase()}
+                {user.avatar ? (
+                    <img
+                        src={user.avatar}
+                        alt={user.username}
+                        className="w-full h-full object-cover"
+                    />
+                ) : (
+                    <div className="w-full h-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold flex items-center justify-center">
+                        {user.username[0].toUpperCase()}
+                    </div>
+                )}
             </motion.button>
 
             {/* Dropdown */}
@@ -91,15 +105,27 @@ export const UserMenu = ({ user }) => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -8, scale: 0.96 }}
                         transition={{ duration: 0.18, ease: [0.22, 1, 0.36, 1] }}
-                        className="absolute z-1000   right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-slate-200 overflow-hidden"
-                        style={{ boxShadow: "0 8px 32px rgba(0,0,0,0.12)" }}
+                        className="absolute right-0 top-full mt-2 w-56 bg-white rounded-2xl border border-slate-200 overflow-hidden"
+                        style={{
+                            boxShadow: "0 8px 32px rgba(0,0,0,0.12)",
+                            zIndex: 9999
+                        }}
                     >
                         {/* User info */}
                         <div className="px-4 py-3.5 border-b border-slate-100">
                             <div className="flex items-center gap-3">
-                                <div className="w-8 h-8 rounded-lg bg-blue-600 text-white text-xs font-bold flex items-center justify-center flex-shrink-0"
-                                    style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
-                                    {user.username[0].toUpperCase()}
+                                <div className="w-8 h-8 rounded-full overflow-hidden flex-shrink-0">
+                                    {user.avatar ? (
+                                        <img
+                                            src={user.avatar}
+                                            alt={user.username}
+                                            className="w-full h-full object-cover"
+                                        />
+                                    ) : (
+                                        <div className="w-full h-full bg-blue-600 text-white text-xs font-bold flex items-center justify-center">
+                                            {user.username[0].toUpperCase()}
+                                        </div>
+                                    )}
                                 </div>
                                 <div>
                                     <p className="text-sm font-bold text-slate-800 leading-tight" style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
@@ -115,7 +141,12 @@ export const UserMenu = ({ user }) => {
                         {/* Menu items */}
                         <div className="p-2">
                             <DropdownItem icon={<PersonIcon />} label="Profile" to="/profile" onClick={handleClose} />
-                            <DropdownItem icon={<BagIcon />} label="Orders" onClick={handleClose} />
+                            {
+                                user.role === "ROLE_ADMIN" && (
+                                    <DropdownItem icon={<LayoutDashboard size={15} />} label="Dashboard" to="/admin" onClick={handleClose} />
+                                )
+                            }
+                            <DropdownItem icon={<BagIcon />} label="Orders" to="/my-orders" onClick={handleClose} />
                         </div>
 
                         <div className="border-t border-slate-100 p-2">
