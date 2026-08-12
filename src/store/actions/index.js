@@ -194,15 +194,9 @@ export const authenticatedSignInUser = (sendData, reset, navigate) => async (dis
             payload: data,
         });
 
-        // Lưu refresh token vào localStorage (cross-origin safe)
-        if (data.refreshToken) {
-            localStorage.setItem("refreshToken", data.refreshToken);
-        }
-
         const guestCarts = getState().carts;
         if (guestCarts.cart && guestCarts.cart.length > 0) {
             try {
-                // BE expects List<MergeCartItemDTO> = [{productId, quantity}]
                 const mergePayload = guestCarts.cart.map((item) => ({
                     productId: item.productId,
                     quantity: 1,
@@ -213,11 +207,8 @@ export const authenticatedSignInUser = (sendData, reset, navigate) => async (dis
             }
         }
 
-        // Xóa cart local sau khi login/merge xong để dọn dẹp dữ liệu cũ
         localStorage.removeItem("cartItems");
-
         dispatch(fetchUserCart());
-
         localStorage.setItem("auth", JSON.stringify(data.userInfoResponse));
         reset();
         navigate("/")
@@ -248,33 +239,18 @@ export const authenticatedSignInUser = (sendData, reset, navigate) => async (dis
     }
 }
 
-export const renewAccessToken = () => async (dispatch, getState) => {
+export const renewAccessToken = () => async (dispatch) => {
     try {
-        const refreshToken = getState().auth?.refreshToken
-            || localStorage.getItem("refreshToken");
-
-        if (!refreshToken) {
-            // Không có refresh token → chưa đăng nhập hoặc đã logout
-            return;
-        }
-
-        const { data } = await api.post("/auth/refresh", { refreshToken });
-
-        // Lưu rotating refresh token mới
-        localStorage.setItem("refreshToken", data.refreshToken);
-
+        const { data } = await api.post("/auth/refresh");
         dispatch({
             type: "UPDATE_ACCESS_TOKEN",
-            payload: { accessToken: data.accessToken, refreshToken: data.refreshToken },
+            payload: data.accessToken,
         })
     } catch (error) {
-        // Chỉ logout khi server trả về 401/403 (token thực sự invalid/expired)
-        // Không logout khi network error hoặc server đang cold start (Render free tier)
         const status = error?.response?.status;
         if (status === 401 || status === 403) {
             dispatch(logOutUser());
         }
-        // Nếu không có response (network error, timeout) → giữ nguyên session
     }
 }
 
@@ -324,17 +300,14 @@ export const registerNewUser = (sendData, reset, navigate) => async (dispatch) =
     }
 }
 
-export const logOutUser = (navigate) => async (dispatch, getState) => {
+export const logOutUser = (navigate) => async (dispatch) => {
     try {
-        const refreshToken = getState().auth?.refreshToken
-            || localStorage.getItem("refreshToken");
-        await api.post("/auth/signout", refreshToken ? { refreshToken } : {});
+        await api.post("/auth/signout");
     } catch (e) {
         console.log("Signout request failed:", e);
     }
     dispatch({ type: "LOG_OUT" });
     localStorage.removeItem("auth");
-    localStorage.removeItem("refreshToken");
     dispatch({ type: "REMOVE_ALL_CART" });
     localStorage.removeItem("cartItems");
     if (typeof navigate === "function") {
