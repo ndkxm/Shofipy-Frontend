@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { useDispatch } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { saveSelectedPaymentMethod } from "../../store/actions";
 
 
@@ -65,6 +65,11 @@ const METHODS = [
 export const PaymentMethod = ({ onSelect, onConfirm }) => {
     const [selectedId, setSelectedId] = useState(null);
     const dispatch = useDispatch();
+    const { paymentMethod } = useSelector((state) => state.payment);
+
+    useEffect(() => {
+        setSelectedId(paymentMethod || null);
+    }, [paymentMethod]);
 
     const handleSelect = (method) => {
         setSelectedId(method.id);

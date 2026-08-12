@@ -1,16 +1,8 @@
 import React from "react";
 import { motion } from "framer-motion";
-import { useDispatch, useSelector } from "react-redux";
-import { fetchUserCart } from "../../store/actions";
+import { useSelector } from "react-redux";
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
-
-const MapPinIcon = () => (
-    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-        <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" />
-        <circle cx="12" cy="10" r="3" />
-    </svg>
-);
 
 const PackageIcon = () => (
     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
@@ -68,11 +60,6 @@ const ImageFallbackIcon = () => (
 
 // ── Constants ──────────────────────────────────────────────────────────────────
 
-const SHIPPING_FEE = 5.00;
-const DISCOUNT = 2.50;
-
-// ── Helpers ────────────────────────────────────────────────────────────────────
-
 const fmt = (n) =>
     new Intl.NumberFormat("en-US", { style: "currency", currency: "USD" }).format(n);
 
@@ -120,21 +107,6 @@ const ItemImage = ({ src, alt }) => {
 
 // ── Sub-components ─────────────────────────────────────────────────────────────
 
-const AddressSection = ({ address }) => (
-    <Card>
-        <SectionTitle icon={<MapPinIcon />}>Delivery Address</SectionTitle>
-        <div className="space-y-1">
-            <div className="flex items-center gap-2">
-                <span className="text-sm font-bold text-slate-800">{address.fullName}</span>
-                <span className="text-xs text-slate-400">·</span>
-                <span className="text-sm text-slate-500">{address.phoneNumber}</span>
-            </div>
-            <p className="text-sm text-slate-600">{address.street}</p>
-            <p className="text-sm text-slate-600">{address.city}</p>
-        </div>
-    </Card>
-);
-
 const OrderItemsSection = ({ cart }) => (
     <Card>
         <SectionTitle icon={<PackageIcon />}>Order Items</SectionTitle>
@@ -168,11 +140,10 @@ const OrderItemsSection = ({ cart }) => (
     </Card>
 );
 
-const SummarySection = ({ subtotal, total }) => {
+const SummarySection = ({ subtotal }) => {
     const rows = [
-        { label: "Subtotal", value: fmt(subtotal) },
-        { label: "Shipping", value: fmt(SHIPPING_FEE) },
-        { label: "Discount", value: `−${fmt(DISCOUNT)}`, color: "text-green-600" },
+        { label: "Items total", value: fmt(subtotal) },
+        { label: "Delivery", value: "Instant digital", color: "text-green-600" },
     ];
 
     return (
@@ -189,14 +160,14 @@ const SummarySection = ({ subtotal, total }) => {
             <Divider />
             <div className="flex justify-between items-center">
                 <span className="text-sm font-bold text-slate-800">Total</span>
-                <span className="text-lg font-bold text-slate-900">{fmt(total)}</span>
+                <span className="text-lg font-bold text-slate-900">{fmt(subtotal)}</span>
             </div>
         </Card>
     );
 };
 
 const PaymentMethodSection = ({ payment }) => {
-    const isStripe = payment === "Stripe";
+    const isStripe = payment === "stripe";
 
     return (
         <Card>
@@ -206,7 +177,7 @@ const PaymentMethodSection = ({ payment }) => {
                     {isStripe ? <StripeIcon /> : <MomoIcon />}
                 </div>
                 <div className="flex-1 min-w-0">
-                    <span className="text-sm font-bold text-slate-800">{payment}</span>
+                    <span className="text-sm font-bold text-slate-800">{(payment === "stripe") ? "Stripe" : "MoMo Wallet"}</span>
                 </div>
                 <div className="flex items-center gap-1 flex-shrink-0">
                     <span className="text-green-500"><CheckCircleIcon /></span>
@@ -220,15 +191,9 @@ const PaymentMethodSection = ({ payment }) => {
 // ── Main ───────────────────────────────────────────────────────────────────────
 
 export const OrderSummary = ({ onPlaceOrder }) => {
-    const dispatch = useDispatch();
-    dispatch(fetchUserCart());
-
-    const { selectedCheckoutAddress } = useSelector((state) => state.auth);
     const { paymentMethod } = useSelector((state) => state.payment);
-    const { cart } = useSelector((state) => state.carts);
-
-    const subtotal = cart.reduce((acc, i) => acc + i.specialPrice * i.quantity, 0);
-    const total = subtotal + SHIPPING_FEE - DISCOUNT;
+    const { cart, totalPrice } = useSelector((state) => state.carts);
+    const subtotal = Number(totalPrice || 0);
 
     return (
         <>
@@ -242,13 +207,12 @@ export const OrderSummary = ({ onPlaceOrder }) => {
 
                     {/* Left column */}
                     <div className="space-y-4">
-                        <AddressSection address={selectedCheckoutAddress} />
-                        <OrderItemsSection cart={cart} />
+                        <OrderItemsSection cart={cart || []} />
                     </div>
 
                     {/* Right column */}
                     <div className="space-y-4">
-                        <SummarySection subtotal={subtotal} total={total} />
+                        <SummarySection subtotal={subtotal} />
                         <PaymentMethodSection payment={paymentMethod} />
 
                         <motion.button
@@ -257,7 +221,7 @@ export const OrderSummary = ({ onPlaceOrder }) => {
                             className="w-full py-3.5 rounded-2xl text-sm font-bold text-white bg-blue-500 hover:bg-blue-600 transition-all duration-150"
                             style={{ boxShadow: "0 4px 16px rgba(59,130,246,0.35)" }}
                         >
-                            Place Order · {fmt(total)}
+                            Place Order · {fmt(subtotal)}
                         </motion.button>
 
                         <p className="text-center text-xs text-slate-400">

@@ -1,3 +1,8 @@
+const calculateTotalPrice = (cart = []) =>
+    cart.reduce(
+        (acc, item) => acc + (Number(item?.specialPrice ?? item?.price ?? 0) * Number(item?.quantity ?? 0)),
+        0
+    );
 
 const initialState = {
     cart: [],
@@ -19,6 +24,7 @@ export const CartReducer =  (state = initialState, action) => {
                 return {
                     ...state,
                     cart: updatedCart,
+                    totalPrice: calculateTotalPrice(updatedCart),
                 }
             }
             else {
@@ -26,6 +32,7 @@ export const CartReducer =  (state = initialState, action) => {
                 return {
                     ...state,
                     cart: newCart,
+                    totalPrice: calculateTotalPrice(newCart),
                 }
             }
         }
@@ -34,16 +41,27 @@ export const CartReducer =  (state = initialState, action) => {
             return {
                 ...state, 
                 cart: action.payload.products,
-                cartId: action.payload.cartId
+                cartId: action.payload.cartId,
+                totalPrice: Number(action.payload.totalPrice || 0),
+            }
+        }
+
+        case "FETCH_CART_UNAUTHENTICATED": {
+            return {
+                ...state, 
+                cart: action.payload.products,
+                totalPrice: Number(action.payload.totalPrice || 0),
             }
         }
 
         case "REMOVE_CART": {
+            const updatedCart = state.cart.filter(
+                (item) => item.productId !== action.payload.productId
+            );
             return {
                 ...state,
-                cart: state.cart.filter(
-                    (item) => item.productId !== action.payload.productId
-                )
+                cart: updatedCart,
+                totalPrice: calculateTotalPrice(updatedCart),
             }
         }
 
@@ -51,6 +69,7 @@ export const CartReducer =  (state = initialState, action) => {
             return {
                 ...state,
                 cart: [],
+                totalPrice: 0,
             }
         }
 

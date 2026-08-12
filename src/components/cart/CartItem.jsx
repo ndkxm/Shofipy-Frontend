@@ -2,12 +2,9 @@ import { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { motion } from "framer-motion";
 import { TruncateText } from "../utils/TruncateText";
-import { SetQuantity } from "./SetQuantity";
 import { ConfirmModal } from "../shared/ConfirmModal";
 import {
-    decreaseProductInCart,
     fetchUserCart,
-    increaseProductInCart,
     removeProductFromCart,
 } from "../../store/actions";
 
@@ -21,14 +18,10 @@ const TrashIcon = () => (
 );
 
 export const CartItem = ({ product }) => {
-    const [currentQuantity, setCurrentQuantity] = useState(product.quantity);
     const [open, setOpen] = useState(false);
     const [imgError, setImgError] = useState(false);
     const { cartId } = useSelector((state) => state.carts);
     const dispatch = useDispatch();
-
-    const handleQtyIncrease = () => dispatch(increaseProductInCart(product, currentQuantity, setCurrentQuantity));
-    const handleQtyDecrease = () => dispatch(decreaseProductInCart(product, currentQuantity, setCurrentQuantity));
 
     const handleRemove = () => {
         dispatch(removeProductFromCart(product, cartId));
@@ -36,7 +29,7 @@ export const CartItem = ({ product }) => {
         setOpen(false);
     };
 
-    const lineTotal = ((product.specialPrice || product.price) * currentQuantity).toFixed(2);
+    const unitPrice = (product.specialPrice || product.price);
 
     return (
         <>
@@ -52,7 +45,7 @@ export const CartItem = ({ product }) => {
                 {/* Image */}
                 <div className="w-24 h-24 lg:w-28 lg:h-28 flex-shrink-0 rounded-xl overflow-hidden bg-slate-50 border border-slate-100">
                     <img
-                        src={imgError ? "/placeholder.png" : product.image}
+                        src={imgError ? "/placeholder.png" : product.thumbnail }
                         alt={product.productName}
                         onError={() => setImgError(true)}
                         className="w-full h-full object-cover transition-transform duration-400 hover:scale-105"
@@ -91,16 +84,15 @@ export const CartItem = ({ product }) => {
                             )}
                         </div>
 
-                        {/* Qty + line total + remove */}
+                        {/* Qty badge + line total + remove */}
                         <div className="flex items-center gap-3">
-                            <SetQuantity
-                                quantity={currentQuantity}
-                                handleQtyDecrease={handleQtyDecrease}
-                                handleQtyIncrease={handleQtyIncrease}
-                            />
+                            {/* Static qty badge */}
+                            <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 select-none">
+                                ×1
+                            </span>
 
                             <span className="text-sm font-bold text-slate-700 hidden sm:block">
-                                = ${lineTotal}
+                                = ${unitPrice.toFixed(2)}
                             </span>
 
                             <motion.button

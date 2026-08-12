@@ -23,7 +23,7 @@ export const Cart = () => {
     const { cart } = useSelector((state) => state.carts);
 
     const totalPrice = cart?.reduce(
-        (acc, cur) => acc + (Number(cur?.specialPrice || cur?.price) * Number(cur?.quantity)),
+        (acc, cur) => acc + Number(cur?.specialPrice || cur?.price),
         0
     ) || 0;
 

@@ -1,40 +1,36 @@
-import { act } from "react"
 
 const initialState = {
     user: null,
-    addresses: [],
-    selectedCheckoutAddress: null
+    accessToken: null,
 }
 export const AuthReducer = (state = initialState, action) => {
     switch (action.type) {
         case "LOGIN_USER":
             return {
                 ...state,
-                user: action.payload,
+                user: action.payload.userInfoResponse,
+                accessToken: action.payload.accessToken
             }
 
-        case "FETCH_ADDRESSES":
+        case "AUTH_INFO":
             return {
                 ...state,
-                addresses: action.payload,
+                user: {
+                    ...state.user,
+                    ...action.payload,
+                },
             }
-        case "SAVE_CHECKOUT_ADDRESS":
+
+        case "UPDATE_ACCESS_TOKEN":
             return {
                 ...state,
-                selectedCheckoutAddress: action.payload,
+                accessToken: action.payload,
             }
-        case "DELETE_ADDRESS": {
-            const isSelectedAddress = state.selectedCheckoutAddress?.addressId === action.payload.addressId;
-            return {
-                ...state,
-                addresses: state.addresses.filter(addr => addr.addressId !== action.payload.addressId),
-                selectedCheckoutAddress: isSelectedAddress ? null : state.selectedCheckoutAddress
-            }
-        }
+
         case "LOG_OUT":
             return {
                 user: null,
-                addresses: null
+                accessToken: null
             }
         default:
             return state;

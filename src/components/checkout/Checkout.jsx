@@ -1,26 +1,17 @@
 import React, { useEffect, useState } from "react";
 import { useMediaQuery } from "@mui/material";
 import { Header } from "../shared/Header";
-import { AddressInfo } from "./AddressInfo";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchAddresses } from "../../store/actions";
+import { fetchUserCart } from "../../store/actions";
 import { Bounce, toast } from "react-toastify";
 import { PaymentMethod } from "./PaymentMethod";
 import { OrderSummary } from "./OrderSummary";
 import { motion, AnimatePresence } from "framer-motion";
+import PaymentForm from "./PaymentForm";
 
 // ── Steps config ───────────────────────────────────────────────────────────────
 
 const STEPS = [
-    {
-        label: "Address",
-        sublabel: "Where to deliver",
-        icon: (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 10c0 7-9 13-9 13S3 17 3 10a9 9 0 0 1 18 0z" /><circle cx="12" cy="10" r="3" />
-            </svg>
-        ),
-    },
     {
         label: "Payment",
         sublabel: "How to pay",
@@ -40,8 +31,8 @@ const STEPS = [
         ),
     },
     {
-        label: "Payment",
-        sublabel: "Finalize",
+        label: "Finalize",
+        sublabel: "Complete purchase",
         icon: (
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
                 <polyline points="20 6 9 17 4 12" />
@@ -130,16 +121,11 @@ export const CheckOut = () => {
     const [direction, setDirection] = useState(1);
 
     const dispatch = useDispatch();
-    const { addresses, selectedCheckoutAddress } = useSelector((state) => state.auth);
     const { paymentMethod } = useSelector((state) => state.payment);
     const isMobile = useMediaQuery("(max-width:600px)");
 
     const handleNext = () => {
-        if (activeStep === 0 && !selectedCheckoutAddress) {
-            toast.error("Please select an address!", { position: "top-center", autoClose: 2000, theme: "light", transition: Bounce });
-            return;
-        }
-        if (activeStep === 1 && !paymentMethod) {
+        if (activeStep === 0 && !paymentMethod) {
             toast.error("Please select a payment method!", { position: "top-center", autoClose: 2000, theme: "light", transition: Bounce });
             return;
         }
@@ -154,34 +140,22 @@ export const CheckOut = () => {
 
     const renderStepContent = () => {
         switch (activeStep) {
-            case 0: return <AddressInfo addresses={addresses} />;
-            case 1: return <PaymentMethod />;
-            case 2: return <OrderSummary />;
-            case 3: return (
-                <div style={{ textAlign: "center", padding: "48px 0" }}>
-                    <motion.div
-                        initial={{ scale: 0 }}
-                        animate={{ scale: 1 }}
-                        transition={{ type: "spring", stiffness: 300, damping: 20 }}
-                        style={{
-                            width: 72, height: 72, borderRadius: "50%",
-                            background: "#dcfce7", margin: "0 auto 16px",
-                            display: "flex", alignItems: "center", justifyContent: "center",
-                        }}
-                    >
-                        <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#22c55e" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="20 6 9 17 4 12" />
-                        </svg>
-                    </motion.div>
-                    <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontSize: 18, fontWeight: 700, color: "#1e293b", margin: "0 0 6px" }}>Order Confirmed!</p>
-                    <p style={{ fontFamily: "'Reddit Sans', sans-serif", fontSize: 13, color: "#94a3b8", margin: 0 }}>Thank you for your purchase. We'll send you a confirmation email shortly.</p>
-                </div>
-            );
-            default: return null;
+            case 0: return <PaymentMethod />;
+            case 1: return <OrderSummary />;
+            case 2: return <PaymentForm />;
         }
     };
 
-    useEffect(() => { dispatch(fetchAddresses()); }, [dispatch]);
+    useEffect(() => {
+        dispatch(fetchUserCart());
+    }, [dispatch]);
+
+    useEffect(() => {
+        if (activeStep >= 1) {
+            dispatch(fetchUserCart());
+        }
+    }, [activeStep, dispatch]);
+
 
     const isLastStep = activeStep === STEPS.length - 1;
 
