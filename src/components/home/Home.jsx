@@ -16,7 +16,7 @@ export const Home = () => {
     const dispatch = useDispatch();
 
     useEffect(() => {
-        dispatch(fetchProducts("sortBy=discount&sortOrder=desc&pageNumber=0&pageSize=4"));
+        dispatch(fetchProducts("sortBy=discount&sortOrder=desc&pageNumber=0&pageSize=12"));
     }, [dispatch]);
 
     return (
@@ -29,7 +29,7 @@ export const Home = () => {
             <Header />
             <HeroBanner />
 
-            {/* Flash Sale Section */}
+            {/* Hot Deals Section */}
             <section className="home-wrap max-w-7xl mx-auto px-6 lg:px-8 py-20">
 
                 {/* Section header */}
@@ -41,15 +41,11 @@ export const Home = () => {
                     className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12"
                 >
                     <div>
-                        <div className="inline-flex items-center gap-2 bg-rose-50 border border-rose-100 rounded-full px-3.5 py-1.5 mb-3">
-                            <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
-                            <span className="text-xs font-bold text-rose-600 uppercase tracking-wide">Limited Time</span>
-                        </div>
                         <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
-                            Flash Sale 🔥
+                            Hot Deals 🔥
                         </h2>
                         <p className="mt-2 text-slate-400 text-sm max-w-md leading-relaxed">
-                            Grab your favorite products with amazing discounts before they're gone.
+                            Grab your favorite products with amazing discounts.
                         </p>
                     </div>
 
