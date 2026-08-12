@@ -91,16 +91,9 @@ export const Login = () => {
 
                         {/* Remember + forgot */}
                         <div className="flex items-center justify-between pt-1">
-                            <label className="flex items-center gap-2 text-sm text-slate-500 cursor-pointer select-none">
-                                <input
-                                    type="checkbox"
-                                    className="w-4 h-4 rounded border-slate-300 accent-blue-600"
-                                />
-                                Remember me
-                            </label>
-                            <a href="#" className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-150">
+                            <Link to="/forgot-password" className="text-sm font-semibold text-blue-600 hover:text-blue-700 transition-colors duration-150">
                                 Forgot password?
-                            </a>
+                            </Link>
                         </div>
 
                         {/* Submit */}
