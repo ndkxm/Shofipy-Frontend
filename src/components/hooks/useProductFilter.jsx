@@ -13,6 +13,7 @@ export const useProductFilter = () => {
         params.set("pageNumber", currentPage - 1);
 
         const categoryParams = searchParams.get("category") || null;
+        const genreParam = searchParams.get("genre") || null;
         const sortOrder = searchParams.get("sortOrder") || "asc";
         const keyword = searchParams.get("keyword") || null;
 
@@ -20,6 +21,9 @@ export const useProductFilter = () => {
         params.set("sortOrder", sortOrder);
         if (categoryParams) {
             params.set("category", categoryParams);
+        }
+        if (genreParam) {
+            params.set("genre", genreParam);
         }
         if (keyword) {
             params.set("keyword", keyword);

@@ -1,5 +1,5 @@
 import { useEffect, useRef, useState } from "react";
-import { FiRefreshCcw, FiSearch, FiChevronDown, FiArrowUp, FiArrowDown } from "react-icons/fi";
+import { FiRefreshCcw, FiSearch, FiChevronDown } from "react-icons/fi";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 
@@ -43,21 +43,23 @@ const CustomSelect = ({ value, onChange, options, placeholder }) => {
                         className="absolute top-full left-0 mt-2 w-full bg-white border border-slate-200 rounded-2xl overflow-hidden z-50"
                         style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.1)" }}
                     >
-                        {options.map((opt) => (
-                            <button
-                                key={opt.value}
-                                type="button"
-                                onClick={() => { onChange(opt.value); setOpen(false); }}
-                                className={`w-full text-left px-4 py-2.5 text-sm transition-colors duration-100
-                                    ${opt.value === value
-                                        ? "bg-blue-50 text-blue-700 font-semibold"
-                                        : "text-slate-700 hover:bg-slate-50"
-                                    }`}
-                                style={{ fontFamily: "'Reddit Sans', sans-serif" }}
-                            >
-                                {opt.label}
-                            </button>
-                        ))}
+                        <div className="max-h-60 overflow-y-auto">
+                            {options.map((opt) => (
+                                <button
+                                    key={opt.value}
+                                    type="button"
+                                    onClick={() => { onChange(opt.value); setOpen(false); }}
+                                    className={`w-full text-left px-4 py-2.5 text-sm transition-colors duration-100
+                                        ${opt.value === value
+                                            ? "bg-blue-50 text-blue-700 font-semibold"
+                                            : "text-slate-700 hover:bg-slate-50"
+                                        }`}
+                                    style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+                                >
+                                    {opt.label}
+                                </button>
+                            ))}
+                        </div>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -65,127 +67,219 @@ const CustomSelect = ({ value, onChange, options, placeholder }) => {
     );
 };
 
+// ── Genre Tag Chips ────────────────────────────────────────────────────────────
+
+const GenreChips = ({ genres, selected, onChange }) => {
+    if (!genres || genres.length === 0) return null;
+
+    return (
+        <div className="flex flex-wrap gap-2 pt-3 border-t border-slate-100 mt-1">
+            <span className="text-xs font-semibold text-slate-400 self-center pr-1">Genre:</span>
+
+            {/* All chip */}
+            <button
+                type="button"
+                onClick={() => onChange("all")}
+                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-150 ${selected === "all"
+                    ? "bg-blue-600 text-white shadow-sm"
+                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                    }`}
+                style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+            >
+                All
+            </button>
+
+            {genres.map((g) => {
+                const isSelected = selected === g.genreName;
+                return (
+                    <motion.button
+                        key={g.genreId}
+                        type="button"
+                        onClick={() => onChange(g.genreName)}
+                        whileTap={{ scale: 0.94 }}
+                        className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-150 ${isSelected
+                            ? "bg-blue-600 text-white shadow-sm"
+                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                            }`}
+                        style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+                    >
+                        {g.genreName}
+                    </motion.button>
+                );
+            })}
+        </div>
+    );
+};
+
 // ── Filter ─────────────────────────────────────────────────────────────────────
 
-export const Filter = ({ categories }) => {
+export const Filter = ({ categories, genres }) => {
     const [searchParams] = useSearchParams();
     const params = new URLSearchParams(searchParams);
     const pathname = useLocation().pathname;
     const navigate = useNavigate();
 
     const [category, setCategory] = useState("all");
+    const [genre, setGenre] = useState("all");
     const [sortOrder, setSortOrder] = useState("asc");
     const [searchTerm, setSearchTerm] = useState("");
 
+    // Sync state with URL params
     useEffect(() => {
         setCategory(searchParams.get("category") || "all");
+        setGenre(searchParams.get("genre") || "all");
         setSortOrder(searchParams.get("sortOrder") || "asc");
         setSearchTerm(searchParams.get("keyword") || "");
     }, [searchParams]);
 
+    // Debounced search
     useEffect(() => {
         const handler = setTimeout(() => {
-            if (searchTerm) { searchParams.set("keyword", searchTerm); }
-            else { searchParams.delete("keyword"); }
-            navigate(`${pathname}?${searchParams.toString()}`);
+            const p = new URLSearchParams(searchParams);
+            if (searchTerm) { p.set("keyword", searchTerm); }
+            else { p.delete("keyword"); }
+            p.delete("pageNumber");
+            navigate(`${pathname}?${p.toString()}`);
         }, 600);
         return () => clearTimeout(handler);
-    }, [searchParams, searchTerm, navigate, pathname]);
+    }, [searchTerm]); // eslint-disable-line react-hooks/exhaustive-deps
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: "smooth" });
+    };
 
     const handleCategoryChange = (val) => {
-        if (val === "all") { params.delete("category"); }
-        else { params.set("category", val); }
-        navigate(`${pathname}?${params}`);
+        const p = new URLSearchParams(searchParams);
+        if (val === "all") { p.delete("category"); }
+        else { p.set("category", val); }
+        p.delete("pageNumber");
+        navigate(`${pathname}?${p.toString()}`);
         setCategory(val);
+        scrollToTop();
+    };
+
+    const handleGenreChange = (val) => {
+        const p = new URLSearchParams(searchParams);
+        if (val === "all") { p.delete("genre"); }
+        else { p.set("genre", val); }
+        p.delete("pageNumber");
+        navigate(`${pathname}?${p.toString()}`);
+        setGenre(val);
+        scrollToTop();
     };
 
     const toggleSortOrder = (val) => {
-        params.set("sortOrder", val);
-        navigate(`${pathname}?${params}`);
+        const p = new URLSearchParams(searchParams);
+        p.set("sortOrder", val);
+        p.delete("pageNumber");
+        navigate(`${pathname}?${p.toString()}`);
         setSortOrder(val);
     };
 
-    const handleClearFilter = () => navigate({ pathname });
+    const handleClearFilter = () => {
+        navigate({ pathname });
+        scrollToTop();
+    };
 
     const categoryOptions = [
         { value: "all", label: "All Categories" },
         ...(categories?.map((c) => ({ value: c.categoryName, label: c.categoryName })) || []),
     ];
 
-    const sortOptions = [
-        { value: "asc", label: "Price: Low → High" },
-        { value: "desc", label: "Price: High → Low" },
+    const genreOptions = [
+        { value: "all", label: "All Genres" },
+        ...(genres?.map((g) => ({ value: g.genreName, label: g.genreName })) || []),
     ];
 
-    const hasActiveFilter = category !== "all" || sortOrder !== "asc" || searchTerm !== "";
+const sortOptions = [
+    { value: "asc", label: "Price: Low → High" },
+    { value: "desc", label: "Price: High → Low" },
+];
 
-    return (
-        <>
-            <style>{`
+const hasActiveFilter = category !== "all" || genre !== "all" || sortOrder !== "asc" || searchTerm !== "";
+
+return (
+    <>
+        <style>{`
                 @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:wght@400;500;600;700&display=swap');
                 .filter-wrap * { font-family: 'Reddit Sans', sans-serif; }
             `}</style>
 
-            <motion.div
-                initial={{ opacity: 0, y: -10 }}
-                animate={{ opacity: 1, y: 0 }}
-                transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-                className="filter-wrap bg-white border border-slate-200 rounded-2xl p-5 mb-10"
-                style={{ boxShadow: "0 1px 12px rgba(0,0,0,0.05)" }}
-            >
-                <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
+        <motion.div
+            initial={{ opacity: 0, y: -10 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
+            className="filter-wrap bg-white border border-slate-200 rounded-2xl p-5 mb-10"
+            style={{ boxShadow: "0 1px 12px rgba(0,0,0,0.05)" }}
+        >
+            {/* Row 1: Search + Category + Sort + Clear */}
+            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
-                    {/* Search */}
-                    <div className="relative w-full lg:max-w-sm">
-                        <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
-                        <input
-                            type="text"
-                            placeholder="Search products..."
-                            value={searchTerm}
-                            onChange={(e) => setSearchTerm(e.target.value)}
-                            className="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-700 placeholder-slate-400 outline-none transition-all duration-150 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                            style={{ fontFamily: "'Reddit Sans', sans-serif" }}
-                        />
-                    </div>
-
-                    {/* Right controls */}
-                    <div className="flex flex-wrap items-center gap-3">
-
-                        <CustomSelect
-                            value={category}
-                            onChange={handleCategoryChange}
-                            options={categoryOptions}
-                            placeholder="Category"
-                        />
-
-                        <CustomSelect
-                            value={sortOrder}
-                            onChange={toggleSortOrder}
-                            options={sortOptions}
-                            placeholder="Sort Price"
-                        />
-
-                        {/* Clear */}
-                        <AnimatePresence>
-                            {hasActiveFilter && (
-                                <motion.button
-                                    initial={{ opacity: 0, scale: 0.9 }}
-                                    animate={{ opacity: 1, scale: 1 }}
-                                    exit={{ opacity: 0, scale: 0.9 }}
-                                    transition={{ duration: 0.15 }}
-                                    onClick={handleClearFilter}
-                                    className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-semibold transition-all duration-150"
-                                    style={{ fontFamily: "'Reddit Sans', sans-serif" }}
-                                >
-                                    <FiRefreshCcw className="text-xs" />
-                                    Clear
-                                </motion.button>
-                            )}
-                        </AnimatePresence>
-
-                    </div>
+                {/* Search */}
+                <div className="relative w-full lg:max-w-sm">
+                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+                    <input
+                        type="text"
+                        placeholder="Search games..."
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-700 placeholder-slate-400 outline-none transition-all duration-150 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                        style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+                    />
                 </div>
-            </motion.div>
-        </>
-    );
+
+                {/* Right controls */}
+                <div className="flex flex-wrap items-center gap-3">
+
+                    <CustomSelect
+                        value={category}
+                        onChange={handleCategoryChange}
+                        options={categoryOptions}
+                        placeholder="Category"
+                    />
+
+                    <CustomSelect
+                        value={genre}
+                        onChange={handleGenreChange}
+                        options={genreOptions}
+                        placeholder="Genre"
+                    />
+
+                    <CustomSelect
+                        value={sortOrder}
+                        onChange={toggleSortOrder}
+                        options={sortOptions}
+                        placeholder="Sort Price"
+                    />
+
+                    {/* Clear */}
+                    <AnimatePresence>
+                        {hasActiveFilter && (
+                            <motion.button
+                                initial={{ opacity: 0, scale: 0.9 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                exit={{ opacity: 0, scale: 0.9 }}
+                                transition={{ duration: 0.15 }}
+                                onClick={handleClearFilter}
+                                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-semibold transition-all duration-150"
+                                style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+                            >
+                                <FiRefreshCcw className="text-xs" />
+                                Clear
+                            </motion.button>
+                        )}
+                    </AnimatePresence>
+
+                </div>
+            </div>
+
+            {/* Row 2: Genre chips */}
+            <GenreChips
+                genres={genres}
+                selected={genre}
+                onChange={handleGenreChange}
+            />
+        </motion.div>
+    </>
+);
 };

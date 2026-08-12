@@ -4,27 +4,8 @@ import { addProductToCart } from "../../store/actions";
 import { motion } from "framer-motion";
 import { useLocation, useNavigate, useSearchParams } from "react-router-dom";
 import { TruncateText } from "../utils/TruncateText";
+import { parseImages } from "../utils/ParseImages";
 
-// ── Helper ─────────────────────────────────────────────────────────────────────
-
-const parseImages = (image) => {
-    if (!image) return [];
-    if (Array.isArray(image)) return image;
-
-    // Xử lý Python-style list: ['url1', 'url2']
-    try {
-        // Thay nháy đơn -> nháy đôi để thành JSON hợp lệ
-        const jsonStr = image
-            .trim()
-            .replace(/'/g, '"');
-        const parsed = JSON.parse(jsonStr);
-        return Array.isArray(parsed) ? parsed : [parsed];
-    } catch {
-        // Fallback: extract URLs bằng regex
-        const matches = image.match(/https?:\/\/[^\s'"]+/g);
-        return matches ?? [];
-    }
-};
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
 
@@ -40,6 +21,7 @@ const CartIcon = () => (
 export const ProductCard = ({
     productId,
     productName,
+    thumbnail,
     image,
     description,
     quantity,
@@ -53,11 +35,9 @@ export const ProductCard = ({
     const [searchParams] = useSearchParams();
     const navigate = useNavigate();
 
-    // Parse image array, lấy ảnh đầu tiên làm thumbnail
-    const images = parseImages(image);
-    const primaryImage = images[0] || null;
+    const primaryImage = thumbnail || parseImages(image)[0] || null;
 
-    const productData = { productId, productName, image, description, quantity, price, discount, specialPrice };
+    const productData = { productId, productName, thumbnail, image, description, quantity, price, discount, specialPrice };
 
     const handleProductView = () => {
         navigate(`/products/product/${productId}`);
@@ -68,7 +48,8 @@ export const ProductCard = ({
         dispatch(addProductToCart(productData, 1));
     };
 
-    const discountPct = discount ? Number(discount * 100).toFixed(0) : null;
+    const discountPct = discount && Number(discount) > 0 ? Math.round(Number(discount)) : null;
+    const hasDiscount = discountPct !== null && specialPrice && Number(specialPrice) < Number(price);
 
     return (
         <motion.div
@@ -89,22 +70,10 @@ export const ProductCard = ({
                 onClick={handleProductView}
             >
                 {/* Discount badge */}
-                {discountPct && (
+                {hasDiscount && (
                     <div className="absolute top-3 left-3 z-10 bg-rose-500 text-white text-xs font-bold px-2.5 py-1 rounded-lg"
                         style={{ fontFamily: "'Reddit Sans', sans-serif" }}>
                         -{discountPct}%
-                    </div>
-                )}
-
-                {/* Số lượng ảnh — badge góc phải nếu có nhiều hơn 1 */}
-                {images.length > 1 && (
-                    <div className="absolute top-3 right-3 z-10 bg-black/40 backdrop-blur-sm text-white text-xs font-semibold px-2 py-0.5 rounded-lg flex items-center gap-1">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5">
-                            <rect x="3" y="3" width="18" height="18" rx="2" />
-                            <circle cx="8.5" cy="8.5" r="1.5" />
-                            <polyline points="21 15 16 10 5 21" />
-                        </svg>
-                        {images.length}
                     </div>
                 )}
 
@@ -158,7 +127,7 @@ export const ProductCard = ({
 
                     {/* Price */}
                     <div>
-                        {specialPrice ? (
+                        {hasDiscount ? (
                             <>
                                 <div className="flex items-center gap-1.5 mb-0.5">
                                     <span className="text-xs text-slate-400 line-through"

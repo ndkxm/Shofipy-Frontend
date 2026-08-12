@@ -6,9 +6,14 @@ import { AuthReducer } from "./reducers/AuthReducer";
 import { PaymentMethodReducer } from "./reducers/PaymentMethodReducer";
 
 const user = localStorage.getItem("auth") ? JSON.parse(localStorage.getItem("auth")) : null;
+const cartItems = localStorage.getItem("cartItems") ? JSON.parse(localStorage.getItem("cartItems")) : [];
+const totalPrice = cartItems.reduce(
+    (acc, item) => acc + (Number(item?.specialPrice ?? item?.price ?? 0) * Number(item?.quantity ?? 0)),
+    0
+);
 
 const initialState = {
-    carts: { cart: [], cartId: null, totalPrice: 0 },
+    carts: { cart: cartItems, cartId: null, totalPrice: totalPrice },
     auth: { user: user }
 }
 

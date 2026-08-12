@@ -2,7 +2,7 @@ import { FaExclamationTriangle } from "react-icons/fa";
 import { ProductCard } from "../shared/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { fetchCategories, fetchProducts } from "../../store/actions";
+import { fetchCategories, fetchGenres, fetchProducts } from "../../store/actions";
 import { Loader } from "../shared/Loader";
 import { Filter } from "./Filter";
 import { useProductFilter } from "../hooks/useProductFilter";
@@ -14,12 +14,13 @@ import { motion } from "framer-motion";
 
 export const Products = () => {
     const { isFetchingProducts, fetchingProductsErrorMessage } = useSelector((state) => state.errors);
-    const { products, categories, paginations } = useSelector((state) => state.products);
+    const { products, categories, genres, paginations } = useSelector((state) => state.products);
     const dispatch = useDispatch();
     useProductFilter();
 
     useEffect(() => {
         dispatch(fetchCategories());
+        dispatch(fetchGenres());
     }, [dispatch]);
 
     return (
@@ -33,7 +34,7 @@ export const Products = () => {
 
             <div className="products-wrap lg:px-14 sm:px-8 px-4 py-14 2xl:w-[90%] 2xl:mx-auto mt-22">
 
-                <Filter categories={categories} />
+                <Filter categories={categories} genres={genres} />
 
                 {isFetchingProducts ? (
                     <Loader />
