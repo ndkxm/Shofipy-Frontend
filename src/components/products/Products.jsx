@@ -1,16 +1,15 @@
-import { FaExclamationTriangle } from "react-icons/fa";
-import { ProductCard } from "../shared/ProductCard";
 import { useDispatch, useSelector } from "react-redux";
 import { useEffect } from "react";
-import { fetchCategories, fetchGenres, fetchProducts } from "../../store/actions";
+import { AlertTriangle, RotateCcw } from "lucide-react";
+import { ProductCard } from "../shared/ProductCard";
+import { fetchCategories, fetchGenres } from "../../store/actions";
 import { Loader } from "../shared/Loader";
 import { Filter } from "./Filter";
 import { useProductFilter } from "../hooks/useProductFilter";
 import { Paginations } from "../shared/Paginations";
 import { Header } from "../shared/Header";
 import { Footer } from "../shared/Footer";
-import { FiRefreshCcw } from "react-icons/fi";
-import { motion } from "framer-motion";
+import { Reveal, SplitReveal } from "../shared/Motion";
 
 export const Products = () => {
     const { isFetchingProducts, fetchingProductsErrorMessage } = useSelector((state) => state.errors);
@@ -24,71 +23,60 @@ export const Products = () => {
     }, [dispatch]);
 
     return (
-        <div className="max-w-[1500px] mx-auto">
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:wght@400;500;600;700&display=swap');
-                .products-wrap { font-family: 'Reddit Sans', sans-serif; }
-            `}</style>
-
+        <div className="bg-slate-50 min-h-screen">
             <Header />
 
-            <div className="products-wrap lg:px-14 sm:px-8 px-4 py-14 2xl:w-[90%] 2xl:mx-auto mt-22">
-
-                <Filter categories={categories} genres={genres} />
-
-                {isFetchingProducts ? (
-                    <Loader />
-                ) : fetchingProductsErrorMessage ? (
-                    <div className="flex justify-center items-center py-24">
-                        <motion.div
-                            initial={{ opacity: 0, y: 16 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            transition={{ duration: 0.3 }}
-                            className="flex flex-col items-center bg-white border border-red-100 rounded-3xl px-10 py-12 max-w-md text-center"
-                            style={{ boxShadow: "0 4px 32px rgba(239,68,68,0.08)" }}
-                        >
-                            <div className="w-16 h-16 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center mb-5">
-                                <FaExclamationTriangle className="text-red-400 text-2xl" />
-                            </div>
-                            <h3 className="text-lg font-bold text-slate-800 mb-2 tracking-tight">
-                                Something went wrong
-                            </h3>
-                            <p className="text-sm text-slate-400 mb-7 leading-relaxed">
-                                {fetchingProductsErrorMessage}
+            <main className="pt-16">
+                <section className="border-b border-slate-900">
+                    <div className="max-w-7xl mx-auto px-5 md:px-6 pt-12 pb-8 flex flex-col md:flex-row md:items-end md:justify-between gap-4">
+                        <div>
+                            <p className="label-mono text-slate-500 mb-3">Catalogue</p>
+                            <SplitReveal lines={["All games"]} className="display text-6xl md:text-8xl text-slate-900" />
+                        </div>
+                        {paginations?.totalElements > 0 && (
+                            <p className="font-mono text-sm text-slate-600 tabular-nums">
+                                {paginations.totalElements} titles
                             </p>
-                            <button
-                                onClick={() => window.location.reload()}
-                                className="flex items-center gap-2 bg-slate-900 hover:bg-slate-700 text-white px-6 py-2.5 rounded-xl text-sm font-semibold transition-all duration-150"
-                                style={{ boxShadow: "0 4px 14px rgba(15,23,42,0.18)" }}
-                            >
-                                <FiRefreshCcw className="text-xs" />
-                                Try Again
+                        )}
+                    </div>
+                </section>
+
+                <div className="max-w-7xl mx-auto px-5 md:px-6 py-8">
+                    <Filter categories={categories} genres={genres} />
+
+                    {isFetchingProducts ? (
+                        <Loader text="Loading games" />
+                    ) : fetchingProductsErrorMessage ? (
+                        <div className="panel max-w-md mx-auto my-20 p-8 text-center" role="alert">
+                            <AlertTriangle className="mx-auto text-blue-600 mb-3" size={24} aria-hidden="true" />
+                            <h2 className="text-lg font-bold text-slate-900">Couldn’t load games</h2>
+                            <p className="mt-1 mb-6 text-sm text-slate-500">{fetchingProductsErrorMessage}</p>
+                            <button onClick={() => window.location.reload()} className="btn-ink">
+                                <RotateCcw size={14} aria-hidden="true" /> Try again
                             </button>
-                        </motion.div>
-                    </div>
-                ) : (
-                    <div className="min-h-[700px]">
-                        <div className="pb-6 pt-10 grid lg:grid-cols-4 md:grid-cols-3 sm:grid-cols-2 gap-y-6 gap-x-6">
-                            {products && products.map((item, i) => (
-                                <motion.div
-                                    key={i}
-                                    initial={{ opacity: 0, y: 20 }}
-                                    animate={{ opacity: 1, y: 0 }}
-                                    transition={{ duration: 0.28, delay: i * 0.04, ease: [0.22, 1, 0.36, 1] }}
-                                >
-                                    <ProductCard {...item} />
-                                </motion.div>
-                            ))}
                         </div>
-                        <div className="flex items-center justify-center pt-25 h-full">
-                            <Paginations
-                                numberOfPage={paginations?.totalPages}
-                                totalProducts={paginations?.totalElements}
-                            />
+                    ) : products?.length === 0 ? (
+                        <div className="py-24 text-center">
+                            <p className="text-2xl font-extrabold text-slate-900">Nothing matches that.</p>
+                            <p className="mt-2 text-slate-500">Try a different keyword or clear the filters.</p>
                         </div>
-                    </div>
-                )}
-            </div>
+                    ) : (
+                        <>
+                            <div className="pt-8 grid sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5">
+                                {products?.map((item, i) => (
+                                    <Reveal key={item.productId} delay={(i % 4) * 0.06} y={20} className="h-full"><ProductCard {...item} index={i} /></Reveal>
+                                ))}
+                            </div>
+                            <div className="pt-14 flex justify-center">
+                                <Paginations
+                                    numberOfPage={paginations?.totalPages}
+                                    totalProducts={paginations?.totalElements}
+                                />
+                            </div>
+                        </>
+                    )}
+                </div>
+            </main>
 
             <Footer />
         </div>

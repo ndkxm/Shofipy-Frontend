@@ -1,23 +1,21 @@
 import React from 'react';
 import { motion } from 'framer-motion';
+import { Header } from '../shared/Header';
+import { Footer } from '../shared/Footer';
 
 export const Policy = () => {
     return (
-        <div className="min-h-screen bg-slate-50 pt-24 pb-20 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-                <div className="absolute top-[20%] right-[-10%] w-[30%] h-[50%] bg-blue-100 rounded-full blur-[120px]"></div>
-                <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-100 rounded-full blur-[120px]"></div>
-            </div>
+        <div className="min-h-screen bg-slate-50">
+            <Header />
+            <main className="pt-28 pb-4">
 
-            <div className="max-w-4xl mx-auto px-6 relative z-10">
+            <div className="max-w-4xl mx-auto px-5 md:px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-16"
+                    className="mb-14 pb-10 border-b border-slate-900"
                 >
-                    <span className="inline-block py-1 px-3 rounded-full bg-blue-50 text-blue-600 font-semibold text-sm mb-4 border border-blue-200">
-                        Legal
-                    </span>
+                    <p className="label-mono text-slate-500 mb-5">Legal</p>
                     <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-6 tracking-tight">
                         Privacy Policy
                     </h1>
@@ -26,14 +24,14 @@ export const Policy = () => {
                     </p>
                 </motion.div>
 
-                <div className="bg-white rounded-3xl p-8 md:p-12 border border-slate-200 shadow-sm">
+                <div className="bg-white rounded-lg p-8 md:p-12 border border-slate-200">
                     <p className="text-slate-500 text-lg leading-relaxed mb-10">
                         Welcome to <strong className="text-slate-700">Shofipy</strong> — your trusted destination for purchasing digital game keys. We are committed to protecting your personal information and your right to privacy. If you have any questions about this policy, please contact us.
                     </p>
 
                     <div className="space-y-10">
                         <section>
-                            <h3 className="text-xl font-bold text-slate-800 mb-3 flex items-center gap-3">
+                            <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center gap-3">
                                 <span className="w-7 h-7 rounded-lg bg-blue-600 text-white text-sm font-bold flex items-center justify-center flex-shrink-0">1</span>
                                 Information We Collect
                             </h3>
@@ -45,7 +43,7 @@ export const Policy = () => {
                         <div className="border-t border-slate-100" />
 
                         <section>
-                            <h3 className="text-xl font-bold text-slate-800 mb-3 flex items-center gap-3">
+                            <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center gap-3">
                                 <span className="w-7 h-7 rounded-lg bg-blue-600 text-white text-sm font-bold flex items-center justify-center flex-shrink-0">2</span>
                                 How We Use Your Information
                             </h3>
@@ -57,7 +55,7 @@ export const Policy = () => {
                         <div className="border-t border-slate-100" />
 
                         <section>
-                            <h3 className="text-xl font-bold text-slate-800 mb-3 flex items-center gap-3">
+                            <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center gap-3">
                                 <span className="w-7 h-7 rounded-lg bg-blue-600 text-white text-sm font-bold flex items-center justify-center flex-shrink-0">3</span>
                                 Sharing Your Information
                             </h3>
@@ -69,7 +67,7 @@ export const Policy = () => {
                         <div className="border-t border-slate-100" />
 
                         <section>
-                            <h3 className="text-xl font-bold text-slate-800 mb-3 flex items-center gap-3">
+                            <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center gap-3">
                                 <span className="w-7 h-7 rounded-lg bg-blue-600 text-white text-sm font-bold flex items-center justify-center flex-shrink-0">4</span>
                                 Game Key Delivery & Security
                             </h3>
@@ -81,7 +79,7 @@ export const Policy = () => {
                         <div className="border-t border-slate-100" />
 
                         <section>
-                            <h3 className="text-xl font-bold text-slate-800 mb-3 flex items-center gap-3">
+                            <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center gap-3">
                                 <span className="w-7 h-7 rounded-lg bg-blue-600 text-white text-sm font-bold flex items-center justify-center flex-shrink-0">5</span>
                                 Data Retention
                             </h3>
@@ -93,7 +91,7 @@ export const Policy = () => {
                         <div className="border-t border-slate-100" />
 
                         <section>
-                            <h3 className="text-xl font-bold text-slate-800 mb-3 flex items-center gap-3">
+                            <h3 className="text-xl font-bold text-slate-900 mb-3 flex items-center gap-3">
                                 <span className="w-7 h-7 rounded-lg bg-blue-600 text-white text-sm font-bold flex items-center justify-center flex-shrink-0">6</span>
                                 Your Rights
                             </h3>
@@ -113,6 +111,8 @@ export const Policy = () => {
                     </div>
                 </div>
             </div>
+            </main>
+            <Footer />
         </div>
     );
 };

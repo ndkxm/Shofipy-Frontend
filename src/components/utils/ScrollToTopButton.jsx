@@ -25,12 +25,12 @@ export const ScrollToTopButton = () => {
     }
 
     return (
-        <button
+        <button aria-label="Back to top"
             onClick={scrollToTop}
             className={`
                 fixed bottom-6 right-6
-                bg-blue-600 hover:bg-blue-700
-                text-white p-4 rounded-full shadow-lg
+                bg-slate-900 hover:bg-blue-600 border border-slate-50
+                text-white w-11 h-11 grid place-items-center rounded-md
                 transition-all duration-300
                 ${visible
                     ? "opacity-100 translate-y-0"

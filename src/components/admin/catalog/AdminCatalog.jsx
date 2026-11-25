@@ -79,7 +79,7 @@ const CATALOG_TYPES = [
 
 const COLOR_MAP = {
     violet: {
-        tab: "bg-violet-600 text-white shadow-violet-200 shadow-md",
+        tab: "bg-violet-600 text-white shadow-violet-200 ",
         inactiveTab: "text-slate-600 hover:bg-violet-50 hover:text-violet-700",
         icon: "bg-violet-100 text-violet-600",
         badge: "bg-violet-100 text-violet-700",
@@ -87,7 +87,7 @@ const COLOR_MAP = {
         border: "border-violet-200",
     },
     blue: {
-        tab: "bg-blue-600 text-white shadow-blue-200 shadow-md",
+        tab: "bg-blue-600 text-white shadow-blue-200 ",
         inactiveTab: "text-slate-600 hover:bg-blue-50 hover:text-blue-700",
         icon: "bg-blue-100 text-blue-600",
         badge: "bg-blue-100 text-blue-700",
@@ -95,7 +95,7 @@ const COLOR_MAP = {
         border: "border-blue-200",
     },
     emerald: {
-        tab: "bg-emerald-600 text-white shadow-emerald-200 shadow-md",
+        tab: "bg-emerald-600 text-white shadow-emerald-200 ",
         inactiveTab: "text-slate-600 hover:bg-emerald-50 hover:text-emerald-700",
         icon: "bg-emerald-100 text-emerald-600",
         badge: "bg-emerald-100 text-emerald-700",
@@ -103,7 +103,7 @@ const COLOR_MAP = {
         border: "border-emerald-200",
     },
     amber: {
-        tab: "bg-amber-500 text-white shadow-amber-200 shadow-md",
+        tab: "bg-amber-500 text-white shadow-amber-200 ",
         inactiveTab: "text-slate-600 hover:bg-amber-50 hover:text-amber-700",
         icon: "bg-amber-100 text-amber-600",
         badge: "bg-amber-100 text-amber-700",
@@ -282,7 +282,7 @@ const CatalogSection = ({ config }) => {
                         placeholder={`Search ${label.toLowerCase()}...`}
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full rounded-lg border border-slate-200 bg-white py-2 pl-9 pr-3 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
+                        className="w-full rounded-lg border border-slate-900 bg-white py-2 pl-9 pr-3 text-sm text-slate-700 outline-none focus:border-slate-400 focus:ring-2 focus:ring-slate-100"
                     />
                 </div>
                 <div className="flex items-center gap-2">
@@ -300,7 +300,7 @@ const CatalogSection = ({ config }) => {
             </div>
 
             {/* Table */}
-            <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+            <div className="overflow-hidden rounded-lg border border-slate-900 bg-white">
                 {isLoading ? (
                     <div className="flex items-center justify-center py-16 text-slate-400">
                         <Loader2 size={24} className="animate-spin mr-2" /> Loading...
@@ -343,7 +343,7 @@ const CatalogSection = ({ config }) => {
                                         <div className="flex items-center justify-end gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
                                             <button
                                                 onClick={() => openEdit(item)}
-                                                className="flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 hover:border-blue-300 hover:text-blue-600 transition-colors"
+                                                className="flex items-center gap-1.5 rounded-lg border border-slate-900 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 hover:border-blue-300 hover:text-blue-600 transition-colors"
                                             >
                                                 <Edit3 size={13} /> Edit
                                             </button>
@@ -372,14 +372,14 @@ const CatalogSection = ({ config }) => {
                         <button
                             disabled={pageNumber === 0}
                             onClick={() => setPageNumber((p) => p - 1)}
-                            className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 disabled:opacity-40 hover:bg-slate-50"
+                            className="flex items-center gap-1 rounded-lg border border-slate-900 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 disabled:opacity-40 hover:bg-slate-50"
                         >
                             <ChevronLeft size={14} /> Prev
                         </button>
                         <button
                             disabled={pageNumber >= totalPages - 1}
                             onClick={() => setPageNumber((p) => p + 1)}
-                            className="flex items-center gap-1 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 disabled:opacity-40 hover:bg-slate-50"
+                            className="flex items-center gap-1 rounded-lg border border-slate-900 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 disabled:opacity-40 hover:bg-slate-50"
                         >
                             Next <ChevronRight size={14} />
                         </button>
@@ -391,10 +391,10 @@ const CatalogSection = ({ config }) => {
             {modalMode && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
                     <div
-                        className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm"
+                        className="absolute inset-0 bg-slate-900/50"
                         onClick={closeModal}
                     />
-                    <div className="relative z-10 w-full max-w-md rounded-2xl bg-white shadow-2xl">
+                    <div className="relative z-10 w-full max-w-md rounded-lg bg-white">
                         {/* Header */}
                         <div className={`flex items-center justify-between rounded-t-2xl px-6 py-4 border-b border-slate-100`}>
                             <h3 className="text-base font-extrabold text-slate-900">
@@ -414,7 +414,7 @@ const CatalogSection = ({ config }) => {
                             <div className="flex flex-col items-center gap-3">
                                 <div
                                     onClick={() => imageInputRef.current?.click()}
-                                    className={`relative h-28 w-28 cursor-pointer overflow-hidden rounded-2xl border-2 border-dashed flex items-center justify-center transition-all ${
+                                    className={`relative h-28 w-28 cursor-pointer overflow-hidden rounded-lg border-2 border-dashed flex items-center justify-center transition-all ${
                                         formImagePreview
                                             ? "border-slate-300"
                                             : `border-slate-300 hover:${colors.border}`
@@ -459,7 +459,7 @@ const CatalogSection = ({ config }) => {
                                     onChange={(e) => setFormName(e.target.value)}
                                     onKeyDown={(e) => e.key === "Enter" && handleSubmit()}
                                     placeholder={`Enter ${label.slice(0, -1).toLowerCase()} name...`}
-                                    className="w-full rounded-xl border border-slate-200 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 transition-all"
+                                    className="w-full rounded-lg border border-slate-300 bg-slate-50 px-4 py-2.5 text-sm text-slate-800 outline-none focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100 transition-all"
                                 />
                             </div>
                         </div>
@@ -468,14 +468,14 @@ const CatalogSection = ({ config }) => {
                         <div className="flex items-center justify-end gap-3 border-t border-slate-100 px-6 py-4">
                             <button
                                 onClick={closeModal}
-                                className="rounded-xl border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
+                                className="rounded-lg border border-slate-900 bg-white px-5 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition-colors"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleSubmit}
                                 disabled={isSubmitting}
-                                className={`flex items-center gap-2 rounded-xl px-5 py-2 text-sm font-semibold transition-all disabled:opacity-60 ${colors.btn}`}
+                                className={`flex items-center gap-2 rounded-md px-5 py-2 text-sm font-semibold transition-all disabled:opacity-60 ${colors.btn}`}
                             >
                                 {isSubmitting ? (
                                     <Loader2 size={15} className="animate-spin" />
@@ -513,7 +513,7 @@ export const AdminCatalog = () => {
     return (
         <section className="mt-6 space-y-2">
             {/* Type tabs */}
-            <div className="flex flex-wrap gap-2 rounded-2xl border border-slate-200 bg-white p-2 shadow-sm">
+            <div className="flex flex-wrap gap-2 rounded-lg border border-slate-900 bg-white p-2">
                 {CATALOG_TYPES.map((type) => {
                     const Icon = type.icon;
                     const isActive = activeType === type.key;
@@ -522,7 +522,7 @@ export const AdminCatalog = () => {
                         <button
                             key={type.key}
                             onClick={() => setActiveType(type.key)}
-                            className={`flex items-center gap-2 rounded-xl px-4 py-2 text-sm font-semibold transition-all ${
+                            className={`flex items-center gap-2 rounded-md px-4 py-2 text-sm font-semibold transition-all ${
                                 isActive ? tc.tab : tc.inactiveTab
                             }`}
                         >
@@ -534,9 +534,9 @@ export const AdminCatalog = () => {
             </div>
 
             {/* Section content */}
-            <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
+            <div className="rounded-lg border border-slate-900 bg-white p-5">
                 <div className="flex items-center gap-3">
-                    <div className={`flex h-10 w-10 items-center justify-center rounded-xl ${colors.icon}`}>
+                    <div className={`flex h-10 w-10 items-center justify-center rounded-md ${colors.icon}`}>
                         {(() => {
                             const Icon = current.icon;
                             return <Icon size={20} />;

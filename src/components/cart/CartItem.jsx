@@ -33,79 +33,51 @@ export const CartItem = ({ product }) => {
 
     return (
         <>
-            <motion.div
+            <motion.li
                 layout
-                initial={{ opacity: 0, y: 12 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0, x: -20 }}
-                transition={{ duration: 0.26, ease: [0.22, 1, 0.36, 1] }}
-                className="flex gap-4 p-4 bg-white border border-slate-200 rounded-2xl transition-shadow duration-200 hover:shadow-md"
-                style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+                initial={{ opacity: 0 }}
+                animate={{ opacity: 1 }}
+                exit={{ opacity: 0, x: -16 }}
+                transition={{ duration: 0.2 }}
+                className="flex gap-4 sm:gap-5 py-5 border-b border-slate-300"
             >
-                {/* Image */}
-                <div className="w-24 h-24 lg:w-28 lg:h-28 flex-shrink-0 rounded-xl overflow-hidden bg-slate-50 border border-slate-100">
+                <div className="w-28 sm:w-40 aspect-[16/10] flex-shrink-0 rounded-md overflow-hidden bg-slate-200 border border-slate-900">
                     <img
-                        src={imgError ? "/placeholder.png" : product.thumbnail }
-                        alt={product.productName}
+                        src={imgError ? "/placeholder.png" : product.thumbnail}
+                        alt=""
                         onError={() => setImgError(true)}
-                        className="w-full h-full object-cover transition-transform duration-400 hover:scale-105"
+                        className="w-full h-full object-cover"
                     />
                 </div>
 
-                {/* Info */}
-                <div className="flex flex-col flex-1 justify-between min-w-0">
-                    <div>
-                        <h2 className="text-sm font-bold text-slate-800 hover:text-blue-600 cursor-pointer leading-snug transition-colors duration-150">
-                            {TruncateText(product.productName, 55)}
+                <div className="flex flex-1 min-w-0 flex-col sm:flex-row sm:items-start justify-between gap-3">
+                    <div className="min-w-0">
+                        <h2 className="text-base font-bold text-slate-900 leading-snug">
+                            {TruncateText(product.productName, 60)}
                         </h2>
-                        <p className="text-xs text-slate-400 mt-1 leading-relaxed">
-                            {TruncateText(product.description, 80)}
+                        <p className="mt-1 text-sm text-slate-500 leading-relaxed hidden sm:block">
+                            {TruncateText(product.description, 90)}
                         </p>
+                        <p className="mt-2 label-mono text-slate-500">Qty 1 · Steam key</p>
                     </div>
 
-                    {/* Bottom row */}
-                    <div className="flex items-center justify-between gap-3 mt-3 flex-wrap">
-
-                        {/* Price */}
-                        <div>
-                            {product.specialPrice ? (
-                                <div className="flex flex-col">
-                                    <span className="text-xs text-slate-400 line-through">
-                                        ${product.price.toFixed(2)}
-                                    </span>
-                                    <span className="text-base font-extrabold text-slate-900">
-                                        ${product.specialPrice.toFixed(2)}
-                                    </span>
-                                </div>
-                            ) : (
-                                <span className="text-base font-extrabold text-slate-900">
-                                    ${product.price.toFixed(2)}
-                                </span>
+                    <div className="flex sm:flex-col items-center sm:items-end justify-between gap-3 shrink-0">
+                        <div className="font-mono tabular-nums text-right">
+                            {product.specialPrice && product.specialPrice < product.price && (
+                                <span className="block text-xs text-slate-500 line-through">${product.price.toFixed(2)}</span>
                             )}
+                            <span className="text-lg font-semibold text-slate-900">${Number(unitPrice).toFixed(2)}</span>
                         </div>
-
-                        {/* Qty badge + line total + remove */}
-                        <div className="flex items-center gap-3">
-                            {/* Static qty badge */}
-                            <span className="inline-flex items-center justify-center w-8 h-8 rounded-xl border border-slate-200 bg-slate-50 text-sm font-bold text-slate-700 select-none">
-                                ×1
-                            </span>
-
-                            <span className="text-sm font-bold text-slate-700 hidden sm:block">
-                                = ${unitPrice.toFixed(2)}
-                            </span>
-
-                            <motion.button
-                                whileTap={{ scale: 0.9 }}
-                                onClick={() => setOpen(true)}
-                                className="w-8 h-8 flex items-center justify-center rounded-xl text-slate-400 hover:text-red-500 hover:bg-red-50 transition-all duration-150"
-                            >
-                                <TrashIcon />
-                            </motion.button>
-                        </div>
+                        <button
+                            onClick={() => setOpen(true)}
+                            aria-label={`Remove ${product.productName} from cart`}
+                            className="inline-flex items-center gap-1.5 text-sm font-semibold text-slate-500 hover:text-red-600 transition-colors"
+                        >
+                            <TrashIcon /> Remove
+                        </button>
                     </div>
                 </div>
-            </motion.div>
+            </motion.li>
 
             <ConfirmModal
                 isOpen={open}

@@ -44,10 +44,10 @@ export const StaffDashboard = () => {
                     <div className="mx-auto flex min-h-screen w-full max-w-7xl flex-col px-4 py-6 sm:px-6 lg:px-8">
 
                         {/* ── page header ── */}
-                        <header className="flex flex-col gap-4 border-b border-slate-200 pb-6 pl-14 lg:pl-0 sm:flex-row sm:items-center sm:justify-between">
+                        <header className="flex flex-col gap-4 border-b border-slate-900 pb-6 pl-14 lg:pl-0 sm:flex-row sm:items-center sm:justify-between">
                             <div>
-                                <p className="text-sm font-semibold text-blue-600">{getTodayLabel()}</p>
-                                <h1 className="mt-1 text-2xl font-extrabold tracking-tight text-slate-950 sm:text-3xl">
+                                <p className="label-mono text-blue-700">{getTodayLabel()}</p>
+                                <h1 className="mt-2 display text-4xl text-slate-950 sm:text-5xl">
                                     {tabTitles[activeTab] || "Admin"}
                                 </h1>
                                 <p className="mt-2 max-w-2xl text-sm leading-6 text-slate-500">
@@ -75,7 +75,7 @@ export const StaffDashboard = () => {
 // ─── placeholder ──────────────────────────────────────────────────────────────
 const TabPlaceholder = ({ tabName }) => (
     <section className="flex flex-1 items-center justify-center py-20">
-        <div className="w-full max-w-xl rounded-lg border border-slate-200 bg-white p-8 text-center shadow-sm">
+        <div className="w-full max-w-xl rounded-lg border border-slate-900 bg-white p-8 text-center">
             <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-lg bg-blue-50 text-blue-700">
                 <ShieldCheck size={26} />
             </div>

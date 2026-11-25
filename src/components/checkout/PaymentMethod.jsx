@@ -82,8 +82,6 @@ export const PaymentMethod = ({ onSelect, onConfirm }) => {
     return (
         <>
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:ital,wght@0,200..900;1,200..900&display=swap');
-                .pm-wrap * { font-family: 'Reddit Sans', sans-serif; }
                 .pm-row { transition: box-shadow 0.2s ease, border-color 0.2s ease; }
             `}</style>
 
@@ -99,9 +97,9 @@ export const PaymentMethod = ({ onSelect, onConfirm }) => {
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ duration: 0.28, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
                             onClick={() => handleSelect(method)}
-                            className={`pm-row rounded-2xl border cursor-pointer overflow-hidden transition-all duration-200
+                            className={`pm-row rounded-lg border cursor-pointer overflow-hidden transition-all duration-200
                                 ${isSelected ? `border-slate-300 ${method.accentBg}` : "border-slate-200 bg-white hover:border-slate-300"}`}
-                            style={isSelected ? { boxShadow: `0 0 0 2px ${method.accent}33, 0 4px 16px ${method.accent}14` } : {}}
+                            style={isSelected ? { boxShadow: "3px 3px 0 0 #181612", borderColor: "#181612" } : {}}
                         >
                             {/* Row header */}
                             <div className="px-4 py-3.5 flex items-center gap-3.5">
@@ -110,7 +108,7 @@ export const PaymentMethod = ({ onSelect, onConfirm }) => {
                                     className="w-5 h-5 rounded-full border-2 flex items-center justify-center flex-shrink-0 transition-all duration-200"
                                     style={isSelected
                                         ? { background: method.accent, borderColor: method.accent }
-                                        : { background: "white", borderColor: "#cbd5e1" }
+                                        : { background: "white", borderColor: "#cbc4b4" }
                                     }
                                 >
                                     {isSelected && (
@@ -126,7 +124,7 @@ export const PaymentMethod = ({ onSelect, onConfirm }) => {
                                 </div>
 
                                 {/* Icon */}
-                                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0
+                                <div className={`w-9 h-9 rounded-md flex items-center justify-center flex-shrink-0
                                     ${isSelected ? method.accentIconBg : "bg-slate-100"}`}>
                                     <Icon />
                                 </div>
@@ -156,22 +154,22 @@ export const PaymentMethod = ({ onSelect, onConfirm }) => {
                             animate={{ opacity: 1, y: 0 }}
                             exit={{ opacity: 0, y: 8 }}
                             transition={{ duration: 0.25 }}
-                            className="mt-1 rounded-2xl px-4 py-3 flex items-center justify-between gap-3 bg-blue-50 border border-blue-200"
+                            className="mt-1 rounded-lg px-4 py-3 flex items-center justify-between gap-3 bg-blue-50 border border-blue-200"
                         >
                             <div className="flex items-center gap-2.5">
                                 <div className="w-7 h-7 rounded-lg bg-blue-100 text-blue-500 flex items-center justify-center flex-shrink-0">
                                     <LockIcon />
                                 </div>
                                 <div>
-                                    <p className="text-xs text-slate-400 font-medium mb-0.5">Paying with</p>
+                                    <p className="text-xs text-slate-500 font-medium mb-0.5">Paying with</p>
                                     <p className="text-sm font-semibold text-slate-700">{selected.label}</p>
                                 </div>
                             </div>
                             {onConfirm && (
                                 <button
                                     onClick={onConfirm}
-                                    className="flex-shrink-0 px-5 py-2 rounded-xl text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-all duration-150"
-                                    style={{ boxShadow: "0 4px 12px rgba(59,130,246,0.3)" }}
+                                    className="flex-shrink-0 px-5 py-2 rounded-md text-sm font-semibold text-white bg-blue-500 hover:bg-blue-600 transition-all duration-150"
+                                    style={{ boxShadow: "var(--shadow-block-sm)" }}
                                 >
                                     Confirm
                                 </button>

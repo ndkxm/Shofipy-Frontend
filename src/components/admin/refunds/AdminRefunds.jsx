@@ -33,11 +33,12 @@ const formatDate = (value) => {
 
 const STATUS_STYLES = {
     PENDING:   "bg-amber-50  text-amber-700  ring-1 ring-amber-200",
+    PROCESSING: "bg-sky-50   text-sky-700    ring-1 ring-sky-200",
     COMPLETED: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200",
     REJECTED:  "bg-red-50    text-red-700    ring-1 ring-red-200",
 };
 
-const FILTER_OPTIONS = ["ALL", "PENDING", "COMPLETED", "REJECTED"];
+const FILTER_OPTIONS = ["ALL", "PENDING", "PROCESSING", "COMPLETED", "REJECTED"];
 
 // ─── main component ────────────────────────────────────────────────────────────
 export const AdminRefunds = () => {
@@ -69,6 +70,7 @@ export const AdminRefunds = () => {
     const counts = {
         ALL:       refunds.length,
         PENDING:   refunds.filter((r) => r.status === "PENDING").length,
+        PROCESSING: refunds.filter((r) => r.status === "PROCESSING").length,
         COMPLETED: refunds.filter((r) => r.status === "COMPLETED").length,
         REJECTED:  refunds.filter((r) => r.status === "REJECTED").length,
     };
@@ -76,7 +78,7 @@ export const AdminRefunds = () => {
     return (
         <section className="space-y-4 py-4 px-2 sm:px-0 sm:py-6">
             {/* Header */}
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="rounded-lg border border-slate-900 bg-white p-4">
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
                     <div>
                         <div className="flex items-center gap-2 text-xs font-bold uppercase tracking-wide text-violet-600">
@@ -95,7 +97,7 @@ export const AdminRefunds = () => {
                         type="button"
                         onClick={fetchRefunds}
                         disabled={isLoading}
-                        className="inline-flex h-9 w-9 items-center justify-center self-start rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="inline-flex h-9 w-9 items-center justify-center self-start rounded-lg border border-slate-900 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                         aria-label="Refresh"
                     >
                         <RefreshCw size={15} className={isLoading ? "animate-spin" : ""} />
@@ -155,12 +157,14 @@ const RefundCard = ({ refund, onActionDone }) => {
     const [loading,    setLoading]    = useState(null); // "approve" | "reject" | null
 
     const isPending = refund.status === "PENDING";
+    // Stripe call was interrupted: admin may only retry the approval (idempotent), not reject.
+    const isProcessing = refund.status === "PROCESSING";
 
     const handleApprove = async () => {
         try {
             setLoading("approve");
             await api.patch(
-                `/users/${refund.userId ?? 0}/order/${refund.orderItemId}/accept-refund`,
+                `/admin/orders/items/${refund.orderItemId}/accept-refund`,
                 { adminNote: adminNote.trim() || "Approved by admin." }
             );
             toast.success("Refund approved successfully!", {
@@ -197,7 +201,7 @@ const RefundCard = ({ refund, onActionDone }) => {
     };
 
     return (
-        <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm transition-shadow hover:shadow-md">
+        <div className="overflow-hidden rounded-lg border border-slate-900 bg-white transition-shadow hover:">
             {/* Card header row */}
             <div className="flex flex-col gap-3 p-4 sm:flex-row sm:items-center sm:justify-between">
                 <div className="flex items-start gap-3 min-w-0">
@@ -270,8 +274,8 @@ const RefundCard = ({ refund, onActionDone }) => {
                         </div>
                     )}
 
-                    {/* Action area – only for PENDING */}
-                    {isPending && (
+                    {/* Action area – PENDING, or PROCESSING (retry approve only) */}
+                    {(isPending || isProcessing) && (
                         <div className="space-y-3">
                             <div>
                                 <label className="text-xs font-bold uppercase tracking-wide text-slate-400 mb-1 block">
@@ -282,7 +286,7 @@ const RefundCard = ({ refund, onActionDone }) => {
                                     onChange={(e) => setAdminNote(e.target.value)}
                                     rows={2}
                                     placeholder="Leave a note for the user…"
-                                    className="w-full rounded-lg border border-slate-200 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-100 resize-none"
+                                    className="w-full rounded-lg border border-slate-900 bg-white px-3 py-2 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-violet-400 focus:ring-2 focus:ring-violet-100 resize-none"
                                 />
                             </div>
 
@@ -299,11 +303,11 @@ const RefundCard = ({ refund, onActionDone }) => {
                                     ) : (
                                         <CheckCircle2 size={15} />
                                     )}
-                                    Approve &amp; Refund
+                                    {isProcessing ? "Retry Refund" : <>Approve &amp; Refund</>}
                                 </button>
 
                                 {/* Reject */}
-                                <button
+                                {isPending && <button
                                     type="button"
                                     onClick={handleReject}
                                     disabled={!!loading}
@@ -315,7 +319,7 @@ const RefundCard = ({ refund, onActionDone }) => {
                                         <XCircle size={15} />
                                     )}
                                     Reject
-                                </button>
+                                </button>}
                             </div>
                         </div>
                     )}
@@ -327,8 +331,8 @@ const RefundCard = ({ refund, onActionDone }) => {
 
 // ─── state panel ───────────────────────────────────────────────────────────────
 const StatePanel = ({ icon: Icon, title, description, danger = false, spinning = false, onRetry }) => (
-    <div className="rounded-xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-        <div className={`mx-auto flex h-11 w-11 items-center justify-center rounded-xl ${danger ? "bg-red-50 text-red-500" : "bg-violet-50 text-violet-600"}`}>
+    <div className="rounded-lg border border-slate-900 bg-white p-10 text-center">
+        <div className={`mx-auto flex h-11 w-11 items-center justify-center rounded-md ${danger ? "bg-red-50 text-red-500" : "bg-violet-50 text-violet-600"}`}>
             <Icon size={22} className={spinning ? "animate-spin" : ""} />
         </div>
         <h3 className="mt-4 text-base font-extrabold text-slate-900">{title}</h3>

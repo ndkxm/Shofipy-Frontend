@@ -63,6 +63,8 @@ const getRefundBadge = (refundStatus) => {
     const n = String(refundStatus).toUpperCase();
     if (n === "PENDING")
         return { label: "Refund Pending", className: "bg-amber-50 text-amber-700 ring-1 ring-amber-200", Icon: Clock };
+    if (n === "PROCESSING")
+        return { label: "Refund Processing", className: "bg-sky-50 text-sky-700 ring-1 ring-sky-200", Icon: Clock };
     if (n === "COMPLETED")
         return { label: "Refunded", className: "bg-emerald-50 text-emerald-700 ring-1 ring-emerald-200", Icon: CheckCircle2 };
     if (n === "REJECTED")
@@ -111,10 +113,10 @@ const RefundModal = ({ item, order, onClose, onSuccess }) => {
             style={{ background: "rgba(0,0,0,0.55)", backdropFilter: "blur(4px)" }}
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
-            <div className="w-full max-w-md overflow-hidden rounded-3xl bg-white shadow-2xl animate-[fadeInUp_0.2s_ease]">
+            <div className="w-full max-w-md overflow-hidden rounded-lg bg-white animate-[fadeInUp_0.2s_ease]">
                 <div className="flex items-center justify-between border-b border-slate-100 px-6 py-5">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-2xl bg-red-50 text-red-500">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-lg bg-red-50 text-red-500">
                             <RotateCcw size={18} />
                         </div>
                         <div>
@@ -122,13 +124,13 @@ const RefundModal = ({ item, order, onClose, onSuccess }) => {
                             <p className="text-xs text-slate-400">Order #{order.orderId}</p>
                         </div>
                     </div>
-                    <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-xl text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
+                    <button onClick={onClose} className="flex h-8 w-8 items-center justify-center rounded-md text-slate-400 transition hover:bg-slate-100 hover:text-slate-700">
                         <X size={18} />
                     </button>
                 </div>
 
                 <div className="flex items-center gap-3 border-b border-slate-100 px-6 py-4">
-                    <div className="h-14 w-14 shrink-0 overflow-hidden rounded-xl bg-slate-100">
+                    <div className="h-14 w-14 shrink-0 overflow-hidden rounded-md bg-slate-100">
                         {itemImage ? (
                             <img src={itemImage} alt={item.product?.productName} className="h-full w-full object-cover" />
                         ) : (
@@ -151,18 +153,18 @@ const RefundModal = ({ item, order, onClose, onSuccess }) => {
                         onChange={(e) => setReason(e.target.value)}
                         placeholder="Please describe why you want a refund..."
                         rows={4}
-                        className="w-full resize-none rounded-2xl border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                        className="w-full resize-none rounded-lg border border-slate-200 bg-slate-50 px-4 py-3 text-sm text-slate-800 outline-none placeholder:text-slate-400 transition focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
                     />
                     <p className="mt-1.5 text-xs text-slate-400">
                         Note: You can only request a refund if you have not revealed the game key.
                     </p>
                     <div className="mt-5 flex gap-3">
                         <button type="button" onClick={onClose}
-                            className="flex-1 h-11 rounded-2xl border border-slate-200 bg-white text-sm font-bold text-slate-600 transition hover:bg-slate-50">
+                            className="flex-1 h-11 rounded-lg border border-slate-900 bg-white text-sm font-bold text-slate-600 transition hover:bg-slate-50">
                             Cancel
                         </button>
                         <button type="submit" disabled={!reason.trim() || isSubmitting}
-                            className="flex-1 h-11 inline-flex items-center justify-center gap-2 rounded-2xl bg-red-600 text-sm font-bold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60">
+                            className="flex-1 h-11 inline-flex items-center justify-center gap-2 rounded-lg bg-red-600 text-sm font-bold text-white transition hover:bg-red-700 disabled:cursor-not-allowed disabled:opacity-60">
                             {isSubmitting ? <Loader2 size={15} className="animate-spin" /> : <RotateCcw size={15} />}
                             Submit Request
                         </button>
@@ -206,10 +208,10 @@ const RevealKeyModal = ({ item, order, onClose, onRevealed }) => {
             style={{ background: "rgba(0,0,0,0.6)", backdropFilter: "blur(4px)" }}
             onClick={(e) => e.target === e.currentTarget && !isRevealing && onClose()}
         >
-            <div className="w-full max-w-sm overflow-hidden rounded-3xl bg-white shadow-2xl animate-[fadeInUp_0.2s_ease]">
+            <div className="w-full max-w-sm overflow-hidden rounded-lg bg-white animate-[fadeInUp_0.2s_ease]">
                 {/* Warning Header */}
                 <div className="bg-gradient-to-br from-amber-500 to-orange-500 px-6 py-6 text-center text-white">
-                    <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-2xl bg-white/20 backdrop-blur-sm">
+                    <div className="mx-auto mb-3 flex h-14 w-14 items-center justify-center rounded-lg bg-white/20">
                         <AlertTriangle size={28} />
                     </div>
                     <h3 className="text-lg font-extrabold">Reveal Game Key?</h3>
@@ -218,7 +220,7 @@ const RevealKeyModal = ({ item, order, onClose, onRevealed }) => {
 
                 {/* Product info */}
                 <div className="px-6 pt-5">
-                    <div className="flex items-center gap-3 rounded-2xl bg-slate-50 p-3 border border-slate-200">
+                    <div className="flex items-center gap-3 rounded-lg bg-slate-50 p-3 border border-slate-200">
                         <Key size={16} className="shrink-0 text-slate-500" />
                         <p className="text-sm font-semibold text-slate-800 truncate">
                             {item.product?.productName || "Product"}
@@ -228,7 +230,7 @@ const RevealKeyModal = ({ item, order, onClose, onRevealed }) => {
 
                 {/* Warning list */}
                 <div className="px-6 py-5 space-y-3">
-                    <p className="text-sm font-bold text-slate-800">⚠️ Before you reveal, please note:</p>
+                    <p className="text-sm font-bold text-slate-800">Before you reveal, please note:</p>
                     <ul className="space-y-2 text-sm text-slate-600">
                         <li className="flex items-start gap-2">
                             <span className="mt-0.5 h-4 w-4 shrink-0 rounded-full bg-red-100 text-red-600 flex items-center justify-center text-[10px] font-bold">✕</span>
@@ -250,7 +252,7 @@ const RevealKeyModal = ({ item, order, onClose, onRevealed }) => {
                         type="button"
                         onClick={onClose}
                         disabled={isRevealing}
-                        className="flex-1 h-11 rounded-2xl border border-slate-200 bg-white text-sm font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-60"
+                        className="flex-1 h-11 rounded-lg border border-slate-900 bg-white text-sm font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-60"
                     >
                         Cancel
                     </button>
@@ -258,7 +260,7 @@ const RevealKeyModal = ({ item, order, onClose, onRevealed }) => {
                         type="button"
                         onClick={handleReveal}
                         disabled={isRevealing}
-                        className="flex-1 h-11 inline-flex items-center justify-center gap-2 rounded-2xl bg-amber-500 text-sm font-bold text-white transition hover:bg-amber-600 disabled:cursor-not-allowed disabled:opacity-60"
+                        className="flex-1 h-11 inline-flex items-center justify-center gap-2 rounded-lg bg-amber-500 text-sm font-bold text-white transition hover:bg-amber-600 disabled:cursor-not-allowed disabled:opacity-60"
                     >
                         {isRevealing ? <Loader2 size={15} className="animate-spin" /> : <Eye size={15} />}
                         Yes, Reveal Key
@@ -359,7 +361,7 @@ const GameKeySection = ({ item, order }) => {
 
     return (
         <>
-            <div className="mt-3 rounded-xl border border-slate-200 bg-slate-50 overflow-hidden">
+            <div className="mt-3 rounded-lg border border-slate-300 bg-slate-50 overflow-hidden">
                 <div className="flex items-center justify-between px-3 py-2 border-b border-slate-200 bg-white">
                     <div className="flex items-center gap-2 text-xs font-bold text-slate-500 uppercase tracking-wide">
                         <Key size={12} />
@@ -470,10 +472,10 @@ const OrderItemCard = ({ item, order }) => {
 
     return (
         <>
-            <div className="group flex flex-col gap-3 rounded-2xl border border-slate-200 bg-white p-4 transition hover:shadow-md hover:border-slate-300">
+            <div className="group flex flex-col gap-3 rounded-lg border border-slate-900 bg-white p-4 transition hover: hover:border-slate-300">
                 <div className="flex flex-col sm:flex-row gap-4">
                     {/* Product Image */}
-                    <div className="h-24 w-24 shrink-0 self-center sm:self-start overflow-hidden rounded-xl bg-slate-100 ring-1 ring-slate-200">
+                    <div className="h-24 w-24 shrink-0 self-center sm:self-start overflow-hidden rounded-md bg-slate-100 ring-1 ring-slate-200">
                         {itemImage ? (
                             <img
                                 src={itemImage}
@@ -561,7 +563,7 @@ const OrderCard = ({ order }) => {
     const [expanded, setExpanded] = useState(true);
 
     return (
-        <article className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm transition hover:shadow-md">
+        <article className="overflow-hidden rounded-lg border border-slate-900 bg-white transition hover:">
             {/* Order Header */}
             <div className="flex flex-col gap-3 border-b border-slate-100 bg-slate-50/80 px-5 py-4 sm:flex-row sm:items-center sm:justify-between sm:px-6">
                 <div className="flex flex-wrap items-center gap-2">
@@ -596,7 +598,7 @@ const OrderCard = ({ order }) => {
                     <button
                         type="button"
                         onClick={() => setExpanded((v) => !v)}
-                        className="ml-auto flex h-8 w-8 items-center justify-center rounded-xl border border-slate-200 bg-white text-slate-500 transition hover:bg-slate-100"
+                        className="ml-auto flex h-8 w-8 items-center justify-center rounded-lg border border-slate-900 bg-white text-slate-500 transition hover:bg-slate-100"
                         aria-label={expanded ? "Collapse" : "Expand"}
                     >
                         {expanded ? <ChevronUp size={16} /> : <ChevronDown size={16} />}
@@ -681,7 +683,7 @@ export const MyOrder = () => {
         <>
             <Header />
             <section className="mx-auto w-full max-w-6xl px-3 py-4 sm:px-6 sm:py-8 mt-25">
-                <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white shadow-sm">
+                <div className="overflow-hidden rounded-[28px] border border-slate-200 bg-white">
                     {/* ── Hero Banner ── */}
                     <div className="relative border-b border-slate-100 bg-gradient-to-br from-slate-950 via-slate-900 to-blue-950 px-5 py-6 text-white sm:px-8 sm:py-8">
                         <div className="absolute inset-0 opacity-20">
@@ -718,18 +720,18 @@ export const MyOrder = () => {
                                     value={searchTerm}
                                     onChange={(e) => setSearchTerm(e.target.value)}
                                     placeholder="Search order id, status, product..."
-                                    className="h-11 w-full rounded-2xl border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
+                                    className="h-11 w-full rounded-lg border border-slate-200 bg-slate-50 pl-10 pr-4 text-sm font-medium text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-blue-400 focus:bg-white focus:ring-2 focus:ring-blue-100"
                                 />
                             </label>
                             <div className="flex items-center gap-3">
-                                <span className="text-xs text-slate-400 font-medium">
+                                <span className="text-xs text-slate-500 font-medium">
                                     {totalItems} item(s) across {orders.length} order(s)
                                 </span>
                                 <button
                                     type="button"
                                     onClick={fetchOrders}
                                     disabled={isLoading}
-                                    className="inline-flex h-11 items-center justify-center gap-2 rounded-2xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                                    className="inline-flex h-11 items-center justify-center gap-2 rounded-lg border border-slate-900 bg-white px-4 text-sm font-bold text-slate-700 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                                 >
                                     <RefreshCw size={15} className={isLoading ? "animate-spin" : ""} />
                                     Refresh
@@ -771,22 +773,22 @@ export const MyOrder = () => {
 
 /* ─────────────── Sub-components ─────────────── */
 const StatCard = ({ label, value, compact = false }) => (
-    <div className="rounded-2xl border border-white/10 bg-white/10 px-3 py-3 backdrop-blur-sm">
+    <div className="rounded-lg border border-white/10 bg-white/10 px-3 py-3">
         <p className="text-[11px] font-semibold uppercase tracking-[0.18em] text-slate-300">{label}</p>
         <p className={`mt-1 font-black text-white ${compact ? "text-sm sm:text-base" : "text-lg sm:text-2xl"}`}>{value}</p>
     </div>
 );
 
 const StatePanel = ({ icon: Icon, title, description, danger = false, spinning = false, onRetry }) => (
-    <div className="rounded-3xl border border-slate-200 bg-white px-6 py-10 text-center shadow-sm">
-        <div className={`mx-auto flex h-12 w-12 items-center justify-center rounded-2xl ${danger ? "bg-red-50 text-red-500" : "bg-blue-50 text-blue-600"}`}>
+    <div className="rounded-lg border border-slate-900 bg-white px-6 py-10 text-center">
+        <div className={`mx-auto flex h-12 w-12 items-center justify-center rounded-lg ${danger ? "bg-red-50 text-red-500" : "bg-blue-50 text-blue-600"}`}>
             <Icon size={22} className={spinning ? "animate-spin" : ""} />
         </div>
         <h3 className="mt-4 text-base font-extrabold text-slate-900">{title}</h3>
         {description && <p className="mx-auto mt-2 max-w-sm text-sm text-slate-500">{description}</p>}
         {onRetry && (
             <button type="button" onClick={onRetry}
-                className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-2xl bg-blue-600 px-4 text-sm font-bold text-white transition hover:bg-blue-700">
+                className="mt-5 inline-flex h-10 items-center justify-center gap-2 rounded-lg bg-blue-600 px-4 text-sm font-bold text-white transition hover:bg-blue-700">
                 <RefreshCw size={15} />
                 Try again
             </button>

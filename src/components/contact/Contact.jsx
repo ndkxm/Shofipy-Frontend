@@ -1,6 +1,6 @@
 import { Header } from "../shared/Header";
 import { Footer } from "../shared/Footer";
-import { motion } from "framer-motion";
+import { Reveal, SplitReveal, Marquee, accentAt } from "../shared/Motion";
 
 // ── Icons ──────────────────────────────────────────────────────────────────────
 
@@ -38,166 +38,80 @@ const INFO = [
 
 // ── Field component ────────────────────────────────────────────────────────────
 
-const Field = ({ label, children }) => (
+const Field = ({ label, id, children }) => (
     <div>
-        <label
-            className="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-1.5"
-            style={{ fontFamily: "'Reddit Sans', sans-serif" }}
-        >
+        <label htmlFor={id} className="block label-mono text-slate-600 mb-2">
             {label}
         </label>
         {children}
     </div>
 );
 
-const inputCls = "w-full border border-slate-200 rounded-xl px-4 py-2.5 text-sm text-slate-800 placeholder-slate-400 outline-none transition-all duration-150 focus:border-blue-400 focus:ring-2 focus:ring-blue-100 bg-white";
+const inputCls = "w-full h-12 border border-slate-900 rounded-md px-3.5 text-[15px] text-slate-900 placeholder-slate-400 outline-none bg-white focus:ring-2 focus:ring-blue-600 focus:ring-offset-1";
 
 // ── Main ───────────────────────────────────────────────────────────────────────
 
 export const Contact = () => {
     return (
         <div className="bg-slate-50 min-h-screen">
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:wght@400;500;600;700;800&display=swap');
-                .contact-wrap * { font-family: 'Reddit Sans', sans-serif; }
-            `}</style>
-
             <Header />
 
-            {/* Hero banner */}
-            <section className="contact-wrap relative overflow-hidden mt-[60px]">
-                <div className="absolute inset-0 bg-slate-900" />
-                <div className="absolute inset-0 opacity-25"
-                    style={{ backgroundImage: "radial-gradient(circle at 15% 60%, #3b82f6 0%, transparent 50%), radial-gradient(circle at 85% 30%, #6366f1 0%, transparent 45%)" }} />
-                <div className="absolute inset-0 opacity-5"
-                    style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
-
-                <div className="relative z-10 max-w-3xl mx-auto px-6 py-24 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 18 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-5">
-                            <span className="text-xs font-bold text-white/70 uppercase tracking-widest">Support</span>
-                        </div>
-                        <h1 className="text-4xl lg:text-5xl font-extrabold text-white mb-4 tracking-tight">
-                            Contact Us
-                        </h1>
-                        <p className="text-base text-white/60 max-w-lg mx-auto leading-relaxed">
-                            We'd love to hear from you. Get in touch with our team.
+            <main className="pt-16">
+                <section className="border-b border-slate-900">
+                    <div className="max-w-7xl mx-auto px-5 md:px-6 pt-16 pb-12">
+                        <p className="label-mono text-slate-500 mb-5">Support</p>
+                        <SplitReveal lines={["Talk to us."]} className="display text-6xl sm:text-7xl lg:text-8xl text-slate-900" />
+                        <p className="mt-6 max-w-lg text-lg text-slate-600 leading-relaxed">
+                            Key not working, payment stuck, or just a question? Send it over — we usually reply within a day.
                         </p>
-                    </motion.div>
-                </div>
-            </section>
+                    </div>
+                </section>
 
-            {/* Main content */}
-            <section className="contact-wrap max-w-6xl mx-auto px-6 py-20 grid lg:grid-cols-2 gap-12">
-
-                {/* Left — contact info */}
-                <motion.div
-                    initial={{ opacity: 0, x: -16 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                >
-                    <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-2">Get in touch</h2>
-                    <p className="text-sm text-slate-400 mb-8 leading-relaxed">
-                        Have a question or need help? Reach out and we'll respond as soon as possible.
-                    </p>
-
-                    {/* Info cards */}
-                    <div className="space-y-3 mb-10">
-                        {INFO.map((item) => (
-                            <div
-                                key={item.label}
-                                className="flex items-center gap-4 p-4 bg-white rounded-2xl border border-slate-200 hover:border-slate-300 transition-colors duration-150"
-                                style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.04)" }}
-                            >
-                                <div className="w-9 h-9 rounded-xl bg-blue-50 border border-blue-100 flex items-center justify-center text-blue-600 flex-shrink-0">
-                                    {item.icon}
+                <section className="max-w-7xl mx-auto px-5 md:px-6 py-16 grid lg:grid-cols-[1fr_1.4fr] gap-12">
+                    <div>
+                        <h2 className="label-mono text-slate-500 mb-5">Direct lines</h2>
+                        <dl className="border-t border-slate-900">
+                            {INFO.map((item) => (
+                                <div key={item.label} className="flex items-start gap-4 py-5 border-b border-slate-300">
+                                    <span className="grid place-items-center w-9 h-9 rounded-md border border-slate-900 text-slate-900 transition-transform duration-300 hover:rotate-12" style={{ background: accentAt(INFO.indexOf(item) + 1).soft }} aria-hidden="true">{item.icon}</span>
+                                    <div>
+                                        <dt className="label-mono text-slate-500 mb-1">{item.label}</dt>
+                                        <dd className="text-lg font-semibold text-slate-900">{item.value}</dd>
+                                    </div>
                                 </div>
-                                <div>
-                                    <p className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-0.5">{item.label}</p>
-                                    <p className="text-sm font-semibold text-slate-800">{item.value}</p>
-                                </div>
-                            </div>
-                        ))}
+                            ))}
+                        </dl>
+                        <p className="mt-6 text-sm text-slate-600 leading-relaxed">
+                            For order issues, include your order number from <span className="font-semibold text-slate-900">My Orders</span> so we can find it fast.
+                        </p>
                     </div>
 
-                    {/* Map placeholder */}
-                    <div
-                        className="rounded-2xl border border-slate-200 overflow-hidden bg-white flex items-center justify-center h-56"
-                        style={{ boxShadow: "0 1px 6px rgba(0,0,0,0.04)" }}
-                    >
-                        <div className="flex flex-col items-center gap-2 text-slate-400">
-                            <MapIcon />
-                            <span className="text-sm font-medium">Map placeholder</span>
-                        </div>
-                    </div>
-                </motion.div>
+                    <Reveal className="bg-white rounded-lg border border-slate-900 p-6 md:p-8" style={{ boxShadow: "8px 8px 0 0 var(--color-cobalt)" }}>
+                        <h2 className="text-3xl font-extrabold text-slate-900">Send a message</h2>
+                        <p className="mt-1 mb-8 text-slate-500">All fields are required.</p>
 
-                {/* Right — form */}
-                <motion.div
-                    initial={{ opacity: 0, x: 16 }}
-                    whileInView={{ opacity: 1, x: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                >
-                    <div
-                        className="bg-white rounded-3xl border border-slate-200 p-7"
-                        style={{ boxShadow: "0 2px 20px rgba(0,0,0,0.06)" }}
-                    >
-                        <h2 className="text-2xl font-extrabold text-slate-900 tracking-tight mb-1">Send a message</h2>
-                        <p className="text-sm text-slate-400 mb-7">We typically reply within 24 hours.</p>
-
-                        <form className="space-y-4">
-                            <div className="grid sm:grid-cols-2 gap-4">
-                                <Field label="Your Name">
-                                    <input
-                                        type="text"
-                                        placeholder="John Doe"
-                                        className={inputCls}
-                                    />
+                        <form className="space-y-5">
+                            <div className="grid sm:grid-cols-2 gap-5">
+                                <Field label="Your name" id="c-name">
+                                    <input id="c-name" type="text" autoComplete="name" placeholder="Jane Doe" className={inputCls} />
                                 </Field>
-                                <Field label="Email Address">
-                                    <input
-                                        type="email"
-                                        placeholder="john@example.com"
-                                        className={inputCls}
-                                    />
+                                <Field label="Email" id="c-email">
+                                    <input id="c-email" type="email" autoComplete="email" placeholder="jane@example.com" className={inputCls} />
                                 </Field>
                             </div>
-
-                            <Field label="Subject">
-                                <input
-                                    type="text"
-                                    placeholder="How can we help?"
-                                    className={inputCls}
-                                />
+                            <Field label="Subject" id="c-subject">
+                                <input id="c-subject" type="text" placeholder="Order #1042 — key already used" className={inputCls} />
                             </Field>
-
-                            <Field label="Message">
-                                <textarea
-                                    rows={5}
-                                    placeholder="Tell us more about your question or issue..."
-                                    className={`${inputCls} resize-none`}
-                                />
+                            <Field label="Message" id="c-message">
+                                <textarea id="c-message" rows={6} placeholder="Tell us what happened…" className={`${inputCls} h-auto py-3 resize-y`} />
                             </Field>
-
-                            <motion.button
-                                whileTap={{ scale: 0.98 }}
-                                type="submit"
-                                className="flex items-center gap-2 px-7 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition-colors duration-150"
-                                style={{ boxShadow: "0 4px 14px rgba(59,130,246,0.32)" }}
-                            >
-                                <SendIcon />
-                                Send Message
-                            </motion.button>
+                            <button type="submit" className="btn-accent !px-7 !py-3.5 text-[15px]">
+                                <SendIcon /> Send message
+                            </button>
                         </form>
-                    </div>
-                </motion.div>
-            </section>
+                    </Reveal>
+                </section>
+            </main>
 
             <Footer />
         </div>

@@ -27,8 +27,6 @@ const ORDER_STATUS_OPTIONS = [
     { label: "CANCELLED" },
     { label: "EXPIRED" },
     { label: "PROCESSING" },
-    { label: "SHIPPED" },
-    { label: "DELIVERED" },
 ];
 
 const PAGE_SIZE_OPTIONS = [5, 10, 20];
@@ -139,7 +137,7 @@ export const AdminOrder = () => {
     return (
         <section className="space-y-4 py-4 px-2 sm:px-0 sm:py-6">
             {/* Header card */}
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="rounded-lg border border-slate-900 bg-white p-4">
                 <div className="flex flex-col gap-4">
                     {/* Title */}
                     <div>
@@ -218,7 +216,7 @@ export const AdminOrder = () => {
                                 type="button"
                                 onClick={fetchOrders}
                                 disabled={isLoading}
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-900 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                                 aria-label="Refresh"
                             >
                                 <RefreshCw size={15} className={isLoading ? "animate-spin" : ""} />
@@ -236,11 +234,11 @@ export const AdminOrder = () => {
             ) : orders.length === 0 ? (
                 <StatePanel icon={PackageOpen} title="No orders found" description="Try a different search term or refresh the list." />
             ) : (
-                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div className="overflow-hidden rounded-lg border border-slate-900 bg-white">
                     {/* Desktop table */}
                     <div className="hidden lg:block overflow-x-auto">
                         <table className="min-w-full divide-y divide-slate-100 text-left">
-                            <thead className="bg-slate-50">
+                            <thead className="bg-slate-100 border-b border-slate-900">
                                 <tr>
                                     {["Order", "Customer", "Date", "Items", "Status", "Payment", "Total"].map((h, i) => (
                                         <th
@@ -321,7 +319,7 @@ export const AdminOrder = () => {
                                 type="button"
                                 onClick={() => setPageNumber((p) => Math.max(0, p - 1))}
                                 disabled={!canGoPrevious}
-                                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-900 bg-white px-3 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 <ChevronLeft size={14} />
                                 Previous
@@ -330,7 +328,7 @@ export const AdminOrder = () => {
                                 type="button"
                                 onClick={() => setPageNumber((p) => p + 1)}
                                 disabled={!canGoNext}
-                                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-900 bg-white px-3 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 Next
                                 <ChevronRight size={14} />
@@ -351,7 +349,8 @@ const StatusPill = ({ orderId, value, onUpdated }) => {
         const newStatus = e.target.value;
         try {
             setLoading(true);
-            await api.patch(`/admin/orders/${orderId}/status`, { status: newStatus });
+            // Backend reads status as a query param (@RequestParam), not from the body.
+            await api.patch(`/admin/orders/${orderId}/status`, null, { params: { status: newStatus } });
             setStatus(newStatus);
             onUpdated?.(newStatus);
         } catch (error) {
@@ -402,8 +401,8 @@ const OrderItems = ({ items = [] }) => {
 };
 
 const StatePanel = ({ icon: Icon, title, description, danger = false, spinning = false, onRetry }) => (
-    <div className="rounded-xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-        <div className={`mx-auto flex h-11 w-11 items-center justify-center rounded-xl ${danger ? "bg-red-50 text-red-500" : "bg-blue-50 text-blue-600"}`}>
+    <div className="rounded-lg border border-slate-900 bg-white p-10 text-center">
+        <div className={`mx-auto flex h-11 w-11 items-center justify-center rounded-md ${danger ? "bg-red-50 text-red-500" : "bg-blue-50 text-blue-600"}`}>
             <Icon size={22} className={spinning ? "animate-spin" : ""} />
         </div>
         <h3 className="mt-4 text-base font-extrabold text-slate-900">{title}</h3>

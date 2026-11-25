@@ -1,10 +1,10 @@
 export const OurMission = () => {
     return (
-        <section className=" max-w-[1530px] mx-auto py-20 bg-gray-50">
+        <section className="max-w-[1530px] mx-auto py-20 bg-gray-50">
             <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-2 gap-12 items-center">
                 <img
                     src="https://images.unsplash.com/photo-1556742031-c6961e8560b0"
-                    className="rounded-2xl shadow-xl"
+                    className="rounded-lg"
                 />
                 <div>
                     <h2 className="text-3xl font-bold mb-6">

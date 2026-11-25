@@ -22,10 +22,9 @@ const CustomSelect = ({ value, onChange, options, placeholder }) => {
             <button
                 type="button"
                 onClick={() => setOpen((p) => !p)}
-                className="w-full flex items-center justify-between gap-3 px-4 py-2.5 bg-white border border-slate-200 rounded-xl text-sm font-medium text-slate-700 hover:border-slate-300 transition-all duration-150"
-                style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+                aria-haspopup="listbox" aria-expanded={open} className="w-full h-11 flex items-center justify-between gap-3 px-3.5 bg-white border border-slate-900 rounded-md text-sm font-semibold text-slate-900 hover:bg-slate-100 transition-colors duration-150"
             >
-                <span className={selected ? "text-slate-800" : "text-slate-400"}>
+                <span className={selected ? "text-slate-900" : "text-slate-500"}>
                     {selected?.label || placeholder}
                 </span>
                 <motion.span animate={{ rotate: open ? 180 : 0 }} transition={{ duration: 0.18 }}>
@@ -40,8 +39,8 @@ const CustomSelect = ({ value, onChange, options, placeholder }) => {
                         animate={{ opacity: 1, y: 0, scale: 1 }}
                         exit={{ opacity: 0, y: -6, scale: 0.97 }}
                         transition={{ duration: 0.16 }}
-                        className="absolute top-full left-0 mt-2 w-full bg-white border border-slate-200 rounded-2xl overflow-hidden z-50"
-                        style={{ boxShadow: "0 8px 24px rgba(0,0,0,0.1)" }}
+                        role="listbox" className="absolute top-full left-0 mt-1.5 w-full bg-white border border-slate-900 rounded-md overflow-hidden z-50"
+                        style={{ boxShadow: "var(--shadow-block)" }}
                     >
                         <div className="max-h-60 overflow-y-auto">
                             {options.map((opt) => (
@@ -51,10 +50,9 @@ const CustomSelect = ({ value, onChange, options, placeholder }) => {
                                     onClick={() => { onChange(opt.value); setOpen(false); }}
                                     className={`w-full text-left px-4 py-2.5 text-sm transition-colors duration-100
                                         ${opt.value === value
-                                            ? "bg-blue-50 text-blue-700 font-semibold"
+                                            ? "bg-slate-900 text-slate-50 font-semibold"
                                             : "text-slate-700 hover:bg-slate-50"
                                         }`}
-                                    style={{ fontFamily: "'Reddit Sans', sans-serif" }}
                                 >
                                     {opt.label}
                                 </button>
@@ -73,18 +71,18 @@ const GenreChips = ({ genres, selected, onChange }) => {
     if (!genres || genres.length === 0) return null;
 
     return (
-        <div className="flex flex-wrap gap-2 pt-3 border-t border-slate-100 mt-1">
-            <span className="text-xs font-semibold text-slate-400 self-center pr-1">Genre:</span>
+        <div className="flex flex-wrap gap-2 pt-4 mt-4 border-t border-dashed border-slate-300">
+            <span className="label-mono text-slate-500 self-center pr-2">Genre</span>
 
             {/* All chip */}
             <button
                 type="button"
                 onClick={() => onChange("all")}
-                className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-150 ${selected === "all"
-                    ? "bg-blue-600 text-white shadow-sm"
-                    : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                aria-pressed={selected === "all"}
+                className={`px-3 py-1.5 rounded-sm border text-xs font-semibold transition-colors duration-150 ${selected === "all"
+                    ? "bg-slate-900 border-slate-900 text-slate-50"
+                    : "border-slate-300 text-slate-700 hover:border-slate-900"
                     }`}
-                style={{ fontFamily: "'Reddit Sans', sans-serif" }}
             >
                 All
             </button>
@@ -96,12 +94,12 @@ const GenreChips = ({ genres, selected, onChange }) => {
                         key={g.genreId}
                         type="button"
                         onClick={() => onChange(g.genreName)}
+                        aria-pressed={isSelected}
                         whileTap={{ scale: 0.94 }}
-                        className={`px-3 py-1 rounded-full text-xs font-semibold transition-all duration-150 ${isSelected
-                            ? "bg-blue-600 text-white shadow-sm"
-                            : "bg-slate-100 text-slate-600 hover:bg-slate-200"
+                        className={`px-3 py-1.5 rounded-sm border text-xs font-semibold transition-colors duration-150 ${isSelected
+                            ? "bg-slate-900 border-slate-900 text-slate-50"
+                            : "border-slate-300 text-slate-700 hover:border-slate-900"
                             }`}
-                        style={{ fontFamily: "'Reddit Sans', sans-serif" }}
                     >
                         {g.genreName}
                     </motion.button>
@@ -192,39 +190,33 @@ export const Filter = ({ categories, genres }) => {
     ];
 
 const sortOptions = [
-    { value: "asc", label: "Price: Low → High" },
-    { value: "desc", label: "Price: High → Low" },
+    { value: "asc", label: "Price: low to high" },
+    { value: "desc", label: "Price: high to low" },
 ];
 
 const hasActiveFilter = category !== "all" || genre !== "all" || sortOrder !== "asc" || searchTerm !== "";
 
 return (
     <>
-        <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:wght@400;500;600;700&display=swap');
-                .filter-wrap * { font-family: 'Reddit Sans', sans-serif; }
-            `}</style>
 
         <motion.div
             initial={{ opacity: 0, y: -10 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="filter-wrap bg-white border border-slate-200 rounded-2xl p-5 mb-10"
-            style={{ boxShadow: "0 1px 12px rgba(0,0,0,0.05)" }}
+            className="bg-white border border-slate-900 rounded-lg p-4 md:p-5"
         >
             {/* Row 1: Search + Category + Sort + Clear */}
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-4">
 
                 {/* Search */}
                 <div className="relative w-full lg:max-w-sm">
-                    <FiSearch className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-sm" />
+                    <FiSearch className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-500 text-sm" aria-hidden="true" />
                     <input
                         type="text"
                         placeholder="Search games..."
                         value={searchTerm}
                         onChange={(e) => setSearchTerm(e.target.value)}
-                        className="w-full border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm text-slate-700 placeholder-slate-400 outline-none transition-all duration-150 focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
-                        style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+                        aria-label="Search games" className="w-full h-11 border border-slate-900 rounded-md pl-10 pr-4 text-sm text-slate-900 placeholder-slate-500 bg-slate-50 outline-none focus:bg-white focus:ring-2 focus:ring-blue-600 focus:ring-offset-1"
                     />
                 </div>
 
@@ -261,8 +253,7 @@ return (
                                 exit={{ opacity: 0, scale: 0.9 }}
                                 transition={{ duration: 0.15 }}
                                 onClick={handleClearFilter}
-                                className="flex items-center gap-2 px-4 py-2.5 bg-slate-100 hover:bg-slate-200 text-slate-600 rounded-xl text-sm font-semibold transition-all duration-150"
-                                style={{ fontFamily: "'Reddit Sans', sans-serif" }}
+                                className="flex items-center gap-2 h-11 px-3.5 text-blue-700 hover:text-blue-900 underline underline-offset-4 text-sm font-semibold"
                             >
                                 <FiRefreshCcw className="text-xs" />
                                 Clear

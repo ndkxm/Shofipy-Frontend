@@ -25,6 +25,8 @@ import { StaffDashboard } from './components/staff/StaffDashboard'
 import { FAQ } from './components/info/FAQ'
 import { Returns } from './components/info/Returns'
 import { Policy } from './components/info/Policy'
+import { PageCurtain } from './components/shared/PageCurtain'
+import { MotionConfig } from 'framer-motion'
 function App() {
   const dispatch = useDispatch();
   const { user } = useSelector((state) => state.auth);
@@ -42,9 +44,10 @@ function App() {
   }, [user, dispatch]);
 
   return (
-    <React.Fragment>
+    <MotionConfig reducedMotion="user">
       <Router>
         <ScrollToTop />
+        <PageCurtain />
         <Routes>
           <Route path='/' element={<Home />} />
           <Route path='/products' element={<Products />} />
@@ -76,7 +79,7 @@ function App() {
       </Router>
       <ScrollToTopButton />
       <ToastContainer />
-    </React.Fragment>
+    </MotionConfig>
   )
 }
 
