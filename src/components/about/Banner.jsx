@@ -17,7 +17,7 @@ export const Banner = () => {
                     <p className="text-lg opacity-90 mb-8">
                         Discover the latest hits, timeless classics, and exclusive deals. Join our community and build your dream game library today.
                     </p>
-                    <Link to={{ pathname: "/products" }} className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300 backdrop-blur-md">
+                    <Link to={{ pathname: "/products" }} className="bg-white text-indigo-600 px-6 py-3 rounded-xl font-semibold hover:bg-gray-200 transition-all duration-300">
                         Explore Games
                     </Link>
                 </div>
@@ -26,7 +26,7 @@ export const Banner = () => {
                     <img
                         src="https://images.unsplash.com/photo-1550745165-9bc0b252726f?q=80&w=2070&auto=format&fit=crop"
                         alt="gaming"
-                        className="rounded-2xl shadow-2xl w-full max-w-md hover:scale-105 transition duration-500"
+                        className="rounded-lg w-full max-w-md hover:scale-105 transition duration-500"
                     />
                 </div>
             </div>

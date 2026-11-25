@@ -151,8 +151,8 @@ const AvatarCropper = ({ imageSrc, onCrop, onCancel }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/40 backdrop-blur-sm px-4">
-            <div className="w-full max-w-sm rounded-2xl bg-white border border-slate-200 shadow-2xl overflow-hidden">
+        <div className="fixed inset-0 z-[80] flex items-center justify-center bg-black/40 px-4">
+            <div className="w-full max-w-sm rounded-lg bg-white border border-slate-200 overflow-hidden">
                 <div className="flex items-center justify-between px-5 py-4 border-b border-slate-100">
                     <div>
                         <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-violet-500">Crop photo</p>
@@ -225,7 +225,7 @@ const AvatarCropper = ({ imageSrc, onCrop, onCancel }) => {
                     <button
                         type="button"
                         onClick={handleCrop}
-                        className="flex-1 h-9 rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-600 text-sm font-bold text-white hover:from-violet-500 hover:to-fuchsia-500 transition flex items-center justify-center gap-2 shadow-lg shadow-violet-200"
+                        className="flex-1 h-9 rounded-lg bg-gradient-to-r from-violet-600 to-fuchsia-600 text-sm font-bold text-white hover:from-violet-500 hover:to-fuchsia-500 transition flex items-center justify-center gap-2"
                     >
                         <Check size={15} />
                         Apply
@@ -254,10 +254,10 @@ const Field = ({ label, icon: Icon, editing, value, name, type = "text", placeho
                 onChange={onChange}
                 disabled={!editing}
                 placeholder={placeholder}
-                className={`h-10 w-full rounded-xl border px-3 text-sm font-medium outline-none transition
+                className={`h-10 w-full rounded-md border px-3 text-sm font-medium outline-none transition
                     ${Icon ? "pl-9" : ""}
                     ${editing
-                        ? "border-violet-300 bg-white text-slate-800 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/15 shadow-sm"
+                        ? "border-violet-300 bg-white text-slate-800 focus:border-violet-500 focus:ring-2 focus:ring-violet-500/15 "
                         : "border-transparent bg-slate-100 text-slate-600 cursor-default select-none"
                     }`}
             />
@@ -282,7 +282,7 @@ const PasswordField = ({ label, name, value, onChange, placeholder, required }) 
                     onChange={onChange}
                     placeholder={placeholder}
                     autoComplete="off"
-                    className="h-10 w-full rounded-xl border border-slate-200 bg-white pl-9 pr-10 text-sm font-medium text-slate-800 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/15 shadow-sm"
+                    className="h-10 w-full rounded-lg border border-slate-900 bg-white pl-9 pr-10 text-sm font-medium text-slate-800 outline-none transition focus:border-violet-500 focus:ring-2 focus:ring-violet-500/15"
                 />
                 <button
                     type="button"
@@ -341,13 +341,13 @@ const ChangePasswordModal = ({ onClose, id }) => {
     };
 
     return (
-        <div className="fixed inset-0 z-[75] flex items-end sm:items-center justify-center bg-black/30 backdrop-blur-sm px-0 sm:px-4">
-            <div className="w-full sm:max-w-md rounded-t-2xl sm:rounded-2xl bg-white border border-amber-200 shadow-2xl shadow-amber-100 flex flex-col overflow-hidden">
+        <div className="fixed inset-0 z-[75] flex items-end sm:items-center justify-center bg-black/30 px-0 sm:px-4">
+            <div className="w-full sm:max-w-md rounded-t-2xl sm:rounded-lg bg-white border border-amber-200 flex flex-col overflow-hidden">
 
                 {/* Header */}
                 <div className="flex items-start justify-between border-b border-slate-100 px-5 py-4">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 text-amber-500 ring-1 ring-amber-200">
+                        <div className="flex h-9 w-9 items-center justify-center rounded-md bg-amber-50 text-amber-500 ring-1 ring-amber-200">
                             <KeyRound size={17} />
                         </div>
                         <div>
@@ -404,7 +404,7 @@ const ChangePasswordModal = ({ onClose, id }) => {
                         type="button"
                         onClick={onClose}
                         disabled={isSubmitting}
-                        className="flex-1 sm:flex-none h-9 rounded-xl border border-slate-200 bg-white px-4 text-sm font-bold text-slate-600 hover:bg-slate-50 transition disabled:opacity-50"
+                        className="flex-1 sm:flex-none h-9 rounded-lg border border-slate-900 bg-white px-4 text-sm font-bold text-slate-600 hover:bg-slate-50 transition disabled:opacity-50"
                     >
                         Cancel
                     </button>
@@ -412,7 +412,7 @@ const ChangePasswordModal = ({ onClose, id }) => {
                         type="button"
                         onClick={handleSubmit}
                         disabled={isSubmitting}
-                        className="flex-1 sm:flex-none inline-flex h-9 items-center justify-center gap-2 rounded-xl bg-gradient-to-r from-amber-500 to-orange-500 px-4 text-sm font-bold text-white hover:from-amber-400 hover:to-orange-400 transition disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-amber-200"
+                        className="flex-1 sm:flex-none inline-flex h-9 items-center justify-center gap-2 rounded-md bg-gradient-to-r from-amber-500 to-orange-500 px-4 text-sm font-bold text-white hover:from-amber-400 hover:to-orange-400 transition disabled:opacity-60 disabled:cursor-not-allowed"
                     >
                         {isSubmitting && <Loader2 size={14} className="animate-spin" />}
                         {isSubmitting ? "Saving..." : "Update password"}
@@ -457,8 +457,8 @@ const PasswordStrength = ({ password }) => {
 
 /* ─── Stat pill used inside the profile card ─── */
 const StatPill = ({ icon: Icon, label, value, color }) => (
-    <div className={`flex items-center gap-2.5 rounded-xl px-4 py-3 ${color}`}>
-        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/70 shadow-sm">
+    <div className={`flex items-center gap-2.5 rounded-md px-4 py-3 ${color}`}>
+        <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-lg bg-white/70">
             <Icon size={15} className="text-slate-600" />
         </div>
         <div className="min-w-0">
@@ -658,7 +658,7 @@ export const UserProfile = () => {
                 <div
                     className="absolute inset-0 opacity-[0.035]"
                     style={{
-                        backgroundImage: "radial-gradient(circle, #6366f1 1px, transparent 1px)",
+                        backgroundImage: "radial-gradient(circle, #3d5776 1px, transparent 1px)",
                         backgroundSize: "28px 28px",
                     }}
                 />
@@ -670,13 +670,13 @@ export const UserProfile = () => {
                 <section className="relative py-6 px-4 sm:px-6 max-w-2xl mx-auto space-y-4 pb-12">
 
                     {/* ── MAIN CARD ── */}
-                    <div className="rounded-2xl border border-slate-200/80 bg-white shadow-xl shadow-slate-200/60 overflow-hidden">
+                    <div className="rounded-lg border border-slate-200/80 bg-white /60 overflow-hidden">
 
                         {/* Top banner */}
                         <div className="relative h-28 bg-gradient-to-br from-violet-600 via-fuchsia-500 to-cyan-500 overflow-hidden">
                             <div className="absolute inset-0 opacity-25 [background-image:linear-gradient(rgba(255,255,255,0.2)_1px,transparent_1px),linear-gradient(90deg,rgba(255,255,255,0.2)_1px,transparent_1px)] [background-size:20px_20px]" />
                             <div className="absolute -bottom-6 -right-6 h-24 w-24 rounded-full bg-white/10 blur-2xl" />
-                            <div className="absolute top-3 left-4 flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1 backdrop-blur-sm">
+                            <div className="absolute top-3 left-4 flex items-center gap-1.5 rounded-full bg-white/15 px-3 py-1">
                                 <BadgeCheck size={12} className="text-white" />
                                 <span className="text-[10px] font-bold uppercase tracking-widest text-white">My Profile</span>
                             </div>
@@ -687,7 +687,7 @@ export const UserProfile = () => {
                             <div className="flex items-end justify-between -mt-12 mb-5 gap-3">
                                 {/* Avatar */}
                                 <div className="relative">
-                                    <div className="h-24 w-24 rounded-full border-4 border-white shadow-lg shadow-violet-200/60 ring-2 ring-violet-300/50 overflow-hidden bg-slate-100 shrink-0">
+                                    <div className="h-24 w-24 rounded-full border-4 border-white /60 ring-2 ring-violet-300/50 overflow-hidden bg-slate-100 shrink-0">
                                         {avatarPreview ? (
                                             <img
                                                 src={avatarPreview}
@@ -709,7 +709,7 @@ export const UserProfile = () => {
                                         <button
                                             type="button"
                                             onClick={() => fileInputRef.current?.click()}
-                                            className="absolute -bottom-1 -right-1 h-8 w-8 flex items-center justify-center rounded-xl bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white shadow-lg shadow-violet-200 hover:from-violet-400 hover:to-fuchsia-400 transition"
+                                            className="absolute -bottom-1 -right-1 h-8 w-8 flex items-center justify-center rounded-md bg-gradient-to-br from-violet-500 to-fuchsia-500 text-white hover:from-violet-400 hover:to-fuchsia-400 transition"
                                             aria-label="Change avatar"
                                         >
                                             <Camera size={14} />
@@ -732,7 +732,7 @@ export const UserProfile = () => {
                                                 type="button"
                                                 onClick={handleCancel}
                                                 disabled={isSaving}
-                                                className="inline-flex h-9 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 hover:bg-slate-50 transition disabled:opacity-50 shadow-sm"
+                                                className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-900 bg-white px-3 text-xs font-bold text-slate-600 hover:bg-slate-50 transition disabled:opacity-50"
                                             >
                                                 <X size={14} />
                                                 Cancel
@@ -741,7 +741,7 @@ export const UserProfile = () => {
                                                 type="button"
                                                 onClick={handleSave}
                                                 disabled={isSaving}
-                                                className="inline-flex h-9 items-center gap-2 rounded-xl bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 text-xs font-bold text-white hover:from-violet-500 hover:to-fuchsia-500 transition disabled:opacity-60 disabled:cursor-not-allowed shadow-lg shadow-violet-200"
+                                                className="inline-flex h-9 items-center gap-2 rounded-md bg-gradient-to-r from-violet-600 to-fuchsia-600 px-4 text-xs font-bold text-white hover:from-violet-500 hover:to-fuchsia-500 transition disabled:opacity-60 disabled:cursor-not-allowed"
                                             >
                                                 {isSaving
                                                     ? <Loader2 size={14} className="animate-spin" />
@@ -755,7 +755,7 @@ export const UserProfile = () => {
                                             <button
                                                 type="button"
                                                 onClick={() => setShowPasswordModal(true)}
-                                                className="inline-flex h-9 items-center gap-2 rounded-xl border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 hover:bg-slate-50 transition shadow-sm"
+                                                className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-900 bg-white px-3 text-xs font-bold text-slate-600 hover:bg-slate-50 transition"
                                             >
                                                 <KeyRound size={14} />
                                                 <span className="hidden sm:inline">Password</span>
@@ -763,7 +763,7 @@ export const UserProfile = () => {
                                             <button
                                                 type="button"
                                                 onClick={handleEdit}
-                                                className="inline-flex h-9 items-center gap-2 rounded-xl border border-violet-200 bg-violet-50 px-4 text-xs font-bold text-violet-700 hover:bg-violet-100 transition shadow-sm"
+                                                className="inline-flex h-9 items-center gap-2 rounded-md border border-violet-200 bg-violet-50 px-4 text-xs font-bold text-violet-700 hover:bg-violet-100 transition"
                                             >
                                                 <Edit3 size={14} />
                                                 Edit profile
@@ -849,10 +849,10 @@ export const UserProfile = () => {
                     </div>
 
                     {/* ── SECURITY CARD ── */}
-                    <div className="rounded-2xl border border-slate-200/80 bg-white shadow-lg shadow-slate-100 overflow-hidden">
+                    <div className="rounded-lg border border-slate-200/80 bg-white overflow-hidden">
                         <div className="flex items-center justify-between px-6 py-4">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-9 w-9 items-center justify-center rounded-xl bg-amber-50 ring-1 ring-amber-200">
+                                <div className="flex h-9 w-9 items-center justify-center rounded-md bg-amber-50 ring-1 ring-amber-200">
                                     <Lock size={15} className="text-amber-500" />
                                 </div>
                                 <div>
@@ -863,7 +863,7 @@ export const UserProfile = () => {
                             <button
                                 type="button"
                                 onClick={() => setShowPasswordModal(true)}
-                                className="inline-flex h-9 items-center gap-2 rounded-xl border border-amber-200 bg-amber-50 px-4 text-xs font-bold text-amber-700 hover:bg-amber-100 transition shadow-sm"
+                                className="inline-flex h-9 items-center gap-2 rounded-md border border-amber-200 bg-amber-50 px-4 text-xs font-bold text-amber-700 hover:bg-amber-100 transition"
                             >
                                 <KeyRound size={13} />
                                 Change password

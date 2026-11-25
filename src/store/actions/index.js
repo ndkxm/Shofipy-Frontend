@@ -53,7 +53,8 @@ export const fetchGenres = () => async (dispatch) => {
         const { data } = await api.get(`/public/genres`, { params: { pageSize: 200 } });
         dispatch({
             type: "FETCH_GENRES",
-            payload: data?.content || data || [],
+            // API may return a page ({content}) or a plain array; anything else (e.g. an HTML fallback) is ignored.
+            payload: Array.isArray(data?.content) ? data.content : Array.isArray(data) ? data : [],
         });
     } catch (error) {
         console.log("Failed to fetch genres:", error);

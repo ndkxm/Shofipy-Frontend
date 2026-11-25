@@ -56,21 +56,22 @@ export const Paginations = ({ numberOfPage, totalProducts }) => {
     return (
         <div className="flex flex-col items-center gap-4">
             {totalProducts > 0 && (
-                <p style={{ fontFamily: "'Reddit Sans', sans-serif" }} className="text-xs text-slate-400 font-medium">
-                    {totalProducts} products found
+                <p className="label-mono text-slate-500">
+                    Page {currentPage} of {numberOfPage} · {totalProducts} games
                 </p>
             )}
 
-            <div className="flex items-center gap-1.5">
+            <nav aria-label="Pagination" className="flex items-center gap-1.5">
                 {/* Prev */}
                 <motion.button
                     whileTap={{ scale: 0.94 }}
                     onClick={() => onPageChangeHandler(currentPage - 1)}
+                    aria-label="Previous page"
                     disabled={currentPage === 1}
-                    className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all duration-150
+                    className={`w-10 h-10 rounded-md border flex items-center justify-center transition-colors duration-150
                         ${currentPage === 1
-                            ? "border-slate-100 text-slate-300 cursor-not-allowed bg-white"
-                            : "border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50 bg-white cursor-pointer"
+                            ? "border-slate-200 text-slate-300 cursor-not-allowed"
+                            : "border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-slate-50 bg-white cursor-pointer"
                         }`}
                 >
                     <ChevronLeft />
@@ -82,7 +83,6 @@ export const Paginations = ({ numberOfPage, totalProducts }) => {
                         <span
                             key={`dots-${i}`}
                             className="w-9 h-9 flex items-center justify-center text-sm text-slate-400"
-                            style={{ fontFamily: "'Reddit Sans', sans-serif" }}
                         >
                             ···
                         </span>
@@ -91,12 +91,12 @@ export const Paginations = ({ numberOfPage, totalProducts }) => {
                             key={page}
                             whileTap={{ scale: 0.94 }}
                             onClick={() => onPageChangeHandler(page)}
-                            className={`w-9 h-9 rounded-xl border text-sm font-semibold transition-all duration-150
+                            aria-current={page === currentPage ? "page" : undefined}
+                            className={`w-10 h-10 rounded-md border font-mono text-sm font-semibold tabular-nums transition-colors duration-150
                                 ${page === currentPage
-                                    ? "bg-blue-600 border-blue-600 text-white"
-                                    : "bg-white border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50 cursor-pointer"
+                                    ? "bg-slate-900 border-slate-900 text-slate-50"
+                                    : "bg-white border-slate-300 text-slate-700 hover:border-slate-900 cursor-pointer"
                                 }`}
-                            style={{ fontFamily: "'Reddit Sans', sans-serif" }}
                         >
                             {page}
                         </motion.button>
@@ -107,16 +107,17 @@ export const Paginations = ({ numberOfPage, totalProducts }) => {
                 <motion.button
                     whileTap={{ scale: 0.94 }}
                     onClick={() => onPageChangeHandler(currentPage + 1)}
+                    aria-label="Next page"
                     disabled={currentPage === numberOfPage}
-                    className={`w-9 h-9 rounded-xl border flex items-center justify-center transition-all duration-150
+                    className={`w-10 h-10 rounded-md border flex items-center justify-center transition-colors duration-150
                         ${currentPage === numberOfPage
-                            ? "border-slate-100 text-slate-300 cursor-not-allowed bg-white"
-                            : "border-slate-200 text-slate-500 hover:border-slate-300 hover:bg-slate-50 bg-white cursor-pointer"
+                            ? "border-slate-200 text-slate-300 cursor-not-allowed"
+                            : "border-slate-900 text-slate-900 hover:bg-slate-900 hover:text-slate-50 bg-white cursor-pointer"
                         }`}
                 >
                     <ChevronRight />
                 </motion.button>
-            </div>
+            </nav>
         </div>
     );
 };

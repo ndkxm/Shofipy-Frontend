@@ -1,5 +1,4 @@
 import { Link } from "react-router-dom";
-import { motion } from "framer-motion";
 
 const ArrowRightIcon = () => (
     <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
@@ -15,70 +14,39 @@ const ShieldIcon = () => (
 
 export const CheckOut = ({ summary }) => {
     const rows = [
-        { label: "Subtotal", value: `$${summary.subtotal.toFixed(2)}`, color: "text-slate-600" },
-        { label: "Shipping", value: summary.shipping === 0 ? "Free" : `$${summary.shipping.toFixed(2)}`, color: summary.shipping === 0 ? "text-green-600" : "text-slate-600" },
-        { label: "Discount", value: summary.discount > 0 ? `−$${summary.discount.toFixed(2)}` : "—", color: summary.discount > 0 ? "text-rose-500" : "text-slate-400" },
+        { label: "Subtotal", value: `$${summary.subtotal.toFixed(2)}` },
+        { label: "Delivery", value: "Instant · free" },
+        { label: "Discount", value: summary.discount > 0 ? `−$${summary.discount.toFixed(2)}` : "—" },
     ];
 
     return (
-        <motion.div
-            initial={{ opacity: 0, y: 12 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.3, ease: [0.22, 1, 0.36, 1] }}
-            className="bg-white border border-slate-200 rounded-2xl p-6 sticky top-24"
-            style={{ fontFamily: "'Reddit Sans', sans-serif", boxShadow: "0 2px 16px rgba(0,0,0,0.06)" }}
+        <aside
+            className="lg:sticky lg:top-24 bg-white border border-slate-900 rounded-lg overflow-hidden"
+            style={{ boxShadow: "5px 5px 0 0 var(--color-slate-900)" }}
         >
-            {/* Title */}
-            <h2 className="text-base font-extrabold text-slate-900 mb-5 tracking-tight">
-                Order Summary
-            </h2>
+            <h2 className="px-5 py-3 bg-slate-900 text-slate-50 label-mono">Order summary</h2>
 
-            {/* Rows */}
-            <div className="space-y-3 mb-4">
+            <dl className="p-5 space-y-3 text-sm">
                 {rows.map((row) => (
-                    <div key={row.label} className="flex justify-between items-center">
-                        <span className="text-sm text-slate-400">{row.label}</span>
-                        <span className={`text-sm font-semibold ${row.color}`}>{row.value}</span>
+                    <div key={row.label} className="flex justify-between">
+                        <dt className="text-slate-600">{row.label}</dt>
+                        <dd className="font-mono tabular-nums text-slate-900">{row.value}</dd>
                     </div>
                 ))}
+                <div className="flex justify-between items-baseline pt-4 mt-1 border-t border-dashed border-slate-400">
+                    <dt className="font-bold text-slate-900">Total</dt>
+                    <dd className="font-mono tabular-nums text-3xl font-semibold text-slate-900">${summary.total.toFixed(2)}</dd>
+                </div>
+            </dl>
+
+            <div className="px-5 pb-5 space-y-3">
+                <Link to="/checkout" className="btn-accent w-full !py-3.5 text-[15px]">
+                    Checkout <ArrowRightIcon />
+                </Link>
+                <p className="flex items-center justify-center gap-1.5 text-xs text-slate-500">
+                    <ShieldIcon /> Payments handled by Stripe
+                </p>
             </div>
-
-            {/* Divider */}
-            <div className="h-px bg-slate-100 my-4" />
-
-            {/* Total */}
-            <div className="flex justify-between items-center mb-6">
-                <span className="text-sm font-bold text-slate-800">Total</span>
-                <span className="text-xl font-extrabold text-slate-900">${summary.total.toFixed(2)}</span>
-            </div>
-
-            {/* Checkout button */}
-            <Link to="/checkout">
-                <motion.button
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full flex items-center justify-center gap-2 py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold transition-colors duration-150"
-                    style={{ boxShadow: "0 4px 14px rgba(59,130,246,0.32)" }}
-                >
-                    Proceed to Checkout
-                    <ArrowRightIcon />
-                </motion.button>
-            </Link>
-
-            {/* Continue shopping */}
-            <Link to="/products">
-                <motion.button
-                    whileTap={{ scale: 0.98 }}
-                    className="w-full mt-3 py-3 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-sm font-semibold text-slate-600 transition-colors duration-150"
-                >
-                    Continue Shopping
-                </motion.button>
-            </Link>
-
-            {/* Trust badge */}
-            <div className="flex items-center justify-center gap-1.5 mt-5 text-xs text-slate-400">
-                <ShieldIcon />
-                <span>Secure checkout · SSL encrypted</span>
-            </div>
-        </motion.div>
+        </aside>
     );
 };

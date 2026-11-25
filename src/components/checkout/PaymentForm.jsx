@@ -60,14 +60,14 @@ const StripeCheckoutForm = ({ isFinalizingOrder, onPaymentSuccess }) => {
 
     return (
         <form onSubmit={handleSubmit} className="space-y-4">
-            <div className="rounded-2xl border border-slate-200 bg-white p-4">
+            <div className="rounded-lg border border-slate-900 bg-white p-4">
                 <PaymentElement />
             </div>
 
             <button
                 type="submit"
                 disabled={!stripe || !elements || isSubmitting || isFinalizingOrder}
-                className="w-full rounded-2xl bg-[#635BFF] px-4 py-3 text-sm font-bold text-white transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-60"
+                className="w-full rounded-lg bg-[#635BFF] px-4 py-3 text-sm font-bold text-white transition-all duration-150 disabled:cursor-not-allowed disabled:opacity-60"
             >
                 {isSubmitting ? "Processing payment..." : isFinalizingOrder ? "Finalizing order..." : "Pay with Stripe"}
             </button>
@@ -240,7 +240,7 @@ const PaymentForm = () => {
         <div className="space-y-4">
             {paymentMethod === "stripe" ? (
                 <>
-                    <div className="rounded-2xl border border-slate-200 bg-slate-50 p-4">
+                    <div className="rounded-lg border border-slate-200 bg-slate-50 p-4">
                         <h2 className="text-lg font-bold text-slate-900">Stripe payment</h2>
                         <p className="mt-1 text-sm text-slate-500">
                             Complete your payment securely with Stripe.
@@ -251,15 +251,15 @@ const PaymentForm = () => {
                     </div>
 
                     {!import.meta.env.VITE_STRIPE_PUBLISHABLE_KEY ? (
-                        <div className="rounded-2xl border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
+                        <div className="rounded-lg border border-amber-200 bg-amber-50 p-4 text-sm text-amber-700">
                             Missing <code>VITE_STRIPE_PUBLISHABLE_KEY</code> in the frontend environment.
                         </div>
                     ) : isLoadingIntent ? (
-                        <div className="rounded-2xl border border-slate-200 bg-white p-4 text-sm text-slate-500">
+                        <div className="rounded-lg border border-slate-900 bg-white p-4 text-sm text-slate-500">
                             Initializing Stripe payment...
                         </div>
                     ) : isPaymentComplete ? (
-                        <div className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
+                        <div className="rounded-lg border border-emerald-200 bg-emerald-50 p-4 text-sm text-emerald-700">
                             Stripe payment was submitted. Your order is being finalized.
                         </div>
                     ) : clientSecret ? (
@@ -278,13 +278,13 @@ const PaymentForm = () => {
                             />
                         </Elements>
                     ) : (
-                        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-4 text-sm text-rose-600">
+                        <div className="rounded-lg border border-rose-200 bg-rose-50 p-4 text-sm text-rose-600">
                             Stripe client secret is unavailable. Refresh the checkout step and try again.
                         </div>
                     )}
                 </>
             ) : (
-                <div className="rounded-2xl border border-slate-200 bg-white p-4">
+                <div className="rounded-lg border border-slate-900 bg-white p-4">
                     <h2 className="text-lg font-bold text-slate-900">MoMo payment</h2>
                     <p className="mt-1 text-sm text-slate-500">
                         MoMo payment UI is not wired here yet. The Stripe form only renders when Stripe is selected.

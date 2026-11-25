@@ -4,17 +4,7 @@ import { Link } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { useState } from "react";
 import api from "../../api/api";
-
-/* ─── Icons ──────────────────────────────────────────────────────────────── */
-const LogoIcon = () => (
-    <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <path d="M16 10a4 4 0 0 1-8 0" />
-        </svg>
-    </div>
-);
+import { Logo } from "../shared/Logo";
 
 const MailSentIcon = () => (
     <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -54,13 +44,9 @@ export const ForgotPassword = () => {
 
     return (
         <div
-            className="min-h-screen flex items-center justify-center px-4"
-            style={{ background: "linear-gradient(150deg, #eff6ff 0%, #f8fafc 50%, #f0fdf4 100%)" }}
+            className="min-h-dvh flex items-center justify-center px-4 py-12 bg-slate-50"
+            
         >
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:wght@400;500;600;700;800&display=swap');
-                .fp-wrap * { font-family: 'Reddit Sans', sans-serif; }
-            `}</style>
 
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -69,15 +55,12 @@ export const ForgotPassword = () => {
                 className="fp-wrap w-full max-w-md"
             >
                 <div
-                    className="bg-white rounded-3xl p-8 border border-slate-200"
-                    style={{ boxShadow: "0 4px 40px rgba(0,0,0,0.08)" }}
+                    className="bg-white rounded-lg p-8 border border-slate-900"
+                    style={{ boxShadow: "6px 6px 0 0 var(--color-slate-900)" }}
                 >
                     {/* Logo */}
                     <div className="flex flex-col items-center mb-8">
-                        <Link to="/" className="flex items-center gap-2.5 mb-4">
-                            <LogoIcon />
-                            <span className="text-xl font-extrabold text-slate-900 tracking-tight">Shofipy</span>
-                        </Link>
+                        <Logo />
                     </div>
 
                     <AnimatePresence mode="wait">
@@ -94,8 +77,8 @@ export const ForgotPassword = () => {
                                 {/* Icon */}
                                 <div className="flex justify-center mb-5">
                                     <div
-                                        className="w-16 h-16 rounded-2xl flex items-center justify-center text-blue-500"
-                                        style={{ background: "linear-gradient(135deg, #eff6ff, #dbeafe)" }}
+                                        className="w-16 h-16 rounded-lg flex items-center justify-center text-blue-500"
+                                        style={{ background: "#fdf1ec" }}
                                     >
                                         <svg width="30" height="30" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
                                             <rect x="3" y="11" width="18" height="11" rx="2" ry="2" />
@@ -105,7 +88,7 @@ export const ForgotPassword = () => {
                                 </div>
 
                                 <div className="text-center mb-6">
-                                    <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">Forgot Password?</h1>
+                                    <h1 className="text-3xl font-extrabold text-slate-900">Forgot Password?</h1>
                                     <p className="text-sm text-slate-400 mt-1.5 leading-relaxed">
                                         Enter your email and we'll send you<br />a link to reset your password.
                                     </p>
@@ -127,8 +110,8 @@ export const ForgotPassword = () => {
                                         whileTap={{ scale: 0.98 }}
                                         type="submit"
                                         disabled={submitting}
-                                        className="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-bold transition-colors duration-150 mt-2 flex items-center justify-center gap-2"
-                                        style={{ boxShadow: "0 4px 14px rgba(59,130,246,0.35)" }}
+                                        className="w-full h-12 rounded-md border border-slate-900 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-bold transition-colors duration-150 mt-2 flex items-center justify-center gap-2"
+                                        style={{ boxShadow: "var(--shadow-block-sm)" }}
                                     >
                                         {submitting ? (
                                             <>
@@ -169,14 +152,14 @@ export const ForgotPassword = () => {
                                     initial={{ scale: 0, rotate: -15 }}
                                     animate={{ scale: 1, rotate: 0 }}
                                     transition={{ type: "spring", stiffness: 240, damping: 18, delay: 0.05 }}
-                                    className="w-20 h-20 rounded-2xl flex items-center justify-center text-blue-500"
-                                    style={{ background: "linear-gradient(135deg, #eff6ff, #dbeafe)" }}
+                                    className="w-20 h-20 rounded-lg flex items-center justify-center text-blue-500"
+                                    style={{ background: "#fdf1ec" }}
                                 >
                                     <MailSentIcon />
                                 </motion.div>
 
                                 <div>
-                                    <h1 className="text-xl font-extrabold text-slate-900 mb-1">Check Your Inbox</h1>
+                                    <h1 className="text-3xl font-extrabold text-slate-900 mb-1">Check Your Inbox</h1>
                                     <p className="text-sm text-slate-500 leading-relaxed">
                                         We sent a password reset link to<br />
                                         <span className="font-bold text-slate-700">{submittedEmail}</span>
@@ -188,7 +171,7 @@ export const ForgotPassword = () => {
                                 </div>
 
                                 {/* Tip box */}
-                                <div className="w-full rounded-2xl border border-blue-100 bg-blue-50 px-4 py-3 text-left">
+                                <div className="w-full rounded-lg border border-blue-100 bg-blue-50 px-4 py-3 text-left">
                                     <p className="text-xs font-semibold text-blue-700 mb-1">Didn't receive the email?</p>
                                     <p className="text-xs text-blue-500 leading-relaxed">
                                         Wait a minute then{" "}
@@ -204,8 +187,8 @@ export const ForgotPassword = () => {
 
                                 <Link
                                     to="/signin"
-                                    className="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold text-center transition-colors duration-150 block"
-                                    style={{ boxShadow: "0 4px 14px rgba(59,130,246,0.35)" }}
+                                    className="w-full h-12 rounded-md border border-slate-900 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold text-center transition-colors duration-150 block"
+                                    style={{ boxShadow: "var(--shadow-block-sm)" }}
                                 >
                                     Back to Sign In
                                 </Link>

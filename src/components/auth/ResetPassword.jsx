@@ -4,17 +4,7 @@ import { InputField } from "../shared/InputField";
 import { Link, useSearchParams, useNavigate } from "react-router-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import api from "../../api/api";
-
-/* ─── Icons ──────────────────────────────────────────────────────────────── */
-const LogoIcon = () => (
-    <div className="w-10 h-10 rounded-xl bg-blue-600 flex items-center justify-center flex-shrink-0">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-            <path d="M6 2 3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z" />
-            <line x1="3" y1="6" x2="21" y2="6" />
-            <path d="M16 10a4 4 0 0 1-8 0" />
-        </svg>
-    </div>
-);
+import { Logo } from "../shared/Logo";
 
 const ShieldCheckIcon = () => (
     <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
@@ -95,13 +85,9 @@ const ResetPassword = () => {
     /* ─────────────────────────────────────────────────────────────────── */
     return (
         <div
-            className="min-h-screen flex items-center justify-center px-4"
-            style={{ background: "linear-gradient(150deg, #eff6ff 0%, #f8fafc 50%, #f0fdf4 100%)" }}
+            className="min-h-dvh flex items-center justify-center px-4 py-12 bg-slate-50"
+            
         >
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:wght@400;500;600;700;800&display=swap');
-                .rp-wrap * { font-family: 'Reddit Sans', sans-serif; }
-            `}</style>
 
             <motion.div
                 initial={{ opacity: 0, y: 20 }}
@@ -110,15 +96,12 @@ const ResetPassword = () => {
                 className="rp-wrap w-full max-w-md"
             >
                 <div
-                    className="bg-white rounded-3xl p-8 border border-slate-200"
-                    style={{ boxShadow: "0 4px 40px rgba(0,0,0,0.08)" }}
+                    className="bg-white rounded-lg p-8 border border-slate-900"
+                    style={{ boxShadow: "6px 6px 0 0 var(--color-slate-900)" }}
                 >
                     {/* Logo */}
                     <div className="flex flex-col items-center mb-8">
-                        <Link to="/" className="flex items-center gap-2.5 mb-4">
-                            <LogoIcon />
-                            <span className="text-xl font-extrabold text-slate-900 tracking-tight">Shofipy</span>
-                        </Link>
+                        <Logo />
                     </div>
 
                     <AnimatePresence mode="wait">
@@ -150,13 +133,13 @@ const ResetPassword = () => {
                                 className="flex flex-col items-center text-center py-4 gap-5"
                             >
                                 <div
-                                    className="w-20 h-20 rounded-2xl flex items-center justify-center text-red-400"
-                                    style={{ background: "linear-gradient(135deg, #fef2f2, #fee2e2)" }}
+                                    className="w-20 h-20 rounded-lg flex items-center justify-center text-red-400"
+                                    style={{ background: "#fef2f2" }}
                                 >
                                     <AlertIcon />
                                 </div>
                                 <div>
-                                    <h1 className="text-xl font-extrabold text-slate-900 mb-1">Link Expired</h1>
+                                    <h1 className="text-3xl font-extrabold text-slate-900 mb-1">Link Expired</h1>
                                     <p className="text-sm text-slate-500 leading-relaxed">
                                         This password reset link is invalid or has expired.<br />
                                         Please request a new one.
@@ -164,8 +147,8 @@ const ResetPassword = () => {
                                 </div>
                                 <Link
                                     to="/signin"
-                                    className="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold text-center transition-colors duration-150 block"
-                                    style={{ boxShadow: "0 4px 14px rgba(59,130,246,0.35)" }}
+                                    className="w-full h-12 rounded-md border border-slate-900 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold text-center transition-colors duration-150 block"
+                                    style={{ boxShadow: "var(--shadow-block-sm)" }}
                                 >
                                     Back to Sign In
                                 </Link>
@@ -182,7 +165,7 @@ const ResetPassword = () => {
                                 transition={{ duration: 0.3 }}
                             >
                                 <div className="text-center mb-7">
-                                    <h1 className="text-2xl font-extrabold text-slate-900 tracking-tight">New Password</h1>
+                                    <h1 className="text-3xl font-extrabold text-slate-900">New Password</h1>
                                     <p className="text-sm text-slate-400 mt-1">Choose a strong password for your account.</p>
                                 </div>
 
@@ -247,8 +230,8 @@ const ResetPassword = () => {
                                         whileTap={{ scale: 0.98 }}
                                         type="submit"
                                         disabled={status === "submitting"}
-                                        className="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-bold transition-colors duration-150 mt-2 flex items-center justify-center gap-2"
-                                        style={{ boxShadow: "0 4px 14px rgba(59,130,246,0.35)" }}
+                                        className="w-full h-12 rounded-md border border-slate-900 bg-blue-600 hover:bg-blue-700 disabled:opacity-60 text-white text-sm font-bold transition-colors duration-150 mt-2 flex items-center justify-center gap-2"
+                                        style={{ boxShadow: "var(--shadow-block-sm)" }}
                                     >
                                         {status === "submitting" ? (
                                             <>
@@ -287,14 +270,14 @@ const ResetPassword = () => {
                                     initial={{ scale: 0, rotate: -20 }}
                                     animate={{ scale: 1, rotate: 0 }}
                                     transition={{ type: "spring", stiffness: 260, damping: 18, delay: 0.05 }}
-                                    className="w-20 h-20 rounded-2xl flex items-center justify-center text-emerald-500"
-                                    style={{ background: "linear-gradient(135deg, #f0fdf4, #dcfce7)" }}
+                                    className="w-20 h-20 rounded-lg flex items-center justify-center text-emerald-500"
+                                    style={{ background: "#eff4ec" }}
                                 >
                                     <ShieldCheckIcon />
                                 </motion.div>
 
                                 <div>
-                                    <h1 className="text-xl font-extrabold text-slate-900 mb-1">Password Updated!</h1>
+                                    <h1 className="text-3xl font-extrabold text-slate-900 mb-1">Password Updated!</h1>
                                     <p className="text-sm text-slate-500 leading-relaxed">
                                         Your password has been changed successfully.<br />
                                         You can now sign in with your new password.
@@ -306,8 +289,8 @@ const ResetPassword = () => {
 
                                 <Link
                                     to="/signin"
-                                    className="w-full py-3 rounded-2xl bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold text-center transition-colors duration-150 block"
-                                    style={{ boxShadow: "0 4px 14px rgba(59,130,246,0.35)" }}
+                                    className="w-full h-12 rounded-md border border-slate-900 bg-blue-600 hover:bg-blue-700 text-white text-sm font-bold text-center transition-colors duration-150 block"
+                                    style={{ boxShadow: "var(--shadow-block-sm)" }}
                                 >
                                     Sign In Now
                                 </Link>

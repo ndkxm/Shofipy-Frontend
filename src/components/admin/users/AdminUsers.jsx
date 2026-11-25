@@ -269,7 +269,7 @@ export const AdminUsers = () => {
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             placeholder="Search by username…"
-                            className="h-10 w-64 rounded-lg border border-slate-200 bg-white pl-9 pr-8 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="h-10 w-64 rounded-lg border border-slate-900 bg-white pl-9 pr-8 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                         {inputValue && (
                             <button type="button" onClick={handleClearSearch} className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600">
@@ -286,7 +286,7 @@ export const AdminUsers = () => {
                     <select
                         value={sortIdx}
                         onChange={(e) => { setSortIdx(Number(e.target.value)); setPageNumber(0); }}
-                        className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="h-10 rounded-lg border border-slate-900 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                         {SORT_OPTIONS.map((o, i) => <option key={i} value={i}>{o.label}</option>)}
                     </select>
@@ -294,7 +294,7 @@ export const AdminUsers = () => {
                     <select
                         value={pageSize}
                         onChange={(e) => { setPageSize(Number(e.target.value)); setPageNumber(0); }}
-                        className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="h-10 rounded-lg border border-slate-900 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                         {PAGE_SIZE_OPTIONS.map((s) => <option key={s} value={s}>{s} / page</option>)}
                     </select>
@@ -303,7 +303,7 @@ export const AdminUsers = () => {
                         type="button"
                         onClick={fetchUsers}
                         disabled={isLoading}
-                        className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition"
+                        className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-900 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition"
                         title="Refresh"
                     >
                         <RefreshCw size={15} className={isLoading ? "animate-spin" : ""} />
@@ -322,7 +322,7 @@ export const AdminUsers = () => {
 
             {/* bulk-action bar */}
             {selectedIds.size > 0 && (
-                <div className="flex items-center justify-between rounded-xl border border-red-200 bg-red-50 px-4 py-2.5">
+                <div className="flex items-center justify-between rounded-md border border-red-200 bg-red-50 px-4 py-2.5">
                     <span className="text-sm font-semibold text-red-700">
                         {selectedIds.size} user{selectedIds.size !== 1 ? "s" : ""} selected
                     </span>
@@ -383,7 +383,7 @@ export const AdminUsers = () => {
 
             {/* table */}
             {!isLoading && !error && users.length > 0 && (
-                <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div className="overflow-x-auto rounded-lg border border-slate-900 bg-white">
                     <table className="min-w-full divide-y divide-slate-100 text-sm">
                         <thead>
                             <tr className="bg-slate-50">
@@ -394,14 +394,14 @@ export const AdminUsers = () => {
                                         checked={isAllSelected}
                                         ref={(el) => { if (el) el.indeterminate = isIndeterminate; }}
                                         onChange={toggleAll}
-                                        className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                        className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer"
                                     />
                                 </th>
-                                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">User</th>
-                                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">Email</th>
-                                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">Role</th>
-                                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">Joined</th>
-                                <th className="px-4 py-3 text-right text-xs font-bold uppercase tracking-wide text-slate-500">Actions</th>
+                                <th className="px-4 py-3 text-left label-mono text-slate-600">User</th>
+                                <th className="px-4 py-3 text-left label-mono text-slate-600">Email</th>
+                                <th className="px-4 py-3 text-left label-mono text-slate-600">Role</th>
+                                <th className="px-4 py-3 text-left label-mono text-slate-600">Joined</th>
+                                <th className="px-4 py-3 text-right label-mono text-slate-600">Actions</th>
                             </tr>
                         </thead>
                         <tbody className="divide-y divide-slate-100">
@@ -417,7 +417,7 @@ export const AdminUsers = () => {
                                                 type="checkbox"
                                                 checked={isChecked}
                                                 onChange={() => toggleUser(user.id)}
-                                                className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-500 cursor-pointer"
+                                                className="h-4 w-4 rounded border-slate-300 text-blue-600 focus:ring-blue-600 cursor-pointer"
                                             />
                                         </td>
                                         <td className="px-4 py-3">
@@ -436,13 +436,13 @@ export const AdminUsers = () => {
                                             <div className="flex items-center justify-end gap-1.5">
                                                 <button
                                                     onClick={() => openRoleModal(user)}
-                                                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 opacity-0 group-hover:opacity-100 transition hover:border-indigo-300 hover:text-indigo-600"
+                                                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-900 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 opacity-0 group-hover:opacity-100 transition hover:border-indigo-300 hover:text-indigo-600"
                                                 >
                                                     <UserCog size={13} /> Change Role
                                                 </button>
                                                 <button
                                                     onClick={() => openDeleteSingle(user)}
-                                                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 opacity-0 group-hover:opacity-100 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
+                                                    className="inline-flex items-center gap-1.5 rounded-lg border border-slate-900 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 opacity-0 group-hover:opacity-100 transition hover:border-red-300 hover:bg-red-50 hover:text-red-600"
                                                     title="Delete user"
                                                 >
                                                     <Trash2 size={13} />
@@ -465,12 +465,12 @@ export const AdminUsers = () => {
             {/* ────────────── Change Role Modal ────────────── */}
             {roleModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setRoleModal(null)} />
-                    <div className="relative z-10 w-full max-w-md rounded-2xl bg-white shadow-2xl">
+                    <div className="absolute inset-0 bg-slate-900/50" onClick={() => setRoleModal(null)} />
+                    <div className="relative z-10 w-full max-w-md rounded-lg bg-white">
                         {/* header */}
                         <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-indigo-100 text-indigo-600">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-indigo-100 text-indigo-600">
                                     <UserCog size={20} />
                                 </div>
                                 <div>
@@ -495,8 +495,8 @@ export const AdminUsers = () => {
                                             key={r.value}
                                             type="button"
                                             onClick={() => setSelectedRole(r.value)}
-                                            className={`flex flex-col items-center gap-2 rounded-xl border-2 p-4 transition-all ${
-                                                isSelected ? "border-indigo-500 bg-indigo-50 shadow-sm" : "border-slate-200 bg-white hover:border-slate-300"
+                                            className={`flex flex-col items-center gap-2 rounded-md border-2 p-4 transition-all ${
+                                                isSelected ? "border-indigo-500 bg-indigo-50 " : "border-slate-200 bg-white hover:border-slate-300"
                                             }`}
                                         >
                                             <div className={`flex h-9 w-9 items-center justify-center rounded-full ${isSelected ? "bg-indigo-100 text-indigo-600" : "bg-slate-100 text-slate-500"}`}>
@@ -508,20 +508,20 @@ export const AdminUsers = () => {
                                     );
                                 })}
                             </div>
-                            <div className="mt-4 rounded-xl border border-amber-200 bg-amber-50 p-3 text-xs text-amber-700">
-                                ⚠️ Changing a user's role will affects their access permissions..
+                            <div className="mt-4 rounded-md border border-amber-200 bg-amber-50 p-3 text-xs text-amber-700">
+                                Changing a user's role will affects their access permissions..
                             </div>
                         </div>
 
                         {/* footer */}
                         <div className="flex items-center justify-end gap-3 border-t border-slate-100 px-6 py-4">
-                            <button onClick={() => setRoleModal(null)} className="rounded-xl border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
+                            <button onClick={() => setRoleModal(null)} className="rounded-lg border border-slate-900 bg-white px-5 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition">
                                 Cancel
                             </button>
                             <button
                                 onClick={handleUpdateRole}
                                 disabled={isUpdatingRole}
-                                className="flex items-center gap-2 rounded-xl bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60 transition"
+                                className="flex items-center gap-2 rounded-md bg-indigo-600 px-5 py-2 text-sm font-semibold text-white hover:bg-indigo-700 disabled:opacity-60 transition"
                             >
                                 {isUpdatingRole ? <Loader2 size={14} className="animate-spin" /> : null}
                                 Confirm
@@ -534,12 +534,12 @@ export const AdminUsers = () => {
             {/* ────────────── Create User Modal ────────────── */}
             {createModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => setCreateModal(false)} />
-                    <div className="relative z-10 w-full max-w-md rounded-2xl bg-white shadow-2xl">
+                    <div className="absolute inset-0 bg-slate-900/50" onClick={() => setCreateModal(false)} />
+                    <div className="relative z-10 w-full max-w-md rounded-lg bg-white">
                         {/* header */}
                         <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-emerald-100 text-emerald-600">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-emerald-100 text-emerald-600">
                                     <UserPlus size={20} />
                                 </div>
                                 <h3 className="text-base font-extrabold text-slate-900">Create New User</h3>
@@ -564,7 +564,7 @@ export const AdminUsers = () => {
                                         setCreateErrors((p) => ({ ...p, username: "" }));
                                     }}
                                     placeholder="Enter username..."
-                                    className={`w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-all ${
+                                    className={`w-full rounded-md border px-4 py-2.5 text-sm outline-none transition-all ${
                                         createErrors.username ? "border-red-300 bg-red-50" : "border-slate-200 bg-slate-50 focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100"
                                     }`}
                                 />
@@ -584,7 +584,7 @@ export const AdminUsers = () => {
                                         setCreateErrors((p) => ({ ...p, email: "" }));
                                     }}
                                     placeholder="user@example.com"
-                                    className={`w-full rounded-xl border px-4 py-2.5 text-sm outline-none transition-all ${
+                                    className={`w-full rounded-md border px-4 py-2.5 text-sm outline-none transition-all ${
                                         createErrors.email ? "border-red-300 bg-red-50" : "border-slate-200 bg-slate-50 focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100"
                                     }`}
                                 />
@@ -605,7 +605,7 @@ export const AdminUsers = () => {
                                             setCreateErrors((p) => ({ ...p, password: "" }));
                                         }}
                                         placeholder="Min. 8 characters"
-                                        className={`w-full rounded-xl border px-4 py-2.5 pr-16 text-sm outline-none transition-all ${
+                                        className={`w-full rounded-md border px-4 py-2.5 pr-16 text-sm outline-none transition-all ${
                                             createErrors.password ? "border-red-300 bg-red-50" : "border-slate-200 bg-slate-50 focus:border-slate-400 focus:bg-white focus:ring-2 focus:ring-slate-100"
                                         }`}
                                     />
@@ -632,7 +632,7 @@ export const AdminUsers = () => {
                                                 key={r.value}
                                                 type="button"
                                                 onClick={() => setCreateForm((p) => ({ ...p, role: r.value }))}
-                                                className={`flex flex-col items-center gap-1.5 rounded-xl border-2 py-3 transition-all ${
+                                                className={`flex flex-col items-center gap-1.5 rounded-md border-2 py-3 transition-all ${
                                                     isSelected ? "border-emerald-500 bg-emerald-50" : "border-slate-200 bg-white hover:border-slate-300"
                                                 }`}
                                             >
@@ -649,14 +649,14 @@ export const AdminUsers = () => {
                         <div className="flex items-center justify-end gap-3 border-t border-slate-100 px-6 py-4">
                             <button
                                 onClick={() => setCreateModal(false)}
-                                className="rounded-xl border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition"
+                                className="rounded-lg border border-slate-900 bg-white px-5 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleCreate}
                                 disabled={isCreating}
-                                className="flex items-center gap-2 rounded-xl bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 transition"
+                                className="flex items-center gap-2 rounded-md bg-emerald-600 px-5 py-2 text-sm font-semibold text-white hover:bg-emerald-700 disabled:opacity-60 transition"
                             >
                                 {isCreating ? <Loader2 size={14} className="animate-spin" /> : <UserPlus size={14} />}
                                 Create User
@@ -669,12 +669,12 @@ export const AdminUsers = () => {
             {/* ────────────── Delete Confirm Modal ────────────── */}
             {deleteModal && (
                 <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
-                    <div className="absolute inset-0 bg-slate-900/50 backdrop-blur-sm" onClick={() => !isDeleting && setDeleteModal(null)} />
-                    <div className="relative z-10 w-full max-w-sm rounded-2xl bg-white shadow-2xl">
+                    <div className="absolute inset-0 bg-slate-900/50" onClick={() => !isDeleting && setDeleteModal(null)} />
+                    <div className="relative z-10 w-full max-w-sm rounded-lg bg-white">
                         {/* header */}
                         <div className="flex items-center justify-between border-b border-slate-100 px-6 py-4">
                             <div className="flex items-center gap-3">
-                                <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-red-100 text-red-600">
+                                <div className="flex h-10 w-10 items-center justify-center rounded-md bg-red-100 text-red-600">
                                     <Trash2 size={20} />
                                 </div>
                                 <h3 className="text-base font-extrabold text-slate-900">
@@ -705,8 +705,8 @@ export const AdminUsers = () => {
                                     This action cannot be undone.
                                 </p>
                             )}
-                            <div className="mt-4 rounded-xl border border-red-200 bg-red-50 p-3 text-xs text-red-700">
-                                ⚠️ All associated sessions and data will be permanently removed.
+                            <div className="mt-4 rounded-md border border-red-200 bg-red-50 p-3 text-xs text-red-700">
+                                All associated sessions and data will be permanently removed.
                             </div>
                         </div>
 
@@ -715,14 +715,14 @@ export const AdminUsers = () => {
                             <button
                                 onClick={() => setDeleteModal(null)}
                                 disabled={isDeleting}
-                                className="rounded-xl border border-slate-200 bg-white px-5 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition disabled:opacity-40"
+                                className="rounded-lg border border-slate-900 bg-white px-5 py-2 text-sm font-semibold text-slate-600 hover:bg-slate-50 transition disabled:opacity-40"
                             >
                                 Cancel
                             </button>
                             <button
                                 onClick={handleConfirmDelete}
                                 disabled={isDeleting}
-                                className="flex items-center gap-2 rounded-xl bg-red-600 px-5 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60 transition"
+                                className="flex items-center gap-2 rounded-md bg-red-600 px-5 py-2 text-sm font-semibold text-white hover:bg-red-700 disabled:opacity-60 transition"
                             >
                                 {isDeleting ? <Loader2 size={14} className="animate-spin" /> : <Trash2 size={14} />}
                                 Delete
@@ -772,7 +772,7 @@ const PageBtn = ({ children, onClick, disabled, label }) => (
         onClick={onClick}
         disabled={disabled}
         aria-label={label}
-        className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-900 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
     >
         {children}
     </button>

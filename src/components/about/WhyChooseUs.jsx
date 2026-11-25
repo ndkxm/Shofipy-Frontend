@@ -8,14 +8,14 @@ export const WhyChooseUs = () => {
                     Why Choose Us
                 </h2>
                 <div className="grid md:grid-cols-3 gap-10">
-                    <div className="p-6 rounded-xl shadow-md hover:shadow-xl transition-all">
+                    <div className="p-6 rounded-xl hover: transition-all">
                         <FaShippingFast className="text-4xl text-blue-600 mx-auto mb-4" />
                         <h3 className="text-xl font-semibold mb-2">Fast Delivery</h3>
                         <p className="text-gray-600">
                             Get your orders delivered quickly and reliably.
                         </p>
                     </div>
-                    <div className="p-6 rounded-xl shadow-md hover:shadow-xl transition-all">
+                    <div className="p-6 rounded-xl hover: transition-all">
                         <FaShieldAlt className="text-4xl text-blue-600 mx-auto mb-4" />
                         <h3 className="text-xl font-semibold mb-2">Secure Shopping</h3>
                         <p className="text-gray-600">
@@ -23,7 +23,7 @@ export const WhyChooseUs = () => {
                         </p>
                     </div>
 
-                    <div className="p-6 rounded-xl shadow-md hover:shadow-xl transition-all">
+                    <div className="p-6 rounded-xl hover: transition-all">
                         <FaTags className="text-4xl text-blue-600 mx-auto mb-4" />
                         <h3 className="text-xl font-semibold mb-2">Best Prices</h3>
                         <p className="text-gray-600">

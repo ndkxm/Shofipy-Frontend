@@ -26,7 +26,7 @@ const fadeUp = (i = 0) => ({
 /* ─── Skeleton ───────────────────────────────────────────────────────────── */
 
 const Sk = ({ className }) => (
-    <div className={`animate-pulse rounded-xl bg-slate-200 ${className}`} />
+    <div className={`animate-pulse rounded-sm bg-slate-200 ${className}`} />
 );
 
 /* ─── Icons ──────────────────────────────────────────────────────────────── */
@@ -106,6 +106,7 @@ export const ProductDetail = () => {
     const [activeImg, setActiveImg] = useState(0);
     const [slideDir, setSlideDir] = useState(1);
     const [lightbox, setLightbox] = useState(false);
+    const [descExpanded, setDescExpanded] = useState(false);
 
     const thumbsRef = useRef(null);
 
@@ -114,6 +115,7 @@ export const ProductDetail = () => {
             try {
                 setLoading(true);
                 setActiveImg(0);
+                setDescExpanded(false);
                 const [productRes, imagesRes] = await Promise.allSettled([
                     api.get(`/public/products/${id}`),
                     api.get(`/public/products/${id}/images`),
@@ -179,423 +181,309 @@ export const ProductDetail = () => {
     ].filter(Boolean);
 
     /* ── Render ── */
+    const panel = "bg-white border border-slate-900 rounded-lg";
+    const sectionTitle = "label-mono text-slate-500 mb-4";
+
+    if (!loading && !product) {
+        return (
+            <>
+                <Header />
+                <main className="min-h-[70vh] bg-slate-50 pt-16 grid place-items-center px-5 text-center">
+                    <div>
+                        <p className="label-mono text-slate-500 mb-4">Error · game not found</p>
+                        <h1 className="display text-5xl md:text-7xl text-slate-900">Game over.</h1>
+                        <p className="mt-4 text-slate-600">We couldn’t load this game. It may have been removed, or the server is unreachable.</p>
+                        <a href="/products" className="btn-accent mt-8">Back to all games</a>
+                    </div>
+                </main>
+                <Footer />
+            </>
+        );
+    }
+
     return (
         <>
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:ital,wght@0,200..900;1,200..900&display=swap');
-                .pd-root { font-family: 'Reddit Sans', sans-serif; }
-                .pd-thumbstrip::-webkit-scrollbar { display: none; }
-                .pd-thumbstrip { scrollbar-width: none; }
-            `}</style>
-
             <Header />
 
-            <main className="pd-root min-h-screen bg-slate-50">
+            <main className="min-h-screen bg-slate-50 pt-16">
+                {/* Title band */}
+                <section className="border-b border-slate-900">
+                    <div className="max-w-7xl mx-auto px-5 md:px-6 pt-10 pb-8">
+                        {loading ? (
+                            <>
+                                <Sk className="h-12 w-2/3 mb-4" />
+                                <Sk className="h-6 w-40" />
+                            </>
+                        ) : (
+                            <motion.div {...fadeUp(0)}>
+                                <p className="label-mono text-slate-500 mb-3">
+                                    {publisher?.publisherName ? `${publisher.publisherName} · ` : ""}PC · Steam key
+                                </p>
+                                <h1 className="display text-4xl sm:text-6xl lg:text-7xl text-slate-900 break-words">{name}</h1>
+                                {genres.length > 0 && (
+                                    <ul className="flex flex-wrap gap-2 mt-5">
+                                        {genres.map((g) => (
+                                            <li key={g.genreId} className="text-xs font-semibold border border-slate-900 rounded-sm px-2.5 py-1 text-slate-900">
+                                                {g.genreName}
+                                            </li>
+                                        ))}
+                                    </ul>
+                                )}
+                            </motion.div>
+                        )}
+                    </div>
+                </section>
 
-                {/* ── Content area: padding top for header ── */}
-                <div className="pt-24 pb-20">
-                    <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+                <div className="max-w-7xl mx-auto px-5 md:px-6 py-10 overflow-x-hidden">
+                    <div className="grid grid-cols-1 lg:grid-cols-[minmax(0,1fr)_22rem] gap-8 lg:gap-x-10 lg:gap-y-12 items-start">
 
-                        {/* ── Page header: title + genre chips ── */}
-                        <motion.div className="mb-6" {...fadeUp(0)}>
-                            {loading ? (
-                                <>
-                                    <Sk className="h-9 w-3/4 mb-3" />
-                                    <div className="flex gap-2">
-                                        <Sk className="h-6 w-20 rounded-full" />
-                                        <Sk className="h-6 w-16 rounded-full" />
-                                    </div>
-                                </>
-                            ) : (
-                                <>
-                                    <h1 className="text-2xl sm:text-3xl lg:text-4xl font-extrabold text-slate-900 leading-tight tracking-tight">
-                                        {name}
-                                    </h1>
-                                    {genres.length > 0 && (
-                                        <div className="flex flex-wrap gap-2 mt-3">
-                                            {genres.map((g) => (
-                                                <span
-                                                    key={g.genreId}
-                                                    className="inline-flex items-center gap-1 text-xs font-semibold bg-blue-50 text-blue-600 border border-blue-200 rounded-full px-2.5 py-1"
-                                                >
-                                                    <IcoTag />{g.genreName}
-                                                </span>
-                                            ))}
+                        {/* Gallery */}
+                        <motion.div {...fadeUp(1)} className={`order-1 min-w-0 ${panel} overflow-hidden`}>
+                            <div
+                                className="relative cursor-zoom-in overflow-hidden bg-slate-200"
+                                style={{ aspectRatio: "16/9" }}
+                                onClick={() => allImages.length > 0 && setLightbox(true)}
+                            >
+                                {loading ? (
+                                    <div className="w-full h-full animate-pulse bg-slate-200" />
+                                ) : allImages.length > 0 ? (
+                                    <>
+                                        <AnimatePresence mode="wait" custom={slideDir}>
+                                            <motion.img
+                                                key={activeImg}
+                                                src={allImages[activeImg]}
+                                                alt={`${name} — screenshot ${activeImg + 1}`}
+                                                className="w-full h-full object-cover"
+                                                custom={slideDir}
+                                                variants={{
+                                                    enter: (d) => ({ opacity: 0, x: d * 40 }),
+                                                    center: { opacity: 1, x: 0 },
+                                                    exit: (d) => ({ opacity: 0, x: d * -40 }),
+                                                }}
+                                                initial="enter"
+                                                animate="center"
+                                                exit="exit"
+                                                transition={{ duration: 0.24, ease }}
+                                            />
+                                        </AnimatePresence>
+
+                                        <div className="absolute bottom-0 right-0 flex items-center gap-1.5 bg-slate-900 text-slate-50 font-mono text-xs px-2.5 py-1.5">
+                                            <IcoExpand />
+                                            {String(activeImg + 1).padStart(2, "0")} / {String(allImages.length).padStart(2, "0")}
                                         </div>
-                                    )}
-                                </>
+
+                                        {allImages.length > 1 && (
+                                            <>
+                                                <button
+                                                    aria-label="Previous image"
+                                                    onClick={(e) => { e.stopPropagation(); goPrev(); }}
+                                                    className="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-slate-900 rounded-md grid place-items-center text-slate-900 hover:bg-slate-900 hover:text-white transition-colors"
+                                                ><IcoChevL /></button>
+                                                <button
+                                                    aria-label="Next image"
+                                                    onClick={(e) => { e.stopPropagation(); goNext(); }}
+                                                    className="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 bg-white border border-slate-900 rounded-md grid place-items-center text-slate-900 hover:bg-slate-900 hover:text-white transition-colors"
+                                                ><IcoChevR /></button>
+                                            </>
+                                        )}
+                                    </>
+                                ) : (
+                                    <div className="w-full h-full flex flex-col items-center justify-center text-slate-400 gap-2">
+                                        <IcoImages />
+                                        <span className="label-mono">No images</span>
+                                    </div>
+                                )}
+                            </div>
+
+                            {!loading && allImages.length > 1 && (
+                                <div ref={thumbsRef} className="flex gap-2 p-3 overflow-x-auto border-t border-slate-900 bg-slate-50" style={{ scrollbarWidth: "none" }}>
+                                    {allImages.map((src, i) => (
+                                        <button
+                                            key={i}
+                                            onClick={() => goTo(i)}
+                                            aria-label={`Show image ${i + 1}`}
+                                            aria-current={i === activeImg}
+                                            className={`flex-shrink-0 rounded-sm overflow-hidden border-2 transition-opacity ${i === activeImg ? "border-blue-600" : "border-transparent opacity-60 hover:opacity-100"}`}
+                                            style={{ width: 72, height: 44 }}
+                                        >
+                                            <img src={src} alt="" className="w-full h-full object-cover" />
+                                        </button>
+                                    ))}
+                                </div>
                             )}
                         </motion.div>
 
-                        {/* ── 2-column layout ── */}
-                        <div className="flex flex-col lg:flex-row gap-8 items-start">
+                        {/* About */}
+                        <motion.section {...fadeUp(2)} className="order-3 min-w-0">
+                            <h2 className={sectionTitle}>About this game</h2>
+                            {loading ? (
+                                <div className="space-y-2">
+                                    <Sk className="h-4 w-full" />
+                                    <Sk className="h-4 w-11/12" />
+                                    <Sk className="h-4 w-4/6" />
+                                </div>
+                            ) : (
+                                <GameDescription
+                                    text={product?.description || ""}
+                                    expanded={descExpanded}
+                                    onToggle={() => setDescExpanded((v) => !v)}
+                                />
+                            )}
+                        </motion.section>
 
-                            {/* ════ Left column ════ */}
-                            <div className="flex-1 min-w-0 space-y-5">
-
-                                {/* Gallery */}
-                                <motion.div {...fadeUp(1)} className="bg-white rounded-2xl border border-slate-200 overflow-hidden shadow-sm">
-                                    {/* Main image */}
-                                    <div
-                                        className="relative cursor-pointer overflow-hidden bg-slate-100"
-                                        style={{ aspectRatio: "16/9" }}
-                                        onClick={() => allImages.length > 0 && setLightbox(true)}
-                                    >
-                                        {loading ? (
-                                            <div className="w-full h-full animate-pulse bg-slate-200" />
-                                        ) : allImages.length > 0 ? (
-                                            <>
-                                                <AnimatePresence mode="wait" custom={slideDir}>
-                                                    <motion.img
-                                                        key={activeImg}
-                                                        src={allImages[activeImg]}
-                                                        alt={`${name} — screenshot ${activeImg + 1}`}
-                                                        className="w-full h-full object-cover"
-                                                        custom={slideDir}
-                                                        variants={{
-                                                            enter: (d) => ({ opacity: 0, x: d * 50 }),
-                                                            center: { opacity: 1, x: 0 },
-                                                            exit: (d) => ({ opacity: 0, x: d * -50 }),
-                                                        }}
-                                                        initial="enter"
-                                                        animate="center"
-                                                        exit="exit"
-                                                        transition={{ duration: 0.28, ease }}
-                                                    />
-                                                </AnimatePresence>
-
-                                                {/* Top-right counter + expand hint */}
-                                                <div className="absolute top-3 right-3 flex items-center gap-1.5 bg-black/50 backdrop-blur-sm text-white text-xs font-semibold rounded-lg px-2.5 py-1">
-                                                    <IcoExpand />
-                                                    {activeImg + 1} / {allImages.length}
-                                                </div>
-
-                                                {/* Discount badge */}
-                                                {hasDiscount && (
-                                                    <div className="absolute top-3 left-3 bg-rose-500 text-white text-xs font-black px-2.5 py-1 rounded-lg tracking-wide shadow-sm">
-                                                        -{discountPct}%
-                                                    </div>
-                                                )}
-
-                                                {/* Prev/Next arrows */}
-                                                {allImages.length > 1 && (
-                                                    <>
-                                                        <button
-                                                            onClick={(e) => { e.stopPropagation(); goPrev(); }}
-                                                            className="absolute left-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-700 shadow-md transition-all hover:scale-105"
-                                                        ><IcoChevL /></button>
-                                                        <button
-                                                            onClick={(e) => { e.stopPropagation(); goNext(); }}
-                                                            className="absolute right-3 top-1/2 -translate-y-1/2 w-9 h-9 bg-white/80 hover:bg-white border border-slate-200 rounded-full flex items-center justify-center text-slate-700 shadow-md transition-all hover:scale-105"
-                                                        ><IcoChevR /></button>
-                                                    </>
-                                                )}
-                                            </>
-                                        ) : (
-                                            <div className="w-full h-full flex flex-col items-center justify-center text-slate-300 gap-2">
-                                                <IcoImages />
-                                                <span className="text-sm">No images</span>
-                                            </div>
-                                        )}
-                                    </div>
-
-                                    {/* Thumbnail strip */}
-                                    {!loading && allImages.length > 1 && (
-                                        <div
-                                            ref={thumbsRef}
-                                            className="pd-thumbstrip flex gap-2 px-4 py-3 overflow-x-auto border-t border-slate-100 bg-slate-50"
-                                        >
-                                            {allImages.map((src, i) => (
-                                                <button
-                                                    key={i}
-                                                    onClick={() => goTo(i)}
-                                                    className={`flex-shrink-0 rounded-lg overflow-hidden border-2 transition-all ${
-                                                        i === activeImg
-                                                            ? "border-blue-500 opacity-100 scale-105"
-                                                            : "border-transparent opacity-50 hover:opacity-75"
-                                                    }`}
-                                                    style={{ width: 72, height: 48 }}
-                                                >
-                                                    <img src={src} alt="" className="w-full h-full object-cover" />
-                                                </button>
-                                            ))}
-                                        </div>
+                        {/* Details */}
+                        <motion.section {...fadeUp(3)} className="order-4 min-w-0">
+                            <h2 className={sectionTitle}>Details</h2>
+                            {loading ? (
+                                <div className="space-y-3">
+                                    {[...Array(5)].map((_, i) => <Sk key={i} className="h-5 w-full" />)}
+                                </div>
+                            ) : (
+                                <dl className="border-t border-slate-900">
+                                    {developers.length > 0 && (
+                                        <DetailRow label="Developer">
+                                            {developers.map((d) => d.developerName).join(", ")}
+                                        </DetailRow>
                                     )}
-                                </motion.div>
-
-                                {/* About this game */}
-                                <motion.div
-                                    {...fadeUp(2)}
-                                    className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6"
-                                >
-                                    <h2 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 mb-3">
-                                        About this game
-                                    </h2>
-                                    {loading ? (
-                                        <div className="space-y-2">
-                                            <Sk className="h-4 w-full" />
-                                            <Sk className="h-4 w-11/12" />
-                                            <Sk className="h-4 w-4/6" />
-                                        </div>
-                                    ) : (
-                                        <p className="text-sm text-slate-600 leading-relaxed whitespace-pre-line">
-                                            {product?.description || "No description available."}
-                                        </p>
+                                    {publisher && <DetailRow label="Publisher">{publisher.publisherName}</DetailRow>}
+                                    {releaseDate && (
+                                        <DetailRow label="Released">
+                                            {new Date(releaseDate).toLocaleDateString("en-US", { year: "numeric", month: "long", day: "numeric" })}
+                                        </DetailRow>
                                     )}
-                                </motion.div>
-
-                                {/* Game details */}
-                                <motion.div
-                                    {...fadeUp(3)}
-                                    className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 sm:p-6"
-                                >
-                                    <h2 className="text-xs font-extrabold uppercase tracking-widest text-slate-400 mb-4">
-                                        Game details
-                                    </h2>
-                                    {loading ? (
-                                        <div className="space-y-3">
-                                            {[...Array(5)].map((_, i) => <Sk key={i} className="h-5 w-full" />)}
-                                        </div>
-                                    ) : (
-                                        <div className="divide-y divide-slate-100">
-                                            {developers.length > 0 && (
-                                                <DetailRow label="Developer">
-                                                    <div className="flex flex-wrap gap-x-2">
-                                                        {developers.map((d) => (
-                                                            <span key={d.developerId} className="text-sm font-semibold text-blue-600">
-                                                                {d.developerName}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </DetailRow>
-                                            )}
-                                            {publisher && (
-                                                <DetailRow label="Publisher">
-                                                    <span className="text-sm font-semibold text-blue-600">{publisher.publisherName}</span>
-                                                </DetailRow>
-                                            )}
-                                            {releaseDate && (
-                                                <DetailRow label="Release date">
-                                                    <span className="text-sm text-slate-700">
-                                                        {new Date(releaseDate).toLocaleDateString("en-US", {
-                                                            year: "numeric", month: "long", day: "numeric",
-                                                        })}
+                                    {categories.length > 0 && (
+                                        <DetailRow label="Categories">
+                                            {categories.map((c) => c.categoryName).join(" · ")}
+                                        </DetailRow>
+                                    )}
+                                    {platforms.length > 0 && (
+                                        <DetailRow label="Platforms">
+                                            <span className="flex gap-4 flex-wrap">
+                                                {platforms.map(({ label, icon }) => (
+                                                    <span key={label} className="inline-flex items-center gap-1.5">
+                                                        <span className="text-slate-500" aria-hidden="true">{icon}</span>{label}
                                                     </span>
-                                                </DetailRow>
-                                            )}
-                                            {categories.length > 0 && (
-                                                <DetailRow label="Categories">
-                                                    <div className="flex flex-wrap gap-1.5">
-                                                        {categories.map((c) => (
-                                                            <span key={c.categoryId} className="text-xs font-semibold bg-slate-100 text-slate-600 border border-slate-200 rounded-md px-2 py-0.5">
-                                                                {c.categoryName}
-                                                            </span>
-                                                        ))}
-                                                    </div>
-                                                </DetailRow>
-                                            )}
-                                            {platforms.length > 0 && (
-                                                <DetailRow label="Platforms">
-                                                    <div className="flex gap-3 flex-wrap">
-                                                        {platforms.map(({ label, icon }) => (
-                                                            <div key={label} className="flex items-center gap-1.5 text-sm text-slate-600">
-                                                                <span className="text-slate-400">{icon}</span>
-                                                                {label}
-                                                            </div>
-                                                        ))}
-                                                    </div>
-                                                </DetailRow>
-                                            )}
-                                        </div>
+                                                ))}
+                                            </span>
+                                        </DetailRow>
                                     )}
-                                </motion.div>
-                            </div>
+                                </dl>
+                            )}
+                        </motion.section>
 
-                            {/* ════ Right column — sticky sidebar ════ */}
-                            <div className="w-full lg:w-72 xl:w-80 shrink-0">
-                                <div className="sticky top-24 space-y-4">
-
-                                    {/* Purchase card */}
-                                    <motion.div
-                                        {...fadeUp(1)}
-                                        className="bg-white rounded-2xl border border-slate-200 shadow-sm p-5 space-y-4"
-                                    >
-                                        {/* Thumbnail preview */}
-                                        {!loading && thumbnail && (
-                                            <img
-                                                src={thumbnail}
-                                                alt={name}
-                                                className="w-full rounded-xl object-cover border border-slate-100"
-                                                style={{ aspectRatio: "16/9" }}
-                                                onError={(e) => { e.currentTarget.style.display = "none"; }}
-                                            />
-                                        )}
-                                        {loading && <Sk className="w-full rounded-xl" style={{ aspectRatio: "16/9" }} />}
-
-                                        {/* Title in sidebar */}
-                                        {!loading ? (
-                                            <h2 className="text-sm font-bold text-slate-800 leading-snug">{name}</h2>
-                                        ) : (
-                                            <Sk className="h-5 w-4/5" />
-                                        )}
-
-                                        {/* Price */}
-                                        {loading ? (
-                                            <Sk className="h-10 w-2/3" />
-                                        ) : hasDiscount ? (
-                                            <div>
-                                                <div className="flex items-center gap-2">
-                                                    <span className="inline-block bg-rose-500 text-white text-xs font-black px-2 py-0.5 rounded-md">
-                                                        -{discountPct}%
-                                                    </span>
-                                                    <span className="text-sm text-slate-400 line-through">{fmt(price)}</span>
-                                                </div>
-                                                <div className="text-2xl font-extrabold text-slate-900 mt-0.5">{fmt(specialPrice)}</div>
-                                                <p className="text-xs text-emerald-600 font-semibold mt-0.5">You save {fmt(saved)}</p>
-                                            </div>
-                                        ) : (
-                                            <div className="text-2xl font-extrabold text-slate-900">{fmt(price)}</div>
-                                        )}
-
-                                        {/* Stock indicator */}
-                                        {!loading && (
-                                            <div className={`flex items-center gap-2 text-sm font-semibold ${isAvailable ? "text-emerald-600" : "text-red-500"}`}>
-                                                <span className={`w-2 h-2 rounded-full ${isAvailable ? "bg-emerald-500" : "bg-red-400"}`} />
-                                                {isAvailable ? `${qty_stock} keys available` : "Out of stock"}
-                                            </div>
-                                        )}
-
-
-                                        {/* CTA button */}
-                                        <motion.button
-                                            onClick={handleAdd}
-                                            disabled={loading || !isAvailable}
-                                            whileTap={{ scale: 0.97 }}
-                                            className={`w-full h-11 flex items-center justify-center gap-2 rounded-xl text-sm font-bold transition-all duration-200 disabled:opacity-50 disabled:cursor-not-allowed
-                                                ${added
-                                                    ? "bg-emerald-500 text-white shadow-md shadow-emerald-100"
-                                                    : "bg-blue-600 hover:bg-blue-700 text-white shadow-md shadow-blue-100"
-                                                }`}
-                                        >
-                                            <AnimatePresence mode="wait">
-                                                {added ? (
-                                                    <motion.span key="ok" className="flex items-center gap-2"
-                                                        initial={{ opacity: 0, y: 6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                                                        <IcoCheck /> Added to cart!
-                                                    </motion.span>
-                                                ) : (
-                                                    <motion.span key="add" className="flex items-center gap-2"
-                                                        initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }} exit={{ opacity: 0 }}>
-                                                        <IcoCart />
-                                                        {isAvailable ? "Add to Cart" : "Out of Stock"}
-                                                    </motion.span>
-                                                )}
-                                            </AnimatePresence>
-                                        </motion.button>
-
-                                        {/* Platform chips */}
-                                        {!loading && platforms.length > 0 && (
-                                            <div className="flex items-center gap-2 pt-1 border-t border-slate-100">
-                                                <span className="text-xs text-slate-400">Platforms</span>
-                                                <div className="flex gap-2">
-                                                    {platforms.map(({ label, icon }) => (
-                                                        <span key={label} title={label} className="text-slate-400 hover:text-slate-700 transition-colors cursor-default">
-                                                            {icon}
-                                                        </span>
-                                                    ))}
-                                                </div>
-                                            </div>
-                                        )}
-                                    </motion.div>
-
-                                    {/* Feature pills */}
-                                    {!loading && (
-                                        <motion.div {...fadeUp(2)} className="grid grid-cols-2 gap-3">
-                                            {[
-                                                { emoji: "🔑", label: "Instant key", sub: "Delivered instantly" },
-                                                { emoji: "🌍", label: "Global key", sub: "All regions" },
-                                                { emoji: "🔒", label: "Secure", sub: "SSL checkout" },
-                                                { emoji: "🎮", label: "Steam key", sub: "PC platform" },
-                                            ].map((b) => (
-                                                <div
-                                                    key={b.label}
-                                                    className="bg-white border border-slate-200 rounded-xl p-3 text-center shadow-sm hover:shadow transition-shadow"
-                                                >
-                                                    <div className="text-base mb-1">{b.emoji}</div>
-                                                    <p className="text-xs font-bold text-slate-700">{b.label}</p>
-                                                    <p className="text-xs text-slate-400 mt-0.5">{b.sub}</p>
-                                                </div>
-                                            ))}
-                                        </motion.div>
+                        {/* Purchase ticket */}
+                        <div className="order-2 min-w-0 lg:row-span-3">
+                            <motion.div
+                                {...fadeUp(1)}
+                                className={`lg:sticky lg:top-24 ${panel} overflow-hidden`}
+                                style={{ boxShadow: "5px 5px 0 0 var(--color-slate-900)" }}
+                            >
+                                <div className="flex items-center justify-between px-5 py-3 bg-slate-900 text-slate-50">
+                                    <span className="label-mono">Digital key</span>
+                                    {hasDiscount && (
+                                        <span className="font-mono text-xs font-semibold bg-blue-600 px-2 py-0.5 rounded-sm">−{discountPct}%</span>
                                     )}
                                 </div>
-                            </div>
+
+                                <div className="p-5 space-y-5">
+                                    {loading ? (
+                                        <Sk className="h-12 w-2/3" />
+                                    ) : (
+                                        <div className="font-mono tabular-nums">
+                                            {hasDiscount && <p className="text-sm text-slate-500 line-through">{fmt(price)}</p>}
+                                            <p className="text-4xl font-semibold text-slate-900 tracking-tight">{fmt(hasDiscount ? specialPrice : price)}</p>
+                                            {hasDiscount && <p className="mt-1 text-sm text-emerald-700 font-semibold">You save {fmt(saved)}</p>}
+                                        </div>
+                                    )}
+
+                                    {!loading && (
+                                        <p className={`flex items-center gap-2 text-sm font-semibold ${isAvailable ? "text-emerald-700" : "text-red-600"}`}>
+                                            <span className={`w-2 h-2 ${isAvailable ? "bg-emerald-600" : "bg-red-600"}`} aria-hidden="true" />
+                                            {isAvailable ? `${qty_stock} keys in stock` : "Out of stock"}
+                                        </p>
+                                    )}
+
+                                    <button
+                                        onClick={handleAdd}
+                                        disabled={loading || !isAvailable}
+                                        className={`w-full h-12 inline-flex items-center justify-center gap-2 rounded-md border border-slate-900 text-[15px] font-bold transition-colors duration-150 disabled:opacity-50 disabled:cursor-not-allowed
+                                            ${added ? "bg-emerald-600 text-white" : "bg-blue-600 hover:bg-blue-700 text-white"}`}
+                                    >
+                                        <span aria-live="polite" className="inline-flex items-center gap-2">
+                                            {added ? <><IcoCheck /> Added to cart</> : <><IcoCart /> {isAvailable ? "Add to cart" : "Out of stock"}</>}
+                                        </span>
+                                    </button>
+                                </div>
+
+                                <div className="border-t border-dashed border-slate-400 mx-5" aria-hidden="true" />
+                                <ul className="p-5 grid grid-cols-2 gap-y-3 gap-x-4 text-sm">
+                                    {[
+                                        ["Delivery", "Instant"],
+                                        ["Platform", "Steam"],
+                                        ["Checkout", "Stripe"],
+                                        ["Saved in", "My Orders"],
+                                    ].map(([k, v]) => (
+                                        <li key={k}>
+                                            <span className="block label-mono text-slate-500">{k}</span>
+                                            <span className="font-semibold text-slate-900">{v}</span>
+                                        </li>
+                                    ))}
+                                </ul>
+                            </motion.div>
                         </div>
                     </div>
                 </div>
             </main>
 
-            {/* ── Lightbox ── */}
+            {/* Lightbox */}
             <AnimatePresence>
                 {lightbox && (
                     <motion.div
-                        className="fixed inset-0 z-[200] bg-black/90 flex items-center justify-center p-4"
+                        role="dialog"
+                        aria-modal="true"
+                        aria-label={`${name} images`}
+                        className="fixed inset-0 z-[200] bg-slate-950/95 flex items-center justify-center p-2 sm:p-6"
                         initial={{ opacity: 0 }}
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setLightbox(false)}
                     >
-                        {/* Close */}
                         <button
-                            className="absolute top-4 right-4 w-10 h-10 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-all"
+                            aria-label="Close"
+                            className="absolute top-4 right-4 w-10 h-10 grid place-items-center border border-slate-600 text-white rounded-md hover:bg-white hover:text-slate-900 transition-colors"
                             onClick={() => setLightbox(false)}
                         ><IcoX /></button>
 
-                        {/* Prev */}
                         {allImages.length > 1 && (
                             <button
-                                className="absolute left-4 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-all"
+                                aria-label="Previous image"
+                                className="absolute left-2 sm:left-6 top-1/2 -translate-y-1/2 w-11 h-11 grid place-items-center border border-slate-600 text-white rounded-md hover:bg-white hover:text-slate-900 transition-colors"
                                 onClick={(e) => { e.stopPropagation(); goPrev(); }}
                             ><IcoChevL /></button>
                         )}
 
-                        {/* Image */}
                         <motion.img
                             key={activeImg}
                             src={allImages[activeImg]}
                             alt={name}
-                            className="max-w-full max-h-[90vh] rounded-xl object-contain shadow-2xl"
-                            initial={{ opacity: 0, scale: 0.93 }}
-                            animate={{ opacity: 1, scale: 1 }}
+                            className="max-w-[calc(100%-6rem)] max-h-[85vh] object-contain border border-slate-700"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={(e) => e.stopPropagation()}
                         />
 
-                        {/* Next */}
                         {allImages.length > 1 && (
                             <button
-                                className="absolute right-4 top-1/2 -translate-y-1/2 w-11 h-11 flex items-center justify-center bg-white/10 hover:bg-white/20 text-white rounded-full transition-all"
+                                aria-label="Next image"
+                                className="absolute right-2 sm:right-6 top-1/2 -translate-y-1/2 w-11 h-11 grid place-items-center border border-slate-600 text-white rounded-md hover:bg-white hover:text-slate-900 transition-colors"
                                 onClick={(e) => { e.stopPropagation(); goNext(); }}
                             ><IcoChevR /></button>
                         )}
 
-                        {/* Dot indicators */}
-                        {allImages.length > 1 && (
-                            <div className="absolute bottom-5 left-1/2 -translate-x-1/2 flex gap-2">
-                                {allImages.map((_, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={(e) => { e.stopPropagation(); goTo(i); }}
-                                        className="rounded-full transition-all"
-                                        style={{
-                                            width: i === activeImg ? 20 : 8,
-                                            height: 8,
-                                            background: i === activeImg ? "#3b82f6" : "rgba(255,255,255,0.35)",
-                                        }}
-                                    />
-                                ))}
-                            </div>
-                        )}
+                        <p className="absolute bottom-5 left-1/2 -translate-x-1/2 font-mono text-sm text-slate-300">
+                            {activeImg + 1} / {allImages.length}
+                        </p>
                     </motion.div>
                 )}
             </AnimatePresence>
@@ -605,13 +493,33 @@ export const ProductDetail = () => {
     );
 };
 
-/* ─── Detail row ─────────────────────────────────────────────────────────── */
+/* ─── Description + detail row ───────────────────────────────────────────── */
+
+const DESC_LIMIT = 320;
+
+const GameDescription = ({ text, expanded, onToggle }) => {
+    const raw = (text || "").trim();
+    if (!raw) return <p className="text-slate-500">No description available.</p>;
+
+    const tooLong = raw.length > DESC_LIMIT;
+    const shown = !tooLong || expanded ? raw : `${raw.slice(0, DESC_LIMIT).trimEnd()}…`;
+
+    return (
+        <div className="max-w-prose">
+            <p className="text-[15px] text-slate-700 leading-relaxed whitespace-pre-line break-words">{shown}</p>
+            {tooLong && (
+                <button type="button" onClick={onToggle} aria-expanded={expanded}
+                    className="mt-3 text-sm font-bold text-slate-900 underline underline-offset-4 decoration-blue-600 decoration-2 hover:text-blue-700">
+                    {expanded ? "Show less" : "Read more"}
+                </button>
+            )}
+        </div>
+    );
+};
 
 const DetailRow = ({ label, children }) => (
-    <div className="flex gap-4 py-3 first:pt-0 last:pb-0">
-        <span className="text-xs font-extrabold uppercase tracking-wide text-slate-400 w-28 shrink-0 pt-0.5">
-            {label}
-        </span>
-        <div className="flex-1 min-w-0">{children}</div>
+    <div className="grid grid-cols-[7.5rem_1fr] gap-4 py-3 border-b border-slate-200 text-sm">
+        <dt className="label-mono text-slate-500 pt-0.5">{label}</dt>
+        <dd className="text-slate-900 font-medium min-w-0 break-words">{children}</dd>
     </div>
 );

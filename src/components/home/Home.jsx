@@ -1,14 +1,114 @@
-import { useEffect } from "react";
+import { useEffect, useRef } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { fetchProducts } from "../../store/actions";
-import { FaExclamationTriangle } from "react-icons/fa";
-import { ProductCard } from "../shared/ProductCard";
 import { Link } from "react-router-dom";
+import { ArrowRight, AlertTriangle, Gamepad2, CreditCard, KeyRound } from "lucide-react";
+import { motion, useScroll, useSpring, useTransform } from "framer-motion";
+import { fetchProducts } from "../../store/actions";
+import { ProductCard } from "../shared/ProductCard";
 import { Header } from "../shared/Header";
 import { HeroBanner } from "../home/HeroBanner";
 import { Footer } from "../shared/Footer";
 import { Loader } from "../shared/Loader";
-import { motion } from "framer-motion";
+import { EASE, Magnetic, Marquee, Reveal, SplitReveal } from "../shared/Motion";
+
+const STEPS = [
+    { n: "01", icon: Gamepad2, title: "Pick a game", body: "Browse by genre or price. Every page shows platform and stock up front.", bg: "var(--color-mustard)" },
+    { n: "02", icon: CreditCard, title: "Pay once", body: "Card checkout through Stripe. No accounts to link, no subscriptions.", bg: "var(--color-lilac)" },
+    { n: "03", icon: KeyRound, title: "Reveal & redeem", body: "Your key lands in My Orders. Reveal it, paste into Steam, start the download.", bg: "var(--color-moss-soft)" },
+];
+
+const TICKER = ["Instant delivery", "Steam keys", "Up to 50% off", "New deals weekly", "Secure Stripe checkout", "Indie to AAA"];
+
+const HowItWorks = () => {
+    const ref = useRef(null);
+    const { scrollYProgress } = useScroll({ target: ref, offset: ["start 80%", "end 50%"] });
+    const progress = useSpring(scrollYProgress, { stiffness: 120, damping: 24 });
+
+    return (
+        <section ref={ref} className="border-y border-slate-900 bg-white">
+            <div className="max-w-7xl mx-auto px-5 md:px-6 py-20 grid lg:grid-cols-[1fr_2fr] gap-12">
+                <div>
+                    <SplitReveal as="h2" lines={["Three steps,", "no shipping."]} className="text-4xl md:text-5xl font-extrabold text-slate-900" />
+                    {/* scroll-linked progress rail */}
+                    <div className="mt-8 h-2 w-full max-w-xs rounded-full border border-slate-900 overflow-hidden bg-slate-100" aria-hidden="true">
+                        <motion.div className="h-full origin-left" style={{ scaleX: progress, background: "linear-gradient(90deg, var(--color-mustard), var(--color-blue-600), var(--color-cobalt))" }} />
+                    </div>
+                </div>
+                <ol className="grid md:grid-cols-3 gap-5">
+                    {STEPS.map((s, i) => (
+                        <motion.li
+                            key={s.n}
+                            initial={{ opacity: 0, y: 40, rotate: i % 2 ? 3 : -3 }}
+                            whileInView={{ opacity: 1, y: 0, rotate: 0 }}
+                            viewport={{ once: true, margin: "-80px" }}
+                            transition={{ duration: 0.7, delay: i * 0.15, ease: EASE }}
+                            whileHover={{ y: -6, rotate: i % 2 ? 1.5 : -1.5 }}
+                            className="relative rounded-lg border border-slate-900 p-6"
+                            style={{ background: s.bg, boxShadow: "5px 5px 0 0 var(--color-slate-900)" }}
+                        >
+                            <div className="flex items-center justify-between">
+                                <span className="font-mono text-sm text-slate-900">{s.n}</span>
+                                <motion.span
+                                    className="grid place-items-center w-10 h-10 rounded-full bg-white border border-slate-900"
+                                    whileHover={{ rotate: 360 }}
+                                    transition={{ duration: 0.6 }}
+                                >
+                                    <s.icon size={18} aria-hidden="true" />
+                                </motion.span>
+                            </div>
+                            <h3 className="mt-10 text-xl font-extrabold text-slate-900">{s.title}</h3>
+                            <p className="mt-2 text-sm leading-relaxed text-slate-800">{s.body}</p>
+                        </motion.li>
+                    ))}
+                </ol>
+            </div>
+        </section>
+    );
+};
+
+const ClosingCta = () => {
+    const ref = useRef(null);
+    const { scrollYProgress } = useScroll({ target: ref, offset: ["start end", "end start"] });
+    const x = useTransform(scrollYProgress, [0, 1], ["-10%", "10%"]);
+    const rotate = useTransform(scrollYProgress, [0, 1], [-8, 8]);
+
+    return (
+        <section ref={ref} className="max-w-7xl mx-auto px-5 md:px-6 pt-24">
+            <Reveal>
+                <div
+                    className="relative overflow-hidden rounded-lg border border-slate-900 bg-blue-600 text-white px-6 md:px-12 py-16 md:py-20 grid md:grid-cols-[1fr_auto] items-end gap-8"
+                    style={{ boxShadow: "8px 8px 0 0 var(--color-slate-900)" }}
+                >
+                    {/* moving diagonal stripes */}
+                    <motion.div
+                        aria-hidden="true"
+                        className="absolute -inset-20 opacity-20"
+                        style={{
+                            x, rotate,
+                            backgroundImage: "repeating-linear-gradient(-45deg, var(--color-mustard) 0 18px, transparent 18px 46px)",
+                        }}
+                    />
+                    <motion.div
+                        aria-hidden="true"
+                        className="absolute -right-10 -top-10 w-48 h-48 rounded-full border border-slate-900"
+                        style={{ background: "var(--color-mustard)" }}
+                        animate={{ scale: [1, 1.08, 1], rotate: [0, 20, 0] }}
+                        transition={{ duration: 6, repeat: Infinity, ease: "easeInOut" }}
+                    />
+                    <div className="relative">
+                        <p className="label-mono text-blue-100 mb-4">Up to 50% off this week</p>
+                        <SplitReveal as="h2" lines={["Your backlog", "called."]} className="display text-5xl md:text-7xl" />
+                    </div>
+                    <Magnetic className="relative">
+                        <Link to="/products" className="inline-flex items-center gap-2 bg-slate-900 text-slate-50 border border-slate-900 rounded-md px-7 py-4 font-bold text-[15px] hover:bg-white hover:text-slate-900 transition-colors">
+                            Shop the sale <ArrowRight size={16} aria-hidden="true" />
+                        </Link>
+                    </Magnetic>
+                </div>
+            </Reveal>
+        </section>
+    );
+};
 
 export const Home = () => {
     const { products } = useSelector((state) => state.products);
@@ -19,125 +119,64 @@ export const Home = () => {
         dispatch(fetchProducts("sortBy=discount&sortOrder=desc&pageNumber=0&pageSize=12"));
     }, [dispatch]);
 
+    const featured = products?.[0];
+
     return (
-        <div className="bg-slate-50 min-h-screen">
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:wght@400;500;600;700;800&display=swap');
-                .home-wrap { font-family: 'Reddit Sans', sans-serif; }
-            `}</style>
-
+        <div className="bg-slate-50 min-h-screen overflow-x-hidden">
             <Header />
-            <HeroBanner />
+            <HeroBanner featured={featured} loading={isFetchingProducts} />
 
-            {/* Hot Deals Section */}
-            <section className="home-wrap max-w-7xl mx-auto px-6 lg:px-8 py-20">
-
-                {/* Section header */}
-                <motion.div
-                    initial={{ opacity: 0, y: 16 }}
-                    whileInView={{ opacity: 1, y: 0 }}
-                    viewport={{ once: true }}
-                    transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
-                    className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-12"
-                >
-                    <div>
-                        <h2 className="text-3xl md:text-4xl font-extrabold text-slate-900 tracking-tight">
-                            Hot Deals 🔥
-                        </h2>
-                        <p className="mt-2 text-slate-400 text-sm max-w-md leading-relaxed">
-                            Grab your favorite products with amazing discounts.
-                        </p>
-                    </div>
-
-                    <Link
-                        to="/products"
-                        className="flex-shrink-0 inline-flex items-center gap-2 px-5 py-2.5 bg-slate-900 hover:bg-slate-700 text-white rounded-xl text-sm font-bold transition-all duration-150"
-                        style={{ boxShadow: "0 2px 10px rgba(15,23,42,0.15)" }}
-                    >
-                        View All
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                            <polyline points="9 18 15 12 9 6" />
-                        </svg>
-                    </Link>
-                </motion.div>
-
-                {/* Products */}
-                {isFetchingProducts ? (
-                    <Loader />
-                ) : fetchingProductsErrorMessage ? (
-                    <div className="flex justify-center items-center py-16">
-                        <div
-                            className="flex flex-col items-center bg-white border border-red-100 rounded-3xl px-10 py-12 max-w-sm text-center"
-                            style={{ boxShadow: "0 4px 24px rgba(239,68,68,0.08)" }}
-                        >
-                            <div className="w-14 h-14 rounded-2xl bg-red-50 border border-red-100 flex items-center justify-center mb-4">
-                                <FaExclamationTriangle className="text-red-400 text-xl" />
-                            </div>
-                            <p className="text-sm font-semibold text-slate-700 mb-1">Something went wrong</p>
-                            <p className="text-xs text-slate-400">{fetchingProductsErrorMessage}</p>
-                        </div>
-                    </div>
-                ) : (
-                    <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
-                        {products && products.map((item, i) => (
-                            <motion.div
-                                key={i}
-                                initial={{ opacity: 0, y: 20 }}
-                                whileInView={{ opacity: 1, y: 0 }}
-                                viewport={{ once: true }}
-                                transition={{ duration: 0.3, delay: i * 0.07, ease: [0.22, 1, 0.36, 1] }}
-                            >
-                                <ProductCard {...item} />
-                            </motion.div>
-                        ))}
-                    </div>
-                )}
-            </section>
-
-            {/* Promo banner */}
-            <section className="home-wrap relative overflow-hidden">
-                {/* Background */}
-                <div className="absolute inset-0 bg-slate-900" />
-                <div className="absolute inset-0 opacity-30"
-                    style={{ backgroundImage: "radial-gradient(circle at 20% 50%, #3b82f6 0%, transparent 50%), radial-gradient(circle at 80% 20%, #6366f1 0%, transparent 45%)" }}
+            {/* Crossed ticker tapes */}
+            <div className="relative py-10 bg-slate-50" aria-label="Highlights">
+                <Marquee
+                    items={TICKER}
+                    speed={32}
+                    className="relative z-10 -rotate-2 bg-blue-600 text-white border-y border-slate-900 py-3 display text-2xl md:text-3xl"
                 />
-                {/* Subtle grid */}
-                <div className="absolute inset-0 opacity-5"
-                    style={{ backgroundImage: "linear-gradient(rgba(255,255,255,0.3) 1px, transparent 1px), linear-gradient(90deg, rgba(255,255,255,0.3) 1px, transparent 1px)", backgroundSize: "40px 40px" }}
+                <Marquee
+                    items={TICKER}
+                    speed={40}
+                    reverse
+                    separator="●"
+                    className="absolute inset-x-0 top-1/2 -translate-y-1/2 rotate-2 bg-[var(--color-mustard)] text-slate-900 border-y border-slate-900 py-2 label-mono !text-sm"
                 />
+            </div>
 
-                <div className="relative z-10 max-w-3xl mx-auto px-6 py-24 text-center">
-                    <motion.div
-                        initial={{ opacity: 0, y: 20 }}
-                        whileInView={{ opacity: 1, y: 0 }}
-                        viewport={{ once: true }}
-                        transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
-                    >
-                        <div className="inline-flex items-center gap-2 bg-white/10 border border-white/20 rounded-full px-4 py-1.5 mb-6">
-                            <span className="text-xs font-bold text-white/80 uppercase tracking-widest">Special Offer</span>
+            <main>
+                {/* Deals */}
+                <section className="max-w-7xl mx-auto px-5 md:px-6 py-16">
+                    <div className="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-10 pb-5 border-b border-slate-900">
+                        <div>
+                            <Reveal as="p" className="label-mono text-slate-500 mb-3">Sorted by discount</Reveal>
+                            <SplitReveal as="h2" lines={["Biggest price drops"]} className="text-4xl md:text-5xl font-extrabold text-slate-900" />
                         </div>
-
-                        <h2 className="text-4xl md:text-6xl font-extrabold text-white mb-4 tracking-tight leading-tight">
-                            Up to <span className="text-blue-400">50% Off</span>
-                        </h2>
-
-                        <p className="text-base text-white/60 mb-10 leading-relaxed max-w-lg mx-auto">
-                            Limited-time deals on our best-selling products. Discover amazing discounts today.
-                        </p>
-
-                        <Link
-                            to="/products"
-                            className="inline-flex items-center gap-2 bg-white text-slate-900 hover:bg-blue-50 px-8 py-3.5 rounded-2xl font-bold text-sm transition-all duration-150"
-                            style={{ boxShadow: "0 4px 24px rgba(0,0,0,0.3)" }}
-                        >
-                            Shop Now
-                            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                                <polyline points="9 18 15 12 9 6" />
-                            </svg>
+                        <Link to="/products" className="group inline-flex items-center gap-2 text-sm font-bold text-slate-900 hover:text-blue-600">
+                            All games <ArrowRight size={16} className="transition-transform group-hover:translate-x-1" aria-hidden="true" />
                         </Link>
-                    </motion.div>
-                </div>
-            </section>
+                    </div>
+
+                    {isFetchingProducts ? (
+                        <Loader text="Loading deals" />
+                    ) : fetchingProductsErrorMessage ? (
+                        <div className="panel max-w-md mx-auto p-8 text-center" role="alert">
+                            <AlertTriangle className="mx-auto text-blue-600 mb-3" size={24} aria-hidden="true" />
+                            <p className="font-bold text-slate-900">Couldn’t load games</p>
+                            <p className="mt-1 text-sm text-slate-500">{fetchingProductsErrorMessage}</p>
+                        </div>
+                    ) : (
+                        <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
+                            {products?.map((item, i) => (
+                                <Reveal key={item.productId} delay={(i % 4) * 0.08} className="h-full">
+                                    <ProductCard {...item} index={i} />
+                                </Reveal>
+                            ))}
+                        </div>
+                    )}
+                </section>
+
+                <HowItWorks />
+                <ClosingCta />
+            </main>
 
             <Footer />
         </div>

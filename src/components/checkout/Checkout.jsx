@@ -58,19 +58,17 @@ const StepIndicator = ({ steps, activeStep }) => {
                         <div style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: 8, flexShrink: 0 }}>
                             <motion.div
                                 animate={{
-                                    background: isDone ? "#22c55e" : isActive ? "#3b82f6" : "#f1f5f9",
-                                    borderColor: isDone ? "#22c55e" : isActive ? "#3b82f6" : "#e2e8f0",
-                                    scale: isActive ? 1.1 : 1,
+                                    background: isDone ? "#181612" : isActive ? "#c7401a" : "#ffffff",
+                                    borderColor: isDone || isActive ? "#181612" : "#cbc4b4",
                                 }}
                                 transition={{ duration: 0.25 }}
                                 style={{
-                                    width: 40, height: 40, borderRadius: "50%",
-                                    border: "2px solid",
+                                    width: 40, height: 40, borderRadius: 6,
+                                    border: "1px solid",
                                     display: "flex", alignItems: "center", justifyContent: "center",
-                                    color: isDone || isActive ? "white" : "#94a3b8",
-                                    fontFamily: "'Reddit Sans', sans-serif",
+                                    color: isDone || isActive ? "white" : "#857d6d",
                                     fontSize: 13, fontWeight: 700,
-                                    boxShadow: isActive ? "0 0 0 6px #3b82f620" : "none",
+                                    boxShadow: isActive ? "2px 2px 0 0 #181612" : "none",
                                 }}
                             >
                                 {isDone ? (
@@ -84,13 +82,12 @@ const StepIndicator = ({ steps, activeStep }) => {
                                 <div style={{ textAlign: "center" }}>
                                     <div style={{
                                         fontSize: 12, fontWeight: 700,
-                                        color: isActive ? "#1e40af" : isDone ? "#15803d" : "#94a3b8",
-                                        fontFamily: "'Reddit Sans', sans-serif",
+                                        color: isActive ? "#832b13" : isDone ? "#335528" : "#857d6d",
                                         letterSpacing: "0.02em",
                                     }}>
                                         {step.label}
                                     </div>
-                                    <div style={{ fontSize: 10, color: "#cbd5e1", fontFamily: "'Reddit Sans', sans-serif" }}>
+                                    <div style={{ fontSize: 11, color: "#6b6457" }}>
                                         {step.sublabel}
                                     </div>
                                 </div>
@@ -99,11 +96,11 @@ const StepIndicator = ({ steps, activeStep }) => {
 
                         {/* Connector */}
                         {i < steps.length - 1 && (
-                            <div style={{ flex: 1, height: 2, background: "#f1f5f9", margin: isMobile ? "0 6px" : "0 8px", marginBottom: isMobile ? 0 : 28, position: "relative", overflow: "hidden" }}>
+                            <div style={{ flex: 1, height: 2, background: "#e2ddd1", margin: isMobile ? "0 6px" : "0 8px", marginBottom: isMobile ? 0 : 28, position: "relative", overflow: "hidden" }}>
                                 <motion.div
                                     animate={{ width: isDone ? "100%" : "0%" }}
                                     transition={{ duration: 0.4, ease: "easeInOut" }}
-                                    style={{ position: "absolute", top: 0, left: 0, height: "100%", background: "#22c55e" }}
+                                    style={{ position: "absolute", top: 0, left: 0, height: "100%", background: "#181612" }}
                                 />
                             </div>
                         )}
@@ -166,13 +163,11 @@ export const CheckOut = () => {
             {/* Page background */}
             <div style={{
                 minHeight: "100vh",
-                background: "linear-gradient(150deg, #eff6ff 0%, #f8fafc 50%, #f0fdf4 100%)",
-                display: "flex", alignItems: "center", justifyContent: "center",
+                background: "#f7f5f0",
+                display: "flex", alignItems: "flex-start", justifyContent: "center",
                 padding: isMobile ? "80px 16px 32px" : "96px 24px 40px",
             }}>
-                <style>{`
-                    @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:wght@400;500;600;700&display=swap');
-                `}</style>
+
 
                 <motion.div
                     initial={{ opacity: 0, y: 24 }}
@@ -181,9 +176,9 @@ export const CheckOut = () => {
                     style={{
                         width: "100%", maxWidth: 960,
                         background: "white",
-                        borderRadius: 24,
-                        border: "1px solid #e2e8f0",
-                        boxShadow: "0 4px 32px rgba(0,0,0,0.07), 0 1px 4px rgba(0,0,0,0.04)",
+                        borderRadius: 8,
+                        border: "1px solid #181612",
+                        boxShadow: "6px 6px 0 0 #181612",
                         padding: isMobile ? "24px 16px" : "40px 48px",
                     }}
                 >
@@ -191,21 +186,20 @@ export const CheckOut = () => {
                     <div style={{ marginBottom: 32, display: "flex", alignItems: "center", justifyContent: "space-between" }}>
                         <div>
                             <h1 style={{
-                                margin: 0, fontFamily: "'Reddit Sans', sans-serif",
-                                fontSize: isMobile ? 20 : 24, fontWeight: 700, color: "#0f172a",
-                                letterSpacing: "-0.02em",
+                                margin: 0, fontSize: isMobile ? 36 : 52, fontWeight: 800, color: "#181612",
+                                letterSpacing: "-0.035em", fontStretch: "125%", lineHeight: 0.95,
                             }}>
                                 Checkout
                             </h1>
-                            <p style={{ margin: "4px 0 0", fontFamily: "'Reddit Sans', sans-serif", fontSize: 13, color: "#94a3b8" }}>
+                            <p className="label-mono" style={{ margin: "12px 0 0", color: "#6b6457" }}>
                                 Step {activeStep + 1} of {STEPS.length}
                             </p>
                         </div>
                         <div style={{
-                            background: "#eff6ff", borderRadius: 12,
-                            padding: "6px 14px", border: "1px solid #bfdbfe",
+                            background: "#181612", borderRadius: 4,
+                            padding: "6px 12px", border: "1px solid #181612",
                         }}>
-                            <span style={{ fontFamily: "'Reddit Sans', sans-serif", fontSize: 12, fontWeight: 700, color: "#1d4ed8" }}>
+                            <span className="label-mono" style={{ color: "#f7f5f0" }}>
                                 {STEPS[activeStep].label}
                             </span>
                         </div>
@@ -231,7 +225,7 @@ export const CheckOut = () => {
                     </div>
 
                     {/* Divider */}
-                    <div style={{ height: 1, background: "#f1f5f9", margin: "32px 0 24px" }} />
+                    <div style={{ borderTop: "1px dashed #9c9484", margin: "32px 0 24px" }} />
 
                     {/* Navigation */}
                     <div style={{
@@ -246,10 +240,10 @@ export const CheckOut = () => {
                             disabled={activeStep === 0}
                             style={{
                                 padding: isMobile ? "12px" : "10px 28px",
-                                borderRadius: 14, border: "1.5px solid #e2e8f0",
+                                borderRadius: 6, border: activeStep === 0 ? "1px solid #cbc4b4" : "1px solid #181612",
                                 background: "white", cursor: activeStep === 0 ? "not-allowed" : "pointer",
-                                fontFamily: "'Reddit Sans', sans-serif", fontSize: 14, fontWeight: 600,
-                                color: activeStep === 0 ? "#cbd5e1" : "#475569",
+                                fontSize: 14,
+                                color: activeStep === 0 ? "#9c9484" : "#181612", fontWeight: 700,
                                 transition: "all 0.15s",
                                 width: isMobile ? "100%" : "auto",
                                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
@@ -267,12 +261,12 @@ export const CheckOut = () => {
                             disabled={isLastStep}
                             style={{
                                 padding: isMobile ? "13px" : "11px 36px",
-                                borderRadius: 14, border: "none",
-                                background: isLastStep ? "#dcfce7" : "#3b82f6",
+                                borderRadius: 6, border: "1px solid #181612",
+                                background: isLastStep ? "#dce8d5" : "#c7401a",
                                 cursor: isLastStep ? "default" : "pointer",
-                                fontFamily: "'Reddit Sans', sans-serif", fontSize: 14, fontWeight: 700,
-                                color: isLastStep ? "#16a34a" : "white",
-                                boxShadow: isLastStep ? "none" : "0 4px 14px rgba(59,130,246,0.35)",
+                                fontSize: 15, fontWeight: 700,
+                                color: isLastStep ? "#3f6a31" : "white",
+                                boxShadow: isLastStep ? "none" : "var(--shadow-block-sm)",
                                 transition: "all 0.15s",
                                 width: isMobile ? "100%" : "auto",
                                 display: "flex", alignItems: "center", justifyContent: "center", gap: 8,
@@ -280,7 +274,7 @@ export const CheckOut = () => {
                         >
                             {isLastStep ? (
                                 <>
-                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#16a34a" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#3f6a31" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
                                         <polyline points="20 6 9 17 4 12" />
                                     </svg>
                                     Completed

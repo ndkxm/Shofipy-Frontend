@@ -1,9 +1,243 @@
 @import "tailwindcss";
 
-::-webkit-scrollbar {
-  display: none;
+/*
+  Shofipy design tokens — "Cartridge" direction.
+  Warm bone paper, near-black ink, one vermilion accent, hard 1px rules,
+  small radii and offset block shadows instead of soft glows.
+  The stock palettes the components already use (slate/gray, blue/indigo, violet...)
+  are re-pointed here so every screen picks up the new system from one place.
+*/
+@theme static {
+  --font-sans: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-display: "Archivo", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "IBM Plex Mono", ui-monospace, monospace;
+
+  /* ink / paper neutrals (replaces cool slate + gray) */
+  --color-slate-50: #f7f5f0;
+  --color-slate-100: #efece4;
+  --color-slate-200: #e2ddd1;
+  --color-slate-300: #cbc4b4;
+  --color-slate-400: #857d6d;
+  --color-slate-500: #6b6457;
+  --color-slate-600: #514c42;
+  --color-slate-700: #3a362f;
+  --color-slate-800: #26231e;
+  --color-slate-900: #181612;
+  --color-slate-950: #0e0d0a;
+  --color-gray-50: var(--color-slate-50);
+  --color-gray-100: var(--color-slate-100);
+  --color-gray-200: var(--color-slate-200);
+  --color-gray-300: var(--color-slate-300);
+  --color-gray-400: var(--color-slate-400);
+  --color-gray-500: var(--color-slate-500);
+  --color-gray-600: var(--color-slate-600);
+  --color-gray-700: var(--color-slate-700);
+  --color-gray-800: var(--color-slate-800);
+  --color-gray-900: var(--color-slate-900);
+
+  /* vermilion accent (replaces blue + indigo) */
+  --color-blue-50: #fdf1ec;
+  --color-blue-100: #fbe1d6;
+  --color-blue-200: #f6c0aa;
+  --color-blue-300: #ef9675;
+  --color-blue-400: #e66a42;
+  --color-blue-500: #db4f24;
+  --color-blue-600: #c7401a;
+  --color-blue-700: #a43414;
+  --color-blue-800: #832b13;
+  --color-blue-900: #6b2613;
+  --color-blue-950: #3a1107;
+  --color-indigo-50: var(--color-blue-50);
+  --color-indigo-100: var(--color-blue-100);
+  --color-indigo-200: var(--color-blue-200);
+  --color-indigo-300: var(--color-blue-300);
+  --color-indigo-400: var(--color-blue-400);
+  --color-indigo-500: var(--color-blue-500);
+  --color-indigo-600: var(--color-blue-600);
+  --color-indigo-700: var(--color-blue-700);
+  --color-indigo-800: var(--color-blue-800);
+  --color-indigo-900: var(--color-blue-900);
+
+  /* steel — secondary data colour (replaces violet/purple/fuchsia/sky/cyan) */
+  --color-violet-50: #eef2f6;
+  --color-violet-100: #dde5ee;
+  --color-violet-200: #bccbdc;
+  --color-violet-300: #93aac3;
+  --color-violet-400: #6d89a8;
+  --color-violet-500: #4f6d8f;
+  --color-violet-600: #3d5776;
+  --color-violet-700: #314660;
+  --color-violet-800: #29394e;
+  --color-violet-900: #222f40;
+  --color-purple-50: var(--color-violet-50);
+  --color-purple-100: var(--color-violet-100);
+  --color-purple-200: var(--color-violet-200);
+  --color-purple-500: var(--color-violet-500);
+  --color-purple-600: var(--color-violet-600);
+  --color-purple-700: var(--color-violet-700);
+  --color-fuchsia-50: var(--color-violet-50);
+  --color-fuchsia-100: var(--color-violet-100);
+  --color-fuchsia-500: var(--color-violet-500);
+  --color-fuchsia-600: var(--color-violet-600);
+  --color-sky-50: var(--color-violet-50);
+  --color-sky-100: var(--color-violet-100);
+  --color-sky-500: var(--color-violet-500);
+  --color-sky-600: var(--color-violet-600);
+
+  /* rose / pink badges fold into the accent */
+  --color-rose-50: var(--color-blue-50);
+  --color-rose-100: var(--color-blue-100);
+  --color-rose-200: var(--color-blue-200);
+  --color-rose-500: var(--color-blue-500);
+  --color-rose-600: var(--color-blue-600);
+  --color-rose-700: var(--color-blue-700);
+  --color-pink-50: var(--color-blue-50);
+  --color-pink-100: var(--color-blue-100);
+  --color-pink-600: var(--color-blue-600);
+
+  /* success — moss rather than mint */
+  --color-emerald-50: #eff4ec;
+  --color-emerald-100: #dce8d5;
+  --color-emerald-200: #bcd3b0;
+  --color-emerald-300: #93b783;
+  --color-emerald-400: #6c9a5a;
+  --color-emerald-500: #4f7f3e;
+  --color-emerald-600: #3f6a31;
+  --color-emerald-700: #335528;
+  --color-emerald-800: #2a4522;
+  --color-green-50: var(--color-emerald-50);
+  --color-green-100: var(--color-emerald-100);
+  --color-green-500: var(--color-emerald-500);
+  --color-green-600: var(--color-emerald-600);
+  --color-green-700: var(--color-emerald-700);
+
+  /* small, consistent radii — no pillowy cards */
+  --radius-md: 4px;
+  --radius-lg: 5px;
+  --radius-xl: 6px;
+  --radius-2xl: 8px;
+  --radius-3xl: 10px;
+
+  /* hard offset shadows for the block look */
+  --shadow-block: 3px 3px 0 0 var(--color-slate-900);
+  --shadow-block-sm: 2px 2px 0 0 var(--color-slate-900);
+  --shadow-block-accent: 3px 3px 0 0 var(--color-blue-700);
+
+  /* playful secondaries — used as blocks, stickers and hover shadows, never for body text */
+  --color-mustard: #f2b630;
+  --color-mustard-soft: #fbe6a8;
+  --color-cobalt: #2f5bd3;
+  --color-cobalt-soft: #d5def8;
+  --color-moss: #5f8f3e;
+  --color-moss-soft: #dbe8cc;
+  --color-lilac: #b9a6f0;
+  --color-lilac-soft: #ebe5fc;
+
+  --animate-marquee: marquee var(--marquee-duration, 28s) linear infinite;
+  --animate-spin-slow: spin 14s linear infinite;
+  --animate-wobble: wobble 3.2s ease-in-out infinite;
+
+  @keyframes marquee {
+    from { transform: translateX(0); }
+    to { transform: translateX(-50%); }
+  }
+  @keyframes wobble {
+    0%, 100% { transform: rotate(-6deg) scale(1); }
+    50% { transform: rotate(4deg) scale(1.06); }
+  }
 }
 
-@theme {
-  --font-sans: "Reddit Sans", sans-serif;
+@layer base {
+  html {
+    -webkit-font-smoothing: antialiased;
+    text-rendering: optimizeLegibility;
+  }
+  body {
+    background: var(--color-slate-50);
+    color: var(--color-slate-900);
+    font-family: var(--font-sans);
+    font-feature-settings: "ss01", "tnum";
+  }
+  ::selection {
+    background: var(--color-blue-600);
+    color: #fff;
+  }
+  :focus-visible {
+    outline: 2px solid var(--color-blue-600);
+    outline-offset: 2px;
+  }
+  button:not(:disabled),
+  [role="button"] {
+    cursor: pointer;
+  }
+  h1, h2, h3 {
+    font-stretch: 112%;
+    letter-spacing: -0.02em;
+    text-wrap: balance;
+  }
+  ::-webkit-scrollbar { width: 10px; height: 10px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb {
+    background: var(--color-slate-300);
+    border: 3px solid var(--color-slate-50);
+    border-radius: 10px;
+  }
+}
+
+@layer components {
+  /* small uppercase mono label used for eyebrows, table heads, metadata */
+  .label-mono {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+  }
+  .display {
+    font-family: var(--font-display);
+    font-stretch: 125%;
+    font-weight: 800;
+    letter-spacing: -0.035em;
+    line-height: 0.95;
+  }
+  .btn-ink {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    background: var(--color-slate-900); color: var(--color-slate-50);
+    border: 1px solid var(--color-slate-900); border-radius: var(--radius-xl);
+    font-weight: 700; font-size: .875rem; padding: .75rem 1.25rem;
+    transition: transform .12s ease, box-shadow .12s ease, background .15s ease;
+  }
+  .btn-ink:hover { background: var(--color-blue-600); border-color: var(--color-blue-600); }
+  .btn-accent {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    background: var(--color-blue-600); color: #fff;
+    border: 1px solid var(--color-slate-900); border-radius: var(--radius-xl);
+    font-weight: 700; font-size: .875rem; padding: .75rem 1.25rem;
+    box-shadow: var(--shadow-block-sm);
+    transition: transform .12s ease, box-shadow .12s ease;
+  }
+  .btn-accent:hover { transform: translate(-1px, -1px); box-shadow: var(--shadow-block); }
+  .btn-accent:active { transform: translate(1px, 1px); box-shadow: none; }
+  .btn-line {
+    display: inline-flex; align-items: center; justify-content: center; gap: .5rem;
+    background: transparent; color: var(--color-slate-900);
+    border: 1px solid var(--color-slate-900); border-radius: var(--radius-xl);
+    font-weight: 700; font-size: .875rem; padding: .75rem 1.25rem;
+    transition: background .15s ease, color .15s ease;
+  }
+  .btn-line:hover { background: var(--color-slate-900); color: var(--color-slate-50); }
+  .panel {
+    background: #fff;
+    border: 1px solid var(--color-slate-900);
+    border-radius: var(--radius-2xl);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
 }

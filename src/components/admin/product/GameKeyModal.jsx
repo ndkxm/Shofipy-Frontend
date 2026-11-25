@@ -223,7 +223,7 @@ export const GameKeyModal = ({ product, onClose, onKeysChanged }) => {
             className="fixed inset-0 z-[80] flex items-end sm:items-center justify-center bg-slate-950/60 px-0 sm:px-4"
             onClick={(e) => e.target === e.currentTarget && onClose()}
         >
-            <div className="w-full sm:max-w-3xl max-h-[96dvh] overflow-hidden rounded-t-2xl sm:rounded-2xl bg-white shadow-2xl flex flex-col">
+            <div className="w-full sm:max-w-3xl max-h-[96dvh] overflow-hidden rounded-t-2xl sm:rounded-lg bg-white flex flex-col">
 
                 {/* ── Header ── */}
                 <div className="flex items-start justify-between border-b border-slate-100 px-5 py-4 shrink-0">
@@ -231,7 +231,7 @@ export const GameKeyModal = ({ product, onClose, onKeysChanged }) => {
                         <p className="flex items-center gap-1.5 text-xs font-bold uppercase tracking-wide text-violet-600">
                             <KeyRound size={13} /> Game Keys
                         </p>
-                        <h3 className="mt-1 text-base font-extrabold text-slate-950 leading-snug">
+                        <h3 className="mt-1 text-lg font-extrabold text-slate-950 leading-snug">
                             {product.productName}
                         </h3>
                         {/* Stats strip */}
@@ -256,7 +256,7 @@ export const GameKeyModal = ({ product, onClose, onKeysChanged }) => {
                 <div className="overflow-y-auto flex-1 p-5 space-y-5">
 
                     {/* Tabs */}
-                    <div className="flex gap-1 rounded-xl bg-slate-100 p-1">
+                    <div className="flex gap-1 rounded-md bg-slate-100 p-1">
                         {TABS.map((tab, i) => (
                             <button
                                 key={tab}
@@ -264,7 +264,7 @@ export const GameKeyModal = ({ product, onClose, onKeysChanged }) => {
                                 onClick={() => setActiveTab(i)}
                                 className={`flex-1 rounded-lg py-1.5 text-sm font-bold transition ${
                                     activeTab === i
-                                        ? "bg-white text-slate-900 shadow-sm"
+                                        ? "bg-white text-slate-900 "
                                         : "text-slate-500 hover:text-slate-700"
                                 }`}
                             >
@@ -284,7 +284,7 @@ export const GameKeyModal = ({ product, onClose, onKeysChanged }) => {
                                 onChange={(e) => setKeyInput(e.target.value)}
                                 rows={5}
                                 placeholder={"XXXX-YYYY-ZZZZ, AAAA-BBBB-CCCC\nor one per line"}
-                                className="w-full resize-none rounded-xl border border-slate-200 px-4 py-3 text-sm font-mono text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
+                                className="w-full resize-none rounded-lg border border-slate-300 px-4 py-3 text-sm font-mono text-slate-700 outline-none transition placeholder:text-slate-300 focus:border-violet-400 focus:ring-2 focus:ring-violet-100"
                             />
                             <button
                                 type="button"
@@ -301,7 +301,7 @@ export const GameKeyModal = ({ product, onClose, onKeysChanged }) => {
                     {/* ── Tab 1: CSV Upload ── */}
                     {activeTab === 1 && (
                         <div className="space-y-3">
-                            <div className="rounded-xl border border-slate-100 bg-slate-50/50 p-4 text-xs text-slate-500 space-y-1">
+                            <div className="rounded-md border border-slate-100 bg-slate-50/50 p-4 text-xs text-slate-500 space-y-1">
                                 <p className="font-bold text-slate-600">Accepted CSV formats:</p>
                                 <ul className="list-disc list-inside space-y-0.5">
                                     <li>One key per line (no header)</li>
@@ -317,7 +317,7 @@ export const GameKeyModal = ({ product, onClose, onKeysChanged }) => {
                                 onDragLeave={() => setIsDragging(false)}
                                 onDrop={onDrop}
                                 onClick={() => csvInputRef.current?.click()}
-                                className={`cursor-pointer rounded-xl border-2 border-dashed px-6 py-10 text-center transition ${
+                                className={`cursor-pointer rounded-md border-2 border-dashed px-6 py-10 text-center transition ${
                                     isDragging
                                         ? "border-violet-400 bg-violet-50"
                                         : csvFile
@@ -398,7 +398,7 @@ export const GameKeyModal = ({ product, onClose, onKeysChanged }) => {
                                 <p className="text-xs">Add keys using the tabs above.</p>
                             </div>
                         ) : (
-                            <div className="overflow-hidden rounded-xl border border-slate-200">
+                            <div className="overflow-hidden rounded-lg border border-slate-300">
                                 {/* Table header */}
                                 <div className="grid grid-cols-[32px_1fr_90px_32px] gap-x-3 bg-slate-50 px-3 py-2 text-[10px] font-extrabold uppercase tracking-wide text-slate-400">
                                     {/* Select-all toggle */}
@@ -480,7 +480,7 @@ export const GameKeyModal = ({ product, onClose, onKeysChanged }) => {
                                                 type="button"
                                                 disabled={page === 0 || isLoadingKeys}
                                                 onClick={() => setPage(p => p - 1)}
-                                                className="inline-flex h-7 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                                                className="inline-flex h-7 items-center gap-1 rounded-lg border border-slate-900 bg-white px-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
                                             >
                                                 <ChevronLeft size={13} /> Prev
                                             </button>
@@ -488,7 +488,7 @@ export const GameKeyModal = ({ product, onClose, onKeysChanged }) => {
                                                 type="button"
                                                 disabled={page >= totalPages - 1 || isLoadingKeys}
                                                 onClick={() => setPage(p => p + 1)}
-                                                className="inline-flex h-7 items-center gap-1 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
+                                                className="inline-flex h-7 items-center gap-1 rounded-lg border border-slate-900 bg-white px-2.5 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:opacity-40 disabled:cursor-not-allowed"
                                             >
                                                 Next <ChevronRight size={13} />
                                             </button>
@@ -508,7 +508,7 @@ export const GameKeyModal = ({ product, onClose, onKeysChanged }) => {
                     <button
                         type="button"
                         onClick={onClose}
-                        className="inline-flex h-8 items-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                        className="inline-flex h-8 items-center rounded-lg border border-slate-900 bg-white px-4 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
                     >
                         Close
                     </button>

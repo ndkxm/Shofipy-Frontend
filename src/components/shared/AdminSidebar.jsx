@@ -32,7 +32,7 @@ export const AdminSidebar = ({ activeTab, onTabChange, isOpen, onClose, onToggle
             <button
                 type="button"
                 onClick={onToggle}
-                className="fixed left-4 top-4 z-50 flex h-11 w-11 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-700 shadow-sm lg:hidden"
+                className="fixed left-4 top-4 z-50 flex h-11 w-11 items-center justify-center rounded-md border border-slate-900 bg-white text-slate-900 lg:hidden"
                 aria-label="Open admin menu"
             >
                 <Menu size={20} />
@@ -48,25 +48,25 @@ export const AdminSidebar = ({ activeTab, onTabChange, isOpen, onClose, onToggle
             )}
 
             <aside
-                className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-slate-200 bg-white transition-transform duration-200 lg:translate-x-0 ${
+                className={`fixed inset-y-0 left-0 z-50 flex w-72 flex-col border-r border-slate-900 bg-slate-900 text-slate-300 transition-transform duration-200 lg:translate-x-0 ${
                     isOpen ? "translate-x-0" : "-translate-x-full"
                 }`}
             >
-                <div className="flex h-16 items-center justify-between border-b border-slate-100 px-5">
+                <div className="flex h-16 items-center justify-between border-b border-slate-800 px-5">
                     <div className="flex items-center gap-3">
-                        <div className="flex h-10 w-10 items-center justify-center rounded-lg bg-blue-600 text-white">
+                        <div className="flex h-10 w-10 items-center justify-center rounded-md bg-blue-600 text-white border border-slate-50">
                             <LayoutDashboard size={20} />
                         </div>
                         <div>
-                            <p className="text-base font-extrabold text-slate-900">Admin</p>
-                            <p className="text-xs font-medium text-slate-500">Shofipy control</p>
+                            <p className="text-base font-extrabold text-slate-50">Admin</p>
+                            <p className="label-mono text-slate-500">Shofipy control</p>
                         </div>
                     </div>
 
                     <button
                         type="button"
                         onClick={onClose}
-                        className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-500 hover:bg-slate-100 lg:hidden"
+                        className="flex h-9 w-9 items-center justify-center rounded-lg text-slate-400 hover:bg-slate-800 lg:hidden"
                         aria-label="Close admin menu"
                     >
                         <X size={18} />
@@ -83,10 +83,10 @@ export const AdminSidebar = ({ activeTab, onTabChange, isOpen, onClose, onToggle
                                 type="button"
                                 key={tab.id}
                                 onClick={() => handleTabClick(tab.id)}
-                                className={`flex w-full items-center gap-3 rounded-lg px-3 py-2.5 text-sm font-semibold transition-colors ${
+                                className={`flex w-full items-center gap-3 rounded-md px-3 py-2.5 text-sm font-semibold transition-colors ${
                                     isActive
-                                        ? "bg-blue-50 text-blue-700"
-                                        : "text-slate-600 hover:bg-slate-50 hover:text-slate-950"
+                                        ? "bg-slate-50 text-slate-900"
+                                        : "text-slate-400 hover:bg-slate-800 hover:text-slate-50"
                                 }`}
                             >
                                 <Icon size={18} />
@@ -96,10 +96,10 @@ export const AdminSidebar = ({ activeTab, onTabChange, isOpen, onClose, onToggle
                     })}
                 </nav>
 
-                <div className="border-t border-slate-100 p-4">
-                    <div className="rounded-lg bg-slate-50 p-3">
-                        <p className="text-sm font-bold text-slate-900">Analytics API</p>
-                        <p className="mt-1 text-xs leading-5 text-slate-500">
+                <div className="border-t border-slate-800 p-4">
+                    <div className="rounded-md border border-slate-700 p-3">
+                        <p className="text-sm font-bold text-slate-100">Analytics API</p>
+                        <p className="mt-1 text-xs leading-5 text-slate-400">
                             Dashboard uses live data from backend admin analytics.
                         </p>
                     </div>

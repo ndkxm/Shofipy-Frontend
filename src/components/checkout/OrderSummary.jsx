@@ -51,7 +51,7 @@ const CheckCircleIcon = () => (
 );
 
 const ImageFallbackIcon = () => (
-    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbd5e1" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#cbc4b4" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round">
         <rect x="3" y="3" width="18" height="18" rx="2" />
         <circle cx="8.5" cy="8.5" r="1.5" />
         <polyline points="21 15 16 10 5 21" />
@@ -75,7 +75,7 @@ const SectionTitle = ({ icon, children }) => (
 );
 
 const Card = ({ children, className = "" }) => (
-    <div className={`rounded-2xl border border-slate-200 bg-white p-4 ${className}`}>
+    <div className={`rounded-lg border border-slate-900 bg-white p-4 ${className}`}>
         {children}
     </div>
 );
@@ -89,7 +89,7 @@ const ItemImage = ({ src, alt }) => {
 
     if (!src || error) {
         return (
-            <div className="w-11 h-11 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0">
+            <div className="w-11 h-11 rounded-md bg-slate-50 border border-slate-100 flex items-center justify-center flex-shrink-0">
                 <ImageFallbackIcon />
             </div>
         );
@@ -100,7 +100,7 @@ const ItemImage = ({ src, alt }) => {
             src={src}
             alt={alt}
             onError={() => setError(true)}
-            className="w-11 h-11 rounded-xl object-cover border border-slate-100 flex-shrink-0"
+            className="w-11 h-11 rounded-md object-cover border border-slate-100 flex-shrink-0"
         />
     );
 };
@@ -173,7 +173,7 @@ const PaymentMethodSection = ({ payment }) => {
         <Card>
             <SectionTitle icon={<CreditCardIcon />}>Payment Method</SectionTitle>
             <div className="flex items-center gap-3">
-                <div className={`w-9 h-9 rounded-xl flex items-center justify-center flex-shrink-0 ${isStripe ? "bg-[#635BFF]/10" : "bg-pink-100"}`}>
+                <div className={`w-9 h-9 rounded-md flex items-center justify-center flex-shrink-0 ${isStripe ? "bg-[#635BFF]/10" : "bg-pink-100"}`}>
                     {isStripe ? <StripeIcon /> : <MomoIcon />}
                 </div>
                 <div className="flex-1 min-w-0">
@@ -197,10 +197,6 @@ export const OrderSummary = ({ onPlaceOrder }) => {
 
     return (
         <>
-            <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Reddit+Sans:ital,wght@0,200..900;1,200..900&display=swap');
-                .os-wrap * { font-family: 'Reddit Sans', sans-serif; }
-            `}</style>
 
             <div className="os-wrap w-full">
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
@@ -218,8 +214,8 @@ export const OrderSummary = ({ onPlaceOrder }) => {
                         <motion.button
                             whileTap={{ scale: 0.98 }}
                             onClick={onPlaceOrder}
-                            className="w-full py-3.5 rounded-2xl text-sm font-bold text-white bg-blue-500 hover:bg-blue-600 transition-all duration-150"
-                            style={{ boxShadow: "0 4px 16px rgba(59,130,246,0.35)" }}
+                            className="w-full py-3.5 rounded-lg text-sm font-bold text-white bg-blue-500 hover:bg-blue-600 transition-all duration-150"
+                            style={{ boxShadow: "var(--shadow-block-sm)" }}
                         >
                             Place Order · {fmt(subtotal)}
                         </motion.button>

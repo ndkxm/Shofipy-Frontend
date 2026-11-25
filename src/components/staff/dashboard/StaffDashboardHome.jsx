@@ -55,7 +55,7 @@ const defaultTo = () => toISODate(new Date());
 const ChartTooltip = ({ active, payload, label }) => {
     if (!active || !payload?.length) return null;
     return (
-        <div className="rounded-xl border border-slate-200 bg-white px-4 py-3 shadow-lg text-sm">
+        <div className="rounded-lg border border-slate-900 bg-white px-4 py-3 text-sm">
             <p className="font-semibold text-slate-500 mb-1">{label}</p>
             <p className="font-bold text-blue-600">{fmtUSD(payload[0]?.value)}</p>
         </div>
@@ -64,13 +64,13 @@ const ChartTooltip = ({ active, payload, label }) => {
 
 // ─── KPI stat card ──────────────────────────────────────────────────────────
 const StatCard = ({ label, value, helper, icon: Icon, accent, helperPositive }) => (
-    <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+    <article className="rounded-lg border border-slate-900 bg-white p-5">
         <div className="flex items-start justify-between gap-4">
             <div>
-                <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{label}</p>
-                <p className="mt-3 text-2xl font-extrabold text-slate-950">{value}</p>
+                <p className="label-mono text-slate-600">{label}</p>
+                <p className="mt-3 font-mono text-3xl font-semibold tabular-nums text-slate-950">{value}</p>
             </div>
-            <div className={`flex h-11 w-11 items-center justify-center rounded-xl ${accent}`}>
+            <div className={`flex h-11 w-11 items-center justify-center rounded-md ${accent}`}>
                 <Icon size={20} />
             </div>
         </div>
@@ -87,7 +87,7 @@ const StatCard = ({ label, value, helper, icon: Icon, accent, helperPositive }) 
 // ─── mini info block ────────────────────────────────────────────────────────
 const InfoBlock = ({ label, value }) => (
     <div className="rounded-lg bg-slate-50 p-4">
-        <p className="text-xs font-bold uppercase tracking-wide text-slate-500">{label}</p>
+        <p className="label-mono text-slate-600">{label}</p>
         <p className="mt-2 text-lg font-extrabold text-slate-950">{value}</p>
     </div>
 );
@@ -242,13 +242,13 @@ export const StaffDashboardHome = () => {
     if (error) {
         return (
             <section className="flex flex-1 items-center justify-center py-24">
-                <div className="w-full max-w-md rounded-xl border border-red-200 bg-white p-8 text-center shadow-sm">
+                <div className="w-full max-w-md rounded-md border border-red-200 bg-white p-8 text-center">
                     <AlertCircle size={28} className="mx-auto text-red-400" />
-                    <h2 className="mt-4 text-base font-extrabold text-slate-950">Could not load analytics</h2>
+                    <h2 className="mt-4 text-lg font-extrabold text-slate-950">Could not load analytics</h2>
                     <p className="mt-2 text-sm text-slate-500">{error}</p>
                     <button
                         onClick={fetchAnalytics}
-                        className="mt-5 inline-flex h-10 items-center gap-2 rounded-lg bg-blue-600 px-4 text-sm font-bold text-white hover:bg-blue-700 transition"
+                        className="mt-5 inline-flex h-10 items-center gap-2 rounded-lg bg-blue-600 border border-slate-900 px-4 text-sm font-bold text-white hover:bg-blue-700 transition"
                     >
                         <RefreshCw size={15} /> Try again
                     </button>
@@ -268,11 +268,11 @@ export const StaffDashboardHome = () => {
             </div>
 
             {/* ── REVENUE CHART ── */}
-            <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <article className="rounded-lg border border-slate-900 bg-white p-5">
                 {/* chart header */}
                 <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
                     <div>
-                        <h2 className="text-base font-extrabold text-slate-950">Revenue over time</h2>
+                        <h2 className="text-lg font-extrabold text-slate-950">Revenue over time</h2>
                         <p className="mt-1 text-sm text-slate-500">
                             Total in range:&nbsp;
                             <span className="font-bold text-blue-600">{fmtUSD(totalChartRevenue)}</span>
@@ -286,15 +286,15 @@ export const StaffDashboardHome = () => {
                             value={from}
                             max={to}
                             onChange={(e) => setFrom(e.target.value)}
-                            className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="h-9 rounded-lg border border-slate-900 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
-                        <span className="text-xs text-slate-400 font-medium">to</span>
+                        <span className="text-xs text-slate-500 font-medium">to</span>
                         <input
                             type="date"
                             value={to}
                             min={from}
                             onChange={(e) => setTo(e.target.value)}
-                            className="h-9 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="h-9 rounded-lg border border-slate-900 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                         {["DAY", "WEEK", "MONTH"].map((g) => (
                             <button
@@ -338,20 +338,20 @@ export const StaffDashboardHome = () => {
                             <AreaChart data={chartData} margin={{ top: 4, right: 4, left: 0, bottom: 0 }}>
                                 <defs>
                                     <linearGradient id="revGrad" x1="0" y1="0" x2="0" y2="1">
-                                        <stop offset="5%"  stopColor="#3b82f6" stopOpacity={0.18} />
-                                        <stop offset="95%" stopColor="#3b82f6" stopOpacity={0} />
+                                        <stop offset="5%"  stopColor="#c7401a" stopOpacity={0.18} />
+                                        <stop offset="95%" stopColor="#c7401a" stopOpacity={0} />
                                     </linearGradient>
                                 </defs>
-                                <CartesianGrid strokeDasharray="3 3" stroke="#f1f5f9" vertical={false} />
+                                <CartesianGrid strokeDasharray="3 3" stroke="#efece4" vertical={false} />
                                 <XAxis
                                     dataKey="label"
-                                    tick={{ fontSize: 11, fill: "#94a3b8" }}
+                                    tick={{ fontSize: 11, fill: "#857d6d" }}
                                     axisLine={false}
                                     tickLine={false}
                                     interval="preserveStartEnd"
                                 />
                                 <YAxis
-                                    tick={{ fontSize: 11, fill: "#94a3b8" }}
+                                    tick={{ fontSize: 11, fill: "#857d6d" }}
                                     axisLine={false}
                                     tickLine={false}
                                     tickFormatter={(v) => `$${v >= 1000 ? (v / 1000).toFixed(1) + "k" : v}`}
@@ -361,11 +361,11 @@ export const StaffDashboardHome = () => {
                                 <Area
                                     type="monotone"
                                     dataKey="revenue"
-                                    stroke="#3b82f6"
+                                    stroke="#c7401a"
                                     strokeWidth={2.5}
                                     fill="url(#revGrad)"
                                     dot={false}
-                                    activeDot={{ r: 5, fill: "#3b82f6", strokeWidth: 0 }}
+                                    activeDot={{ r: 5, fill: "#c7401a", strokeWidth: 0 }}
                                 />
                             </AreaChart>
                         </ResponsiveContainer>
@@ -376,7 +376,7 @@ export const StaffDashboardHome = () => {
             {/* ── SECONDARY INFO ── */}
             <div className="grid gap-5 lg:grid-cols-2">
                 {/* store snapshot */}
-                <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <article className="rounded-lg border border-slate-900 bg-white p-5">
                     <div className="flex items-center justify-between">
                         <h2 className="font-extrabold text-slate-950">Store snapshot</h2>
                         <span className="inline-flex items-center gap-1.5 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-bold text-emerald-700">
@@ -391,7 +391,7 @@ export const StaffDashboardHome = () => {
                 </article>
 
                 {/* alerts */}
-                <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+                <article className="rounded-lg border border-slate-900 bg-white p-5">
                     <h2 className="font-extrabold text-slate-950">Alerts</h2>
                     <div className="mt-4 space-y-3">
                         <AlertRow
@@ -417,7 +417,7 @@ export const StaffDashboardHome = () => {
             </div>
 
             {/* ── TOP PRODUCTS ── */}
-            <article className="rounded-xl border border-slate-200 bg-white p-5 shadow-sm">
+            <article className="rounded-lg border border-slate-900 bg-white p-5">
                 <div className="flex items-center justify-between gap-4">
                     <div className="flex items-center gap-2">
                         <Trophy size={17} className="text-amber-500" />

@@ -127,7 +127,7 @@ export const StaffUsers = () => {
                             value={inputValue}
                             onChange={(e) => setInputValue(e.target.value)}
                             placeholder="Search by username…"
-                            className="h-10 w-64 rounded-lg border border-slate-200 bg-white pl-9 pr-8 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            className="h-10 w-64 rounded-lg border border-slate-900 bg-white pl-9 pr-8 text-sm text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-blue-600"
                         />
                         {inputValue && (
                             <button
@@ -152,7 +152,7 @@ export const StaffUsers = () => {
                     <select
                         value={sortIdx}
                         onChange={(e) => { setSortIdx(Number(e.target.value)); setPageNumber(0); }}
-                        className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="h-10 rounded-lg border border-slate-900 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                         {SORT_OPTIONS.map((o, i) => (
                             <option key={i} value={i}>{o.label}</option>
@@ -162,7 +162,7 @@ export const StaffUsers = () => {
                     <select
                         value={pageSize}
                         onChange={(e) => { setPageSize(Number(e.target.value)); setPageNumber(0); }}
-                        className="h-10 rounded-lg border border-slate-200 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                        className="h-10 rounded-lg border border-slate-900 bg-white px-3 text-sm text-slate-700 focus:outline-none focus:ring-2 focus:ring-blue-600"
                     >
                         {PAGE_SIZE_OPTIONS.map((s) => (
                             <option key={s} value={s}>{s} / page</option>
@@ -173,7 +173,7 @@ export const StaffUsers = () => {
                         type="button"
                         onClick={fetchUsers}
                         disabled={isLoading}
-                        className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition"
+                        className="flex h-10 w-10 items-center justify-center rounded-lg border border-slate-900 bg-white text-slate-600 hover:bg-slate-50 disabled:opacity-50 transition"
                         title="Refresh"
                     >
                         <RefreshCw size={15} className={isLoading ? "animate-spin" : ""} />
@@ -233,20 +233,20 @@ export const StaffUsers = () => {
 
             {/* table */}
             {!isLoading && !error && users.length > 0 && (
-                <div className="overflow-x-auto rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div className="overflow-x-auto rounded-lg border border-slate-900 bg-white">
                     <table className="min-w-full divide-y divide-slate-100 text-sm">
                         <thead>
                             <tr className="bg-slate-50">
-                                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                                <th className="px-4 py-3 text-left label-mono text-slate-600">
                                     User
                                 </th>
-                                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                                <th className="px-4 py-3 text-left label-mono text-slate-600">
                                     Email
                                 </th>
-                                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                                <th className="px-4 py-3 text-left label-mono text-slate-600">
                                     Role
                                 </th>
-                                <th className="px-4 py-3 text-left text-xs font-bold uppercase tracking-wide text-slate-500">
+                                <th className="px-4 py-3 text-left label-mono text-slate-600">
                                     Joined
                                 </th>
                             </tr>
@@ -353,7 +353,7 @@ const PageBtn = ({ children, onClick, disabled, label }) => (
         onClick={onClick}
         disabled={disabled}
         aria-label={label}
-        className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+        className="flex h-9 w-9 items-center justify-center rounded-lg border border-slate-900 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
     >
         {children}
     </button>

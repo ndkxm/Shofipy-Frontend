@@ -1,20 +1,25 @@
 import React, { useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { Header } from '../shared/Header';
+import { Footer } from '../shared/Footer';
+import { SplitReveal, accentAt } from '../shared/Motion';
 
-const FAQItem = ({ question, answer }) => {
+const FAQItem = ({ question, answer, index }) => {
     const [isOpen, setIsOpen] = useState(false);
 
     return (
-        <div className="border-b border-slate-100 last:border-0">
+        <div className="border-b border-slate-300">
             <button
-                className="w-full text-left py-5 flex justify-between items-center focus:outline-none group"
+                className="w-full text-left py-6 flex gap-5 items-start group"
+                aria-expanded={isOpen}
                 onClick={() => setIsOpen(!isOpen)}
             >
-                <span className="text-base font-semibold text-slate-700 group-hover:text-blue-600 transition-colors pr-4">
+                <motion.span animate={{ rotate: isOpen ? 90 : 0, scale: isOpen ? 1.1 : 1 }} className="grid place-items-center w-9 h-9 rounded-md border border-slate-900 font-mono text-xs text-slate-900 shrink-0" style={{ background: accentAt(index).soft }}>{String(index + 1).padStart(2, "0")}</motion.span>
+                <span className="flex-1 text-lg md:text-xl font-bold text-slate-900 group-hover:text-blue-700 transition-colors pr-4">
                     {question}
                 </span>
                 <span className={`transform transition-transform duration-300 flex-shrink-0 ${isOpen ? 'rotate-180' : ''}`}>
-                    <svg className="w-5 h-5 text-slate-400 group-hover:text-blue-500" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                    <svg aria-hidden="true" className="w-5 h-5 mt-1 text-slate-900" fill="none" viewBox="0 0 24 24" stroke="currentColor">
                         <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
                     </svg>
                 </span>
@@ -28,7 +33,7 @@ const FAQItem = ({ question, answer }) => {
                         transition={{ duration: 0.3 }}
                         className="overflow-hidden"
                     >
-                        <p className="pb-5 text-slate-500 leading-relaxed">
+                        <p className="pb-6 pl-14 pr-8 text-slate-600 leading-relaxed max-w-prose">
                             {answer}
                         </p>
                     </motion.div>
@@ -67,33 +72,29 @@ export const FAQ = () => {
     ];
 
     return (
-        <div className="min-h-screen bg-slate-50 pt-24 pb-20 relative overflow-hidden">
-            <div className="absolute top-0 left-0 w-full h-full overflow-hidden z-0 pointer-events-none">
-                <div className="absolute top-[20%] right-[-10%] w-[30%] h-[50%] bg-blue-100 rounded-full blur-[120px]"></div>
-                <div className="absolute bottom-[-10%] left-[-10%] w-[40%] h-[40%] bg-indigo-100 rounded-full blur-[120px]"></div>
-            </div>
+        <div className="min-h-screen bg-slate-50">
+            <Header />
+            <main className="pt-28 pb-4">
 
-            <div className="max-w-3xl mx-auto px-6 relative z-10">
+            <div className="max-w-4xl mx-auto px-5 md:px-6">
                 <motion.div
                     initial={{ opacity: 0, y: 20 }}
                     animate={{ opacity: 1, y: 0 }}
-                    className="text-center mb-16"
+                    className="mb-14 pb-10 border-b border-slate-900"
                 >
-                    <span className="inline-block py-1 px-3 rounded-full bg-blue-50 text-blue-600 font-semibold text-sm mb-4 border border-blue-200">
-                        FAQ
-                    </span>
-                    <h1 className="text-4xl md:text-5xl font-extrabold text-slate-900 mb-4">
-                        Frequently Asked Questions
-                    </h1>
-                    <p className="text-slate-500 text-lg">Everything you need to know about purchasing game keys on Shofipy.</p>
+                    <p className="label-mono text-slate-500 mb-5">FAQ</p>
+                    <SplitReveal lines={["Questions,", "answered."]} className="display text-5xl md:text-7xl text-slate-900 mb-6" />
+                    <p className="text-slate-600 text-lg max-w-2xl">Everything you need to know about purchasing game keys on Shofipy.</p>
                 </motion.div>
 
-                <div className="bg-white rounded-3xl p-8 md:p-12 border border-slate-200 shadow-sm">
+                <div className="border-t border-slate-900">
                     {faqs.map((faq, index) => (
-                        <FAQItem key={index} question={faq.question} answer={faq.answer} />
+                        <FAQItem key={index} index={index} question={faq.question} answer={faq.answer} />
                     ))}
                 </div>
             </div>
+            </main>
+            <Footer />
         </div>
     );
 };

@@ -20,25 +20,26 @@ export const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => (
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.18 }}
                 className="fixed inset-0 flex items-center justify-center z-50 px-4"
-                style={{ background: "rgba(15,23,42,0.5)", backdropFilter: "blur(2px)" }}
+                style={{ background: "rgba(24,22,18,0.6)" }}
+                role="dialog" aria-modal="true" aria-labelledby="confirm-title"
             >
                 <motion.div
                     initial={{ opacity: 0, scale: 0.95, y: 8 }}
                     animate={{ opacity: 1, scale: 1, y: 0 }}
                     exit={{ opacity: 0, scale: 0.95, y: 8 }}
                     transition={{ duration: 0.2, ease: [0.22, 1, 0.36, 1] }}
-                    className="bg-white rounded-3xl border border-slate-200 w-full max-w-sm p-6"
-                    style={{ fontFamily: "'Reddit Sans', sans-serif", boxShadow: "0 24px 60px rgba(0,0,0,0.15)" }}
+                    className="bg-white rounded-lg border border-slate-900 w-full max-w-sm p-6"
+                    style={{ boxShadow: "6px 6px 0 0 var(--color-slate-900)" }}
                 >
                     {/* Icon */}
-                    <div className="w-12 h-12 rounded-2xl bg-amber-50 border border-amber-100 flex items-center justify-center text-amber-500 mb-4">
+                    <div className="w-11 h-11 rounded-md bg-blue-50 border border-slate-900 flex items-center justify-center text-blue-700 mb-5">
                         <AlertIcon />
                     </div>
  
-                    <h2 className="text-base font-extrabold text-slate-900 mb-2 tracking-tight">
-                        Confirm Action
+                    <h2 id="confirm-title" className="text-xl font-extrabold text-slate-900 mb-2">
+                        Are you sure?
                     </h2>
-                    <p className="text-sm text-slate-400 leading-relaxed mb-6">
+                    <p className="text-sm text-slate-600 leading-relaxed mb-6">
                         {message}
                     </p>
  
@@ -46,15 +47,14 @@ export const ConfirmModal = ({ isOpen, message, onConfirm, onCancel }) => (
                         <motion.button
                             whileTap={{ scale: 0.97 }}
                             onClick={onCancel}
-                            className="flex-1 py-2.5 rounded-2xl border border-slate-200 bg-white hover:bg-slate-50 text-sm font-semibold text-slate-600 transition-colors duration-150"
+                            autoFocus className="flex-1 h-11 rounded-md border border-slate-900 bg-white hover:bg-slate-100 text-sm font-bold text-slate-900 transition-colors duration-150"
                         >
                             Cancel
                         </motion.button>
                         <motion.button
                             whileTap={{ scale: 0.97 }}
                             onClick={onConfirm}
-                            className="flex-1 py-2.5 rounded-2xl bg-red-500 hover:bg-red-600 text-white text-sm font-bold transition-colors duration-150"
-                            style={{ boxShadow: "0 3px 10px rgba(239,68,68,0.3)" }}
+                            className="flex-1 h-11 rounded-md border border-slate-900 bg-red-600 hover:bg-red-700 text-white text-sm font-bold transition-colors duration-150"
                         >
                             Confirm
                         </motion.button>

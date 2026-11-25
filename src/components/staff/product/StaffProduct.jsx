@@ -321,7 +321,7 @@ export const StaffProduct = () => {
     return (
         <section className="space-y-4 py-4 px-2 sm:px-0 sm:py-6">
             {/* Header card */}
-            <div className="rounded-xl border border-slate-200 bg-white p-4 shadow-sm">
+            <div className="rounded-lg border border-slate-900 bg-white p-4">
                 <div className="flex flex-col gap-4">
                     <div className="flex items-start justify-between gap-3">
                         <div>
@@ -336,7 +336,7 @@ export const StaffProduct = () => {
                         <button
                             type="button"
                             onClick={openAddForm}
-                            className="shrink-0 inline-flex h-9 items-center gap-2 rounded-lg bg-blue-600 px-3 sm:px-4 text-xs sm:text-sm font-bold text-white transition hover:bg-blue-700 shadow-sm"
+                            className="shrink-0 inline-flex h-9 items-center gap-2 rounded-lg bg-blue-600 px-3 sm:px-4 text-xs sm:text-sm font-bold text-white transition hover:bg-blue-700"
                         >
                             <Plus size={15} />
                             <span className="hidden sm:inline">Add product</span>
@@ -410,7 +410,7 @@ export const StaffProduct = () => {
                                 type="button"
                                 onClick={fetchProducts}
                                 disabled={isLoading}
-                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-200 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
+                                className="inline-flex h-9 w-9 items-center justify-center rounded-lg border border-slate-900 bg-white text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-60"
                                 aria-label="Refresh"
                             >
                                 <RefreshCw size={15} className={isLoading ? "animate-spin" : ""} />
@@ -443,11 +443,11 @@ export const StaffProduct = () => {
                     description="Try changing the stock filter or search term."
                 />
             ) : (
-                <div className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm">
+                <div className="overflow-hidden rounded-lg border border-slate-900 bg-white">
                     {/* Desktop table */}
                     <div className="hidden md:block overflow-x-auto">
                         <table className="min-w-full divide-y divide-slate-100 text-left">
-                            <thead className="bg-slate-50">
+                            <thead className="bg-slate-100 border-b border-slate-900">
                                 <tr>
                                     {["Product", "Price", "Discount", "Special price", "Stock", "Description", ""].map((h, i) => (
                                         <th
@@ -483,7 +483,7 @@ export const StaffProduct = () => {
                                                 <button
                                                     type="button"
                                                     onClick={() => openEditForm(product)}
-                                                    className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-2.5 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
+                                                    className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-900 bg-white px-2.5 text-xs font-bold text-slate-700 transition hover:bg-slate-50"
                                                 >
                                                     <Edit3 size={13} />Edit
                                                 </button>
@@ -519,7 +519,7 @@ export const StaffProduct = () => {
                                     <button
                                         type="button"
                                         onClick={() => openEditForm(product)}
-                                        className="flex-1 inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white text-xs font-bold text-slate-700 transition hover:bg-slate-50"
+                                        className="flex-1 inline-flex h-8 items-center justify-center gap-1.5 rounded-lg border border-slate-900 bg-white text-xs font-bold text-slate-700 transition hover:bg-slate-50"
                                     >
                                         <Edit3 size={13} />Edit
                                     </button>
@@ -538,7 +538,7 @@ export const StaffProduct = () => {
                                 type="button"
                                 onClick={() => setPageNumber((p) => Math.max(0, p - 1))}
                                 disabled={!canGoPrevious}
-                                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-900 bg-white px-3 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 <ChevronLeft size={14} />Previous
                             </button>
@@ -546,7 +546,7 @@ export const StaffProduct = () => {
                                 type="button"
                                 onClick={() => setPageNumber((p) => p + 1)}
                                 disabled={!canGoNext}
-                                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
+                                className="inline-flex h-8 items-center gap-1.5 rounded-lg border border-slate-900 bg-white px-3 text-xs font-bold text-slate-600 transition hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-40"
                             >
                                 Next<ChevronRight size={14} />
                             </button>
@@ -594,7 +594,7 @@ const ProductModal = ({ mode, product, form, categories, onChange, onImageChange
 
     return (
         <div className="fixed inset-0 z-[70] flex items-end sm:items-center justify-center bg-slate-950/60 px-0 sm:px-4">
-            <div className="w-full sm:max-w-2xl max-h-[95dvh] overflow-hidden rounded-t-2xl sm:rounded-2xl bg-white shadow-2xl flex flex-col">
+            <div className="w-full sm:max-w-2xl max-h-[95dvh] overflow-hidden rounded-t-2xl sm:rounded-lg bg-white flex flex-col">
 
                 {/* Header */}
                 <div className="flex items-start justify-between border-b border-slate-100 px-5 py-4 shrink-0">
@@ -602,7 +602,7 @@ const ProductModal = ({ mode, product, form, categories, onChange, onImageChange
                         <p className="text-xs font-bold uppercase tracking-wide text-blue-600">
                             {isAdd ? "New product" : "Edit product"}
                         </p>
-                        <h3 className="mt-1 text-base font-extrabold text-slate-950 leading-snug">
+                        <h3 className="mt-1 text-lg font-extrabold text-slate-950 leading-snug">
                             {isAdd ? "Add a new product" : product?.productName}
                         </h3>
                         {isAdd && (
@@ -628,11 +628,11 @@ const ProductModal = ({ mode, product, form, categories, onChange, onImageChange
                                 <img
                                     src={imagePreviewSrc}
                                     alt="Preview"
-                                    className="h-36 w-full sm:w-40 rounded-xl border border-slate-200 object-cover"
+                                    className="h-36 w-full sm:w-40 rounded-lg border border-slate-300 object-cover"
                                     onError={(e) => { e.currentTarget.style.display = "none"; }}
                                 />
                             ) : (
-                                <div className="h-36 w-full sm:w-40 rounded-xl border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-2 text-slate-400">
+                                <div className="h-36 w-full sm:w-40 rounded-md border-2 border-dashed border-slate-200 bg-slate-50 flex flex-col items-center justify-center gap-2 text-slate-400">
                                     <ImageOff size={22} />
                                     <span className="text-xs font-medium">No image</span>
                                 </div>
@@ -672,13 +672,13 @@ const ProductModal = ({ mode, product, form, categories, onChange, onImageChange
                                 required
                             />
                             <Field
-                                label="Quantity"
+                                label="Stock (= available keys)"
                                 name="quantity"
                                 type="number"
-                                min="0"
                                 value={form.quantity}
                                 onChange={onChange}
                                 placeholder="0"
+                                disabled
                             />
                             <Field
                                 label="Discount (%)"
@@ -713,7 +713,7 @@ const ProductModal = ({ mode, product, form, categories, onChange, onImageChange
                                         name="categoryId"
                                         value={form.categoryId}
                                         onChange={onChange}
-                                        className="mt-2 h-9 w-full rounded-lg border border-slate-200 bg-white px-3 text-sm font-medium text-slate-700 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                                        className="mt-2 h-9 w-full rounded-lg border border-slate-900 bg-white px-3 text-sm font-medium text-slate-700 outline-none transition focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
                                     >
                                         <option value="">Select a category…</option>
                                         {categories.map((cat) => (
@@ -746,7 +746,7 @@ const ProductModal = ({ mode, product, form, categories, onChange, onImageChange
                         type="button"
                         onClick={onClose}
                         disabled={isSubmitting}
-                        className="flex-1 sm:flex-none inline-flex h-9 items-center justify-center rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
+                        className="flex-1 sm:flex-none inline-flex h-9 items-center justify-center rounded-lg border border-slate-900 bg-white px-4 text-sm font-bold text-slate-700 transition hover:bg-slate-50 disabled:opacity-50"
                     >
                         Cancel
                     </button>
@@ -771,7 +771,7 @@ const ProductImage = ({ product, sizeClass = "h-12 w-12" }) => {
     const imageUrl = getImageUrl(product.image);
     if (!imageUrl) {
         return (
-            <div className={`flex ${sizeClass} shrink-0 items-center justify-center rounded-xl bg-slate-100 text-slate-400`}>
+            <div className={`flex ${sizeClass} shrink-0 items-center justify-center rounded-md bg-slate-100 text-slate-400`}>
                 <ImageOff size={16} />
             </div>
         );
@@ -780,7 +780,7 @@ const ProductImage = ({ product, sizeClass = "h-12 w-12" }) => {
         <img
             src={imageUrl}
             alt={product.productName}
-            className={`${sizeClass} shrink-0 rounded-xl border border-slate-200 object-cover`}
+            className={`${sizeClass} shrink-0 rounded-lg border border-slate-300 object-cover`}
             onError={(e) => { e.currentTarget.style.display = "none"; }}
         />
     );
@@ -815,8 +815,8 @@ const Field = ({ label, required = false, disabled = false, placeholder, ...prop
 );
 
 const StatePanel = ({ icon: Icon, title, description, danger = false, spinning = false, onRetry, action }) => (
-    <div className="rounded-xl border border-slate-200 bg-white p-10 text-center shadow-sm">
-        <div className={`mx-auto flex h-11 w-11 items-center justify-center rounded-xl ${danger ? "bg-red-50 text-red-500" : "bg-blue-50 text-blue-600"}`}>
+    <div className="rounded-lg border border-slate-900 bg-white p-10 text-center">
+        <div className={`mx-auto flex h-11 w-11 items-center justify-center rounded-md ${danger ? "bg-red-50 text-red-500" : "bg-blue-50 text-blue-600"}`}>
             <Icon size={22} className={spinning ? "animate-spin" : ""} />
         </div>
         <h3 className="mt-4 text-base font-extrabold text-slate-900">{title}</h3>
@@ -826,7 +826,7 @@ const StatePanel = ({ icon: Icon, title, description, danger = false, spinning =
                 <button
                     type="button"
                     onClick={onRetry}
-                    className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-200 bg-white px-4 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
+                    className="inline-flex h-9 items-center gap-2 rounded-lg border border-slate-900 bg-white px-4 text-sm font-bold text-slate-700 transition hover:bg-slate-50"
                 >
                     <RefreshCw size={15} />Try again
                 </button>

@@ -4,7 +4,6 @@ export const SetQuantity = ({ quantity, handleQtyIncrease, handleQtyDecrease }) 
     return (
         <div
             className="flex items-center rounded-xl border border-slate-200 bg-slate-50 overflow-hidden"
-            style={{ fontFamily: "'Reddit Sans', sans-serif" }}
         >
             <motion.button
                 whileTap={{ scale: 0.88 }}
